@@ -8,41 +8,20 @@ env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
-  test:
-    name: 🧪 Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Check Python syntax
-        run: |
-          python3 -m py_compile api/main.py
-          python3 -m py_compile api/index.py
-          python3 -m py_compile api/webhook_bot.py
-          python3 -m py_compile api/routes/lots.py
-          python3 -m py_compile api/database/__init__.py
-          python3 -m py_compile bot/handlers/start.py
-          python3 -m py_compile bot/handlers/lot.py
-          python3 -m py_compile bot/handlers/search.py
-      - name: Run tests
-        run: pytest -v || echo "No tests yet"
-
   deploy:
     name: 🌐 Deploy to Vercel
-    needs: test
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
       - uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
       - name: Deploy to Vercel

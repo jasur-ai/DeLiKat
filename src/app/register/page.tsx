@@ -24,8 +24,8 @@ export default function RegisterPage() {
   const [mobileMenu, setMobileMenu] = useState(false);
 
   useEffect(() => {
-    const isDark = localStorage.getItem('deliket-theme') === 'dark' ||
-      (!localStorage.getItem('deliket-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const isDark = localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
     window.onTelegramAuth = (user) => {
@@ -53,7 +53,7 @@ export default function RegisterPage() {
     const cur = document.documentElement.getAttribute('data-theme');
     const next = cur === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('deliket-theme', next);
+    localStorage.setItem('theme', next);
   };
 
   const handleSubmit = async (e: FormEvent) => {
