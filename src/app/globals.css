@@ -1,26 +1,101 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary: #ff9100;
+  --primary-hover: #ff8120;
+  --primary-active: #e68200;
+  --primary-light: #ffa540;
+  --primary-lighter: #ffe0b2;
+  --primary-subtle: #fff3e0;
+  --surface: #ffffff;
+  --surface-dim: #fafafa;
+  --surface-muted: #f5f5f5;
+  --surface-hover: #eeeeee;
+  --text-primary: #212121;
+  --text-secondary: #616161;
+  --text-tertiary: #9e9e9e;
+  --text-quaternary: #bdbdbd;
+  --border-primary: #e0e0e0;
+  --border-secondary: #f5f5f5;
+  --accent: #ff9100;
+  --accent-light: #ffa540;
+  --accent-lighter: #ffe0b2;
+  --accent-dark: #e68200;
+  --accent-50: #fff3e0;
+  --accent-100: #ffe0b2;
+  --accent-200: #ffcc80;
+  --success: #43a047;
+  --success-light: #e8f5e9;
+  --warning: #ff9100;
+  --warning-light: #fff3e0;
+  --error: #e53935;
+  --error-light: #ffebee;
+  --info: #1e88e5;
+  --info-light: #e3f2fd;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', var(--font-sans);
+  --font-mono: 'SF Mono', 'Fira Code', monospace;
+  --max-width: 1200px;
+  --header-height: 60px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme="dark"] {
+  --primary: #ffa726;
+  --primary-hover: #ffb74d;
+  --primary-active: #ff9100;
+  --primary-light: #ffb74d;
+  --primary-lighter: #3e2723;
+  --primary-subtle: rgba(255, 167, 38, 0.08);
+  --surface: #121212;
+  --surface-dim: #1e1e1e;
+  --surface-muted: #252525;
+  --surface-hover: #2c2c2c;
+  --text-primary: #e0e0e0;
+  --text-secondary: #9e9e9e;
+  --text-tertiary: #757575;
+  --text-quaternary: #616161;
+  --border-primary: #333333;
+  --border-secondary: #252525;
+  --accent: #ffa726;
+  --accent-light: #ffb74d;
+  --accent-lighter: #3e2723;
+  --accent-dark: #ff9100;
+  --accent-50: rgba(255, 167, 38, 0.08);
+  --accent-100: rgba(255, 167, 38, 0.15);
+  --accent-200: rgba(255, 167, 38, 0.2);
+  --success: #66bb6a;
+  --success-light: rgba(102, 187, 106, 0.08);
+  --warning: #ffa726;
+  --warning-light: rgba(255, 167, 38, 0.08);
+  --error: #ef5350;
+  --error-light: rgba(239, 83, 80, 0.08);
+  --info: #42a5f5;
+  --info-light: rgba(66, 165, 245, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 16px);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background: var(--surface);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
