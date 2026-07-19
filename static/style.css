@@ -279,6 +279,8 @@ p{color:var(--text-secondary);line-height:1.7}
 .btn-sm{padding:6px 12px;font-size:0.8125rem;border-radius:var(--radius-sm)}
 .btn-lg{padding:12px 24px;font-size:1rem;border-radius:var(--radius-lg)}
 .btn-block{width:100%;justify-content:center}
+.section-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;font-size:0.75rem;font-weight:600;color:var(--accent);background:var(--accent-50);border:1px solid var(--accent-200);border-radius:var(--radius-full);letter-spacing:0.02em}
+
 
 /* ── Badges ── */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-size:0.75rem;font-weight:600;border-radius:var(--radius-full);border:1px solid transparent}
