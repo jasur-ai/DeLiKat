@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLiKet — Dispute Center</title>
+<meta name="description" content="DeLiKet Dispute Center — Nizolarni hal qilish markazi">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+/* ── Dispute Page ── */
+.dsp-page{padding:120px 0 var(--space-2xl);min-height:100vh}
+.dsp-hero{text-align:center;margin-bottom:var(--space-xl)}
+.dsp-hero h1{font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:800;margin-bottom:var(--space-xs);letter-spacing:-0.03em}
+.dsp-hero h1 span{background:linear-gradient(135deg,var(--orange),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.dsp-hero p{max-width:500px;margin:0 auto;color:var(--text-tertiary);line-height:1.7}
+
+/* ── Stats ── */
+.dsp-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-md);max-width:700px;margin:0 auto var(--space-xl)}
+.dsp-stat{padding:var(--space-md);background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);text-align:center}
+.dsp-stat-icon{font-size:1.25rem;display:block;margin-bottom:var(--space-xs)}
+.dsp-stat-num{font-size:1.5rem;font-weight:800;font-family:var(--font-display);letter-spacing:-0.02em}
+.dsp-stat-label{font-size:0.75rem;color:var(--text-tertiary);margin-top:0.125rem}
+.dsp-stat.orange .dsp-stat-num{color:var(--orange-dark)}
+.dsp-stat.green .dsp-stat-num{color:var(--emerald-dark)}
+.dsp-stat.blue .dsp-stat-num{color:var(--accent)}
+.dsp-stat.red .dsp-stat-num{color:var(--red-dark)}
+
+/* ── Empty state ── */
+.dsp-empty{text-align:center;padding:var(--space-2xl);max-width:500px;margin:0 auto}
+.dsp-empty-icon{font-size:3rem;display:block;margin-bottom:var(--space-md)}
+.dsp-empty-title{font-size:1.125rem;font-weight:600;margin-bottom:0.25rem}
+.dsp-empty-text{font-size:0.875rem;color:var(--text-tertiary);line-height:1.6}
+
+/* ── Dispute List ── */
+.dsp-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:var(--space-md)}
+.dsp-card{border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-primary);transition:border-color 0.2s,box-shadow 0.2s}
+.dsp-card:hover{border-color:var(--text-tertiary);box-shadow:var(--shadow-md)}
+.dsp-card-header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-md);cursor:pointer;gap:var(--space-md)}
+.dsp-card-left{display:flex;align-items:center;gap:var(--space-md);flex:1;min-width:0}
+.dsp-card-status{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dsp-card-status.open{background:var(--orange-dark)}
+.dsp-card-status.reviewing{background:var(--accent)}
+.dsp-card-status.resolved{background:var(--emerald-dark)}
+.dsp-card-status.rejected{background:var(--red-dark)}
+.dsp-card-info{flex:1;min-width:0}
+.dsp-card-title{font-size:0.875rem;font-weight:600;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsp-card-meta{display:flex;gap:var(--space-xs);flex-wrap:wrap;margin-top:0.125rem}
+.dsp-card-meta-item{font-size:0.6875rem;color:var(--text-tertiary);display:inline-flex;align-items:center;gap:0.25rem}
+.dsp-card-badge{font-size:0.625rem;font-weight:700;padding:0.1875rem 0.5rem;border-radius:100px;white-space:nowrap}
+.dsp-card-badge.open{background:var(--orange-50);color:var(--orange-dark)}
+.dsp-card-badge.reviewing{background:var(--accent-50);color:var(--accent)}
+.dsp-card-badge.resolved{background:var(--emerald-50);color:var(--emerald-dark)}
+.dsp-card-badge.rejected{background:var(--red-50);color:var(--red-dark)}
+[data-theme="dark"] .dsp-card-badge.open{background:rgba(249,115,22,0.12);color:#fb923c}
+[data-theme="dark"] .dsp-card-badge.reviewing{background:rgba(37,99,235,0.12);color:#93c5fd}
+[data-theme="dark"] .dsp-card-badge.resolved{background:rgba(16,185,129,0.12);color:#34d399}
+[data-theme="dark"] .dsp-card-badge.rejected{background:rgba(239,68,68,0.12);color:#f87171}
+.dsp-card-arrow{font-size:0.75rem;color:var(--text-quaternary);transition:transform 0.2s}
+.dsp-card.open .dsp-card-arrow{transform:rotate(180deg)}
+.dsp-card-body{display:none;padding:0 var(--space-md) var(--space-md);border-top:1px solid var(--border-primary)}
+.dsp-card.open .dsp-card-body{display:block}
+.dsp-card-section{margin-top:var(--space-md)}
+.dsp-card-section:first-child{margin-top:0}
+.dsp-card-section-title{font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin-bottom:0.375rem}
+.dsp-card-section-text{font-size:0.8125rem;color:var(--text-secondary);line-height:1.6;padding:var(--space-sm);background:var(--bg-secondary);border-radius:var(--radius-md)}
+.dsp-card-section-text.resolution{background:var(--emerald-50);border-left:3px solid var(--emerald)}
+[data-theme="dark"] .dsp-card-section-text.resolution{background:rgba(16,185,129,0.08)}
+
+/* ── Timeline ── */
+.dsp-timeline{position:relative;padding-left:var(--space-lg);margin-top:var(--space-md)}
+.dsp-timeline::before{content:'';position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--border-primary)}
+.dsp-timeline-item{position:relative;margin-bottom:var(--space-md)}
+.dsp-timeline-item:last-child{margin-bottom:0}
+.dsp-timeline-dot{position:absolute;left:calc(-1 * var(--space-lg) + 3px);top:4px;width:10px;height:10px;border-radius:50%;background:var(--bg-primary);border:2px solid var(--border-primary)}
+.dsp-timeline-dot.active{background:var(--accent);border-color:var(--accent)}
+.dsp-timeline-dot.done{background:var(--emerald);border-color:var(--emerald)}
+.dsp-timeline-text{font-size:0.8125rem;color:var(--text-secondary)}
+.dsp-timeline-date{font-size:0.6875rem;color:var(--text-quaternary);margin-top:0.125rem}
+
+/* ── Skeleton ── */
+.dsp-skeleton{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:var(--space-md)}
+.dsp-skel-card{height:80px;background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ── How it works ── */
+.dsp-how{max-width:720px;margin:var(--space-2xl) auto 0}
+.dsp-how h2{text-align:center;margin-bottom:var(--space-lg);font-size:1.25rem}
+.dsp-how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-md)}
+.dsp-how-card{padding:var(--space-md);border:1px solid var(--border-primary);border-radius:var(--radius-lg);text-align:center}
+.dsp-how-card-icon{font-size:1.5rem;display:block;margin-bottom:var(--space-xs)}
+.dsp-how-card-title{font-size:0.875rem;font-weight:600;margin-bottom:0.125rem}
+.dsp-how-card-text{font-size:0.75rem;color:var(--text-tertiary);line-height:1.5}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+ .dsp-stats{grid-template-columns:repeat(2,1fr)}
+ .dsp-card-header{padding:var(--space-sm)}
+ .dsp-card-body{padding:0 var(--space-sm) var(--space-sm)}
+}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div>>
+
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo">
+ <svg viewBox="0 0 36 36" fill="none"><defs><linearGradient id="lgDsp" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs><rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgDsp)"/><path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/><circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/></svg>
+ DeLi<span>Ket</span>
+ </a>
+ <nav class="header-nav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/visualsearch">AI Search</a>
+ <a href="/subscription">Premium</a>
+ <a href="/academy">Academy</a>
+ <a href="/dispute" class="active">Dispute</a>
+ </nav>
+ <a href="https://t.me/DeLiKatbot" class="header-cta" target="_blank">Telegram'da ochish</a>
+ </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Temani almashtirish">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+<span></span><span></span><span></span>
+</button>
+</header>
+
+<div class="dsp-page">
+ <div class="container">
+
+ <!-- Hero -->
+ <div class="dsp-hero">
+ <span class="section-badge">Dispute Center</span>
+ <h1>Nizolarni <span>adolat bilan</span> hal qiling</h1>
+ <p>Har bir kelishmovchilik hal qilinadi. Bizning mediatorlar 48 soat ichida javob beradi.</p>
+ </div>
+
+ <!-- Stats -->
+ <div class="dsp-stats" id="statsContainer">
+ <div class="dsp-stat"><span class="dsp-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2/"/><rect x=8 y=2 width=8 height=4 rx=1 ry=1"/></svg></span><div class="dsp-stat-num">—</div><div class="dsp-stat-label">Jami nizolar</div></div>
+ <div class="dsp-stat orange"><span class="dsp-stat-icon">C</span><div class="dsp-stat-num" id="statOpen">—</div><div class="dsp-stat-label">Ochiq</div></div>
+ <div class="dsp-stat blue"><span class="dsp-stat-icon"></span><div class="dsp-stat-num" id="statReview">—</div><div class="dsp-stat-label">Ko'rib chiqilmoqda</div></div>
+ <div class="dsp-stat green"><span class="dsp-stat-icon"></span><div class="dsp-stat-num" id="statResolved">—</div><div class="dsp-stat-label">Hal qilingan</div></div>
+ </div>
+
+ <!-- Skeleton -->
+ <div class="dsp-skeleton" id="skeleton">
+ <div class="dsp-skel-card"></div>
+ <div class="dsp-skel-card"></div>
+ <div class="dsp-skel-card"></div>
+ </div>
+
+ <!-- Dispute List -->
+ <div class="dsp-list" id="disputesContainer" style="display:none"></div>
+
+ <!-- How it works -->
+ <div class="dsp-how">
+ <h2>Qanday ishlaydi?</h2>
+ <div class="dsp-how-grid">
+ <div class="dsp-how-card">
+ <span class="dsp-how-card-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7/"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z/"/></svg></span>
+ <div class="dsp-how-card-title">1. Nizo oching</div>
+ <div class="dsp-how-card-text">Telegram botda /dispute [transaction_id] [sabab] buyrug'i orqali nizo oching</div>
+ </div>
+ <div class="dsp-how-card">
+ <span class="dsp-how-card-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+ <div class="dsp-how-card-title">2. Tekshirish</div>
+ <div class="dsp-how-card-text">Adminlar tranzaksiya tarixini, xabarlarni va dalillarni tahlil qiladi</div>
+ </div>
+ <div class="dsp-how-card">
+ <span class="dsp-how-card-icon">️</span>
+ <div class="dsp-how-card-title">3. Qaror</div>
+ <div class="dsp-how-card-text">Adolatli qaror chiqariladi va ikkala tomonga xabar beriladi</div>
+ </div>
+ </div>
+ </div>
+
+ </div>
+</div>
+
+<script>
+// ── State ──
+let DISPUTE_USER_ID = null;
+
+// ── Init ──
+async function init() {
+ // Try to get connected user ID
+ DISPUTE_USER_ID = localStorage.getItem('deliket_user_id');
+
+ try {
+ // Load stats
+ const stats = await fetch('/api/disputes/stats').then(r => r.json());
+ if (stats) {
+ document.querySelector('.dsp-stat:first-child .dsp-stat-num').textContent = stats.total || '0';
+ document.getElementById('statOpen').textContent = stats.open || '0';
+ document.getElementById('statReview').textContent = stats.reviewing || '0';
+ document.getElementById('statResolved').textContent = stats.resolved || '0';
+ }
+
+ if (!DISPUTE_USER_ID) {
+ // User not logged in -- show connect prompt
+ document.getElementById('skeleton').style.display = 'none';
+ const container = document.getElementById('disputesContainer');
+ container.style.display = 'flex';
+ container.innerHTML = `
+ <div class="dsp-empty">
+ <span class="dsp-empty-icon"></span>
+ <div class="dsp-empty-title">Hisobingizni ulang</div>
+ <div class="dsp-empty-text">Nizolarni ko'rish uchun Telegram bot orqali hisobingizni ulang. @DeLiKatbot ga o'ting va /sync buyrug'ini yuboring.</div>
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="btn btn-primary" style="margin-top:1rem;display:inline-flex">Botga o'tish</a>
+ </div>`;
+ return;
+ }
+
+ // Load user disputes
+ const data = await fetch(`/api/disputes/user/${DISPUTE_USER_ID}`).then(r => r.json());
+ renderDisputes(data);
+ } catch(e) {
+ showError();
+ }
+}
+
+// ── Render ──
+function renderDisputes(data) {
+ const container = document.getElementById('disputesContainer');
+ const skeleton = document.getElementById('skeleton');
+ skeleton.style.display = 'none';
+ container.style.display = 'flex';
+
+ if (!data.disputes || data.disputes.length === 0) {
+ container.innerHTML = `
+ <div class="dsp-empty">
+ <span class="dsp-empty-icon">️</span>
+ <div class="dsp-empty-title">Hali nizolar yo'q</div>
+ <div class="dsp-empty-text">Sizning barcha tranzaksiyalaringiz muammosiz o'tmoqda! Agar kelishmovchilik yuzaga kelsa, Telegram bot orqali nizo ochishingiz mumkin.</div>
+ </div>`;
+ return;
+ }
+
+ const statusColors = { 'ochiq': 'open', "ko'rib_chiqilmoqda": 'reviewing', 'hal_qilingan': 'resolved', 'rad_etilgan': 'rejected' };
+ const statusIcons = { 'ochiq': 'C', "ko'rib_chiqilmoqda": '', 'hal_qilingan': '✓', 'rad_etilgan': '✕' };
+
+ container.innerHTML = data.disputes.map(d => {
+ const colorClass = statusColors[d.status] || 'open';
+ const icon = statusIcons[d.status] || '';
+ return `
+ <div class="dsp-card" onclick="this.classList.toggle('open')">
+ <div class="dsp-card-header">
+ <div class="dsp-card-left">
+ <span class="dsp-card-status ${colorClass}"></span>
+ <div class="dsp-card-info">
+ <div class="dsp-card-title">Nizo #${d.id} -- ${d.lot_title || 'Lot'}</div>
+ <div class="dsp-card-meta">
+ <span class="dsp-card-meta-item">Tranzaksiya #${d.transaction_id}</span>
+ ${d.transaction_amount ? `<span class="dsp-card-meta-item">${formatPrice(d.transaction_amount)}</span>` : ''}
+ <span class="dsp-card-meta-item"> ${formatDate(d.created_at)}</span>
+ ${d.days_open !== null ? `<span class="dsp-card-meta-item"> ${d.days_open} kun</span>` : ''}
+ </div>
+ </div>
+ </div>
+ <span class="dsp-card-badge ${colorClass}">${icon} ${d.status_label}</span>
+ <span class="dsp-card-arrow">▼</span>
+ </div>
+ <div class="dsp-card-body">
+ <div class="dsp-card-section">
+ <div class="dsp-card-section-title">Sabab</div>
+ <div class="dsp-card-section-text">${d.reason || 'Sabab ko\'rsatilmagan'}</div>
+ </div>
+ ${d.resolution ? `
+ <div class="dsp-card-section">
+ <div class="dsp-card-section-title">Yechim</div>
+ <div class="dsp-card-section-text resolution">${d.resolution}</div>
+ </div>
+ ` : ''}
+ <div class="dsp-timeline">
+ <div class="dsp-timeline-item">
+ <span class="dsp-timeline-dot done"></span>
+ <div class="dsp-timeline-text">Nizo ochildi</div>
+ <div class="dsp-timeline-date">${formatDate(d.created_at)}</div>
+ </div>
+ <div class="dsp-timeline-item">
+ <span class="dsp-timeline-dot ${d.status !== 'ochiq' ? 'done' : 'active'}"></span>
+ <div class="dsp-timeline-text">${d.status === 'ochiq' ? 'Ko\'rib chiqilmoqda...' : 'Tekshirildi'}</div>
+ ${d.resolved_at ? `<div class="dsp-timeline-date">Yakunlandi: ${formatDate(d.resolved_at)}</div>` : ''}
+ </div>
+ <div class="dsp-timeline-item">
+ <span class="dsp-timeline-dot ${d.status === 'hal_qilingan' || d.status === 'rad_etilgan' ? 'done' : ''}"></span>
+ <div class="dsp-timeline-text">${d.status === 'hal_qilingan' ? 'Hal qilindi' : d.status === 'rad_etilgan' ? 'Rad etildi' : 'Kutilmoqda'}</div>
+ </div>
+ </div>
+ <div class="dsp-card-section" style="margin-top:var(--space-sm);padding-top:var(--space-sm);border-top:1px solid var(--border-primary)">
+ <span style="font-size:0.75rem;color:var(--text-tertiary)">Bot orqali ko'rish: /dispute ${d.id}</span>
+ </div>
+ </div>
+ </div>
+ `;
+ }).join('');
+}
+
+// ── Helpers ──
+function formatPrice(price) {
+ if (!price) return '--';
+ if (price >= 1000000) return (price / 1000000).toFixed(1) + ' mln';
+ if (price >= 1000) return (price / 1000).toFixed(0) + ' ming';
+ return price.toLocaleString() + ' so\'m';
+}
+
+function formatDate(dateStr) {
+ if (!dateStr) return '--';
+ const d = new Date(dateStr);
+ return d.toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ── Error ──
+function showError() {
+ document.getElementById('skeleton').style.display = 'none';
+ const container = document.getElementById('disputesContainer');
+ container.style.display = 'flex';
+ container.innerHTML = `<div class="dsp-empty"><span class="dsp-empty-icon"></span><div class="dsp-empty-title">Nizolarni yuklashda xatolik</div><div class="dsp-empty-text">Server bilan bog'lanishda muammo yuz berdi. Qayta urinib ko'ring.</div><button aria-label="Qayta urinish" class="btn btn-primary" style="margin-top:1rem" onclick="init()">Qayta urinish</button></div>`;
+}
+
+// ── Start ──
+document.addEventListener('DOMContentLoaded', init);
+
+
+// Theme
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('deliket-theme',t)}
+function initTheme(){var s=localStorage.getItem('deliket-theme'),p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'))}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');setTheme(c==='dark'?'light':'dark')}
+
+
+document.addEventListener('DOMContentLoaded',function(){
+var mt=document.getElementById('mobileToggle'),hn=document.getElementById('headerNav');
+if(mt&&hn){mt.addEventListener('click',function(){mt.classList.toggle('active');hn.classList.toggle('open')})}
+});</script>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil navigatsiya">
+<div class="mobile-bottom-nav-items">
+<a href="/" class="active"><span class="nav-icon"></span><span class="nav-label">Bosh</span></a>
+<a href="/analytics"><span class="nav-icon"></span><span class="nav-label">Analytics</span></a>
+<a href="/seller"><span class="nav-icon"></span><span class="nav-label">Sotuvchilar</span></a>
+<a href="/deals"><span class="nav-icon"></span><span class="nav-label">Bitimlar</span></a>
+<a href="/academy"><span class="nav-icon"></span><span class="nav-label">Academy</span></a>
+</div>
+</nav>
+</body>
+</html>

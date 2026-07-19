@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLiKet — Sharhlar</title>
+<meta name="description" content="DeLiKet xaridorlar sharhlari va reytinglari">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+.rv-page{padding:120px 0 var(--space-2xl);min-height:100vh}
+.rv-hero{text-align:center;margin-bottom:var(--space-xl)}
+.rv-hero h1{font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:800;margin-bottom:var(--space-xs)}
+.rv-hero h1 span{background:linear-gradient(135deg,var(--orange),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.rv-hero p{color:var(--text-tertiary);max-width:500px;margin:0 auto}
+.rv-summary{display:grid;grid-template-columns:1fr 2fr;gap:var(--space-lg);max-width:800px;margin:0 auto var(--space-xl);padding:var(--space-lg);border:1px solid var(--border-primary);border-radius:var(--radius-xl);background:var(--bg-secondary)}
+.rv-big-score{text-align:center}
+.rv-big-num{font-size:3rem;font-weight:800;font-family:var(--font-display);line-height:1}
+.rv-big-label{font-size:0.75rem;color:var(--text-tertiary);margin-top:0.25rem}
+.rv-stars-big{font-size:1.25rem;letter-spacing:0.1em;margin-top:0.25rem}
+.rv-total{font-size:0.75rem;color:var(--text-tertiary);margin-top:0.25rem}
+.rv-dist{display:flex;flex-direction:column;gap:0.375rem;justify-content:center}
+.rv-dist-row{display:grid;grid-template-columns:40px 1fr 30px;align-items:center;gap:0.5rem;font-size:0.75rem}
+.rv-dist-bar{height:6px;background:var(--border-primary);border-radius:3px;overflow:hidden}
+.rv-dist-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.6s var(--ease-out)}
+.rv-dist-label{font-weight:600;color:var(--text-secondary);text-align:right}
+.rv-grid{max-width:800px;margin:0 auto;display:grid;gap:var(--space-md)}
+.rv-card{padding:var(--space-lg);border:1px solid var(--border-primary);border-radius:var(--radius-lg);transition:border-color 0.2s}
+.rv-card:hover{border-color:var(--text-tertiary)}
+.rv-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-sm)}
+.rv-card-buyer{display:flex;align-items:center;gap:0.5rem}
+.rv-card-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-50);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--accent)}
+.rv-card-name{font-size:0.8125rem;font-weight:600}
+.rv-card-verified{font-size:0.625rem;color:var(--emerald-dark);font-weight:600;display:flex;align-items:center;gap:0.125rem}
+.rv-card-stars{font-size:0.875rem;letter-spacing:0.1em}
+.rv-card-text{font-size:0.875rem;color:var(--text-secondary);line-height:1.7;margin-bottom:var(--space-sm)}
+.rv-card-meta{display:flex;gap:var(--space-sm);flex-wrap:wrap;align-items:center;font-size:0.75rem;color:var(--text-tertiary);padding-top:var(--space-sm);border-top:1px solid var(--border-primary)}
+.rv-card-meta-item{display:flex;align-items:center;gap:0.25rem}
+.rv-card-seller{font-size:0.75rem;color:var(--text-tertiary);margin-left:auto}
+.rv-empty{text-align:center;padding:var(--space-2xl);color:var(--text-tertiary)}
+.rv-empty-icon{font-size:2.5rem;display:block;margin-bottom:var(--space-md)}
+@media(max-width:640px){.rv-summary{grid-template-columns:1fr;text-align:center}}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div>>
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo">
+ <svg viewBox="0 0 36 36" fill="none"><defs><linearGradient id="lgRv" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs><rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgRv)"/><path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/><circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/></svg>
+ DeLi<span>Ket</span>
+ </a>
+ <nav class="header-nav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/leaderboard">Reyting</a>
+ <a href="/reviews" class="active">Sharhlar</a>
+ </nav>
+ <a href="https://t.me/DeLiKatbot" class="header-cta" target="_blank">Bot</a>
+ </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Temani almashtirish">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+<span></span><span></span><span></span>
+</button>
+</header>
+
+<div class="rv-page">
+ <div class="container" style="max-width:860px">
+ <div class="rv-hero">
+ <span class="section-badge">Sharhlar</span>
+ <h1>Xaridorlar <span>fikrlari</span></h1>
+ <p>Haqiqiy xaridorlarning sotuvchilar va mahsulotlar haqidagi tasdiqlangan sharhlari</p>
+ </div>
+
+ <div id="summaryContainer" style="display:none"></div>
+ <div id="reviewsContainer">
+ <div class="rv-empty" id="skeleton">
+ <span class="rv-empty-icon"></span>
+ <span>Sharhlar yuklanmoqda...</span>
+ </div>
+ </div>
+ </div>
+</div>
+
+<script>
+function stars(n) {
+ return '☆'.repeat(n) + '☆'.repeat(5 - n);
+}
+
+async function init() {
+ try {
+ const res = await fetch('/api/reviews?limit=50');
+ const data = await res.json();
+ if (!data.ok) throw new Error('No data');
+
+ document.getElementById('skeleton').style.display = 'none';
+
+ // Summary
+ if (data.total > 0) {
+ const summaryHtml = `<div class="rv-summary">
+ <div class="rv-big-score">
+ <div class="rv-big-num">${data.avg_rating}</div>
+ <div class="rv-stars-big">${stars(Math.round(data.avg_rating))}</div>
+ <div class="rv-big-label">o'rtacha reyting</div>
+ <div class="rv-total">${data.total} ta sharh</div>
+ </div>
+ <div class="rv-dist">
+ ${[5,4,3,2,1].map(s => {
+ const count = data.rating_distribution?.[s] || 0;
+ const pct = data.total > 0 ? (count / data.total * 100).toFixed(0) : 0;
+ return `<div class="rv-dist-row"><span class="rv-dist-label">${s}</span><div class="rv-dist-bar"><div class="rv-dist-fill" style="width:${pct}%"></div></div><span style="font-size:0.6875rem;color:var(--text-tertiary)">${count}</span></div>`;
+ }).join('')}
+ </div>
+ </div>`;
+ document.getElementById('summaryContainer').innerHTML = summaryHtml;
+ document.getElementById('summaryContainer').style.display = 'block';
+ }
+
+ // Reviews
+ const container = document.getElementById('reviewsContainer');
+ if (!data.reviews || !data.reviews.length) {
+ container.innerHTML = `<div class="rv-empty"><span class="rv-empty-icon"></span><span>Hali sharhlar yo'q</span><p style="font-size:0.875rem;color:var(--text-tertiary);margin-top:0.5rem">Birinchi bo'lib sharh qoldiring!</p></div>`;
+ return;
+ }
+
+ container.innerHTML = `<div class="rv-grid">${data.reviews.map(r => `
+ <div class="rv-card">
+ <div class="rv-card-top">
+ <div class="rv-card-buyer">
+ <div class="rv-card-avatar">${r.buyer?.name?.charAt(0) || '?'}</div>
+ <div>
+ <div class="rv-card-name">${r.buyer?.name || "Noma'lum"}</div>
+ ${r.is_verified_purchase ? '<div class="rv-card-verified">Tasdiqlangan xarid</div>' : ''}
+ </div>
+ </div>
+ <div class="rv-card-stars">${stars(r.rating)}</div>
+ </div>
+ ${r.text ? `<div class="rv-card-text">${r.text}</div>` : ''}
+ <div class="rv-card-meta">
+ <span class="rv-card-meta-item">${r.lot?.category || ''}</span>
+ <span class="rv-card-meta-item">️ ${r.lot?.title?.substring(0, 40) || ''}${r.lot?.title?.length > 40 ? '...' : ''}</span>
+ <span class="rv-card-meta-item">${new Date(r.created_at).toLocaleDateString('uz-UZ')}</span>
+ <span class="rv-card-seller">Sotuvchi: ${r.seller?.name || "Noma'lum"} ${r.seller?.is_verified ? '✓' : ''}</span>
+ </div>
+ </div>
+ `).join('')}</div>`;
+ } catch (e) {
+ document.getElementById('skeleton').innerHTML = `
+ <span class="rv-empty-icon"></span><span>Xatolik yuz berdi</span>
+ <button aria-label="Qayta urinish" class="btn btn-primary" style="margin-top:1rem;display:inline-flex" onclick="init()">Qayta urinish</button>`;
+ }
+}
+document.addEventListener('DOMContentLoaded', init);
+
+
+// Theme
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('deliket-theme',t)}
+function initTheme(){var s=localStorage.getItem('deliket-theme'),p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'))}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');setTheme(c==='dark'?'light':'dark')}
+
+
+document.addEventListener('DOMContentLoaded',function(){
+var mt=document.getElementById('mobileToggle'),hn=document.getElementById('headerNav');
+if(mt&&hn){mt.addEventListener('click',function(){mt.classList.toggle('active');hn.classList.toggle('open')})}
+});</script>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil navigatsiya">
+<div class="mobile-bottom-nav-items">
+<a href="/" class="active"><span class="nav-icon"></span><span class="nav-label">Bosh</span></a>
+<a href="/analytics"><span class="nav-icon"></span><span class="nav-label">Analytics</span></a>
+<a href="/seller"><span class="nav-icon"></span><span class="nav-label">Sotuvchilar</span></a>
+<a href="/deals"><span class="nav-icon"></span><span class="nav-label">Bitimlar</span></a>
+<a href="/academy"><span class="nav-icon"></span><span class="nav-label">Academy</span></a>
+</div>
+</nav>
+</body>
+</html>

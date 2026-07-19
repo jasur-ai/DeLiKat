@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLiKet — Deadstock Liquidation Marketplace</title>
+<meta name="description" content="DeLiKet — B2B deadstock va ortiqcha mahsulotlar bozori. Partiyaviy soting yoki 70% gacha arzon narxda sotib oling.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap"></noscript>
+
+<link rel="stylesheet" href="/style.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='36' height='36' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 9h8a9 9 0 0 1 0 18H9V9z' fill='white' opacity='0.95'/%3E%3Ccircle cx='26' cy='18' r='2.5' fill='white' opacity='0.6'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='36' height='36' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 9h8a9 9 0 0 1 0 18H9V9z' fill='white' opacity='0.95'/%3E%3Ccircle cx='26' cy='18' r='2.5' fill='white' opacity='0.6'/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body class="theme-transition">
+
+<!-- Page Loader -->
+<div class="page-loader" id="pageLoader">
+ <div class="loader-ring"></div>
+ <span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div>
+<!-- Absolute fallback: hide loader after 3s no matter what -->
+<script>setTimeout(function(){var e=document.getElementById('pageLoader');if(e&&!e.classList.contains('hidden')){e.classList.add('hidden');setTimeout(function(){if(e.parentNode)e.style.display='none'},450)}},3000)</script>
+
+<!-- Scroll Progress Bar -->
+<div class="scroll-progress"><div class="scroll-progress-bar" id="scrollProgressBar"></div></div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
+SCROLL TO TOP
+============================================================ -->
+<button class="scroll-top" id="scrollTop" aria-label="Yuqoriga">↑</button>
+
+<!-- ============================================================
+HEADER
+============================================================ -->
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgHdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgHdr)"/>
+ <path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/>
+ <circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+
+ <div class="header-search">
+ <span class="header-search-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+ <input type="text" id="searchInput" placeholder="Mahsulot, kategoriya bo'yicha qidirish...">
+ </div>
+
+ <nav class="header-nav" id="headerNav">
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="/how-it-works">Qo'llanma</a>
+ <a href="/visualsearch">AI Search</a>
+ <a href="/subscription">Premium</a>
+ <a href="/academy">Academy</a>
+ <a href="/tradein">Trade-In</a>
+ <a href="/crossborder">Cross-Border</a>
+ <a href="/data-sources">Manbalar</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Bot</a>
+ <span class="header-nav-auth" id="headerNavAuth">
+ <a href="/login" class="auth-link-login">Kirish</a>
+ <a href="/register" class="auth-link-register btn btn-primary btn-sm" style="margin-left:0.25rem">Ro'yxat</a>
+ <a href="/profile" class="auth-link-profile" style="display:none">Profil</a>
+ </span>
+ <button class="theme-toggle" id="themeToggleMobile" aria-label="Temani almashtirish" style="display:none;">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+ <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ </nav>
+
+ <button class="theme-toggle" id="themeToggle" aria-label="Temani almashtirish">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+ <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="header-cta">Botga o'tish →</a>
+
+ <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+ <span></span><span></span><span></span>
+ </button>
+ </div>
+
+ <!-- Mobile search -->
+ <div class="mobile-search-overlay" id="mobileSearchOverlay">
+ <div style="position:relative;">
+ <span class="header-search-icon" style="position:absolute;left:1.5rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);font-size:0.9rem;pointer-events:none;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+ <input type="text" id="mobileSearchInput" placeholder="Mahsulot, kategoriya bo'yicha qidirish...">
+ </div>
+ </div>
+</header>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+ <div class="mobile-bottom-nav-items">
+ <a href="/" class="active"><span class="nav-icon"></span><span class="nav-label">Bosh</span></a> <a href="/analytics"><span class="nav-icon"></span><span class="nav-label">Analytics</span></a>
+ <a href="/visualsearch"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span class="nav-label">AI Search</span></a>
+ <a href="/subscription"><span class="nav-icon"></span><span class="nav-label">Premium</span></a>
+ <a href="/crossborder"><span class="nav-icon"></span><span class="nav-label">Cross-Border</span></a>
+ <a href="/seller"><span class="nav-icon"></span><span class="nav-label">Sotuvchilar</span></a>
+ </div>
+</nav>
+
+<!-- ============================================================
+HERO
+============================================================ -->
+<section class="hero">
+ <div class="hero-bg-grid"></div>
+ <div class="hero-glow"></div>
+
+ <div class="container">
+ <div class="hero-content">
+ <div>
+ <div class="hero-badge">
+ <span class="hero-badge-dot"></span>
+ O'zbekistondagi ilk B2B Deadstock Marketplace
+ </div>
+ <h1>Ortiqcha stokni <span>0% komissiya</span> bilan likvidatsiya qiling</h1>
+ <p>
+ <strong>DeLiKet</strong> — Omboringizda sotilmay yotgan mahsulotlarni 
+ <strong>0% komissiya</strong>, <strong>AI Trust Score</strong> va <strong>ESCROW himoyasi</strong> bilan 
+ B2B bozorida likvidatsiya qiling. Uzum (15-25%) yoki OLX (scam xavfi) dan farqli.
+ </p>
+ <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:var(--space-4)">
+ <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.625rem;font-size:0.75rem;font-weight:600;color:var(--emerald-dark);background:var(--emerald-50);border-radius:100px;">0% komissiya</span>
+ <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.625rem;font-size:0.75rem;font-weight:600;color:var(--accent);background:var(--accent-50);border-radius:100px;">Trust Score</span>
+ <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.625rem;font-size:0.75rem;font-weight:600;color:var(--violet-dark);background:var(--violet-50);border-radius:100px;">ESCROW himoya</span>
+ <span style="display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.625rem;font-size:0.75rem;font-weight:600;color:var(--amber-dark);background:var(--amber-50);border-radius:100px;">Telegram 1 daqiqa</span>
+ </div>
+ <div class="hero-actions">
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="btn btn-primary">Botga o'tish →</a>
+ <a href="#features" class="btn btn-secondary">20+ imkoniyat</a>
+ <a href="#marketplace" class="btn btn-secondary" style="background:var(--bg-secondary);border-color:var(--border-primary);">Bozor</a>
+ </div>
+
+ <div class="hero-stats" id="heroStats">
+ <div><div class="hero-stat-value" id="statUsers">0</div><div class="hero-stat-label">Foydalanuvchilar</div></div>
+ <div><div class="hero-stat-value" id="statLots">0</div><div class="hero-stat-label">Faol lotlar</div></div>
+ <div><div class="hero-stat-value" id="statBids">0</div><div class="hero-stat-label">Takliflar</div></div>
+ </div>
+ </div>
+
+ <div class="hero-visual" id="heroVisual">
+ <div class="hero-card" style="grid-column:1/-1;">
+ <div class="hero-card-header">
+ <span class="hero-card-title">Eng ko'p kategoriya</span>
+ <span class="hero-card-badge badge-grade-a">A grade</span>
+ </div>
+ <div class="hero-card-price" id="heroTopPrice"><span class="skeleton" style="display:inline-block;width:120px;height:24px;vertical-align:middle;"></span></div>
+ <div class="hero-card-row"><span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span> <span id="heroTopTitle"><span class="skeleton" style="display:inline-block;width:180px;height:16px;vertical-align:middle;"></span></span></div>
+ </div>
+ <div class="hero-card">
+ <div class="hero-card-header">
+ <span class="hero-card-title">O'rtacha narx</span>
+ </div>
+ <div class="hero-card-price" id="heroAvgPrice"><span class="skeleton" style="display:inline-block;width:100px;height:24px;vertical-align:middle;"></span></div>
+ <div class="hero-card-row"><span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></span> <span>barcha lotlar bo'yicha</span></div>
+ </div>
+ <div class="hero-card">
+ <div class="hero-card-header">
+ <span class="hero-card-title">Eng arzon lot</span>
+ </div>
+ <div class="hero-card-price" id="heroMinPrice"><span class="skeleton" style="display:inline-block;width:100px;height:24px;vertical-align:middle;"></span></div>
+ <div class="hero-card-row"><span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> <span id="heroMinCat"><span class="skeleton" style="display:inline-block;width:80px;height:16px;vertical-align:middle;"></span></span></div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+CATEGORIES
+============================================================ -->
+<section class="categories-section theme-transition" id="categories">
+ <div class="container">
+ <div class="categories-header reveal">
+ <div>
+ <span class="section-badge">Kategoriyalar</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">Mahsulot turlari</h2>
+ <p class="section-subtitle">6 xil kategoriyada 21+ real deadstock lotlari</p>
+ </div>
+ </div>
+ <div class="categories-grid reveal-stagger" id="categoriesGrid">
+ <!-- Populated by JS -->
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+MARKETPLACE
+============================================================ -->
+<section class="marketplace theme-transition" id="marketplace">
+ <div class="container">
+ <div class="marketplace-header reveal">
+ <div>
+ <span class="section-badge">Marketplace</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">Barcha lotlar</h2>
+ </div>
+ <div class="marketplace-controls">
+ <button aria-label="Filtr" class="btn btn-ghost btn-sm" id="filterToggleBtn"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Filtr</button>
+ <select class="sort-select" id="sortSelect">
+ <option value="created_at|desc">Eng yangi</option>
+ <option value="price|asc">Narx: arzon → qimmat</option>
+ <option value="price|desc">Narx: qimmat → arzon</option>
+ <option value="title|asc">Alifbo bo'yicha</option>
+ </select>
+ </div>
+ </div>
+
+ <div class="marketplace-layout">
+ <!-- Filter Sidebar -->
+ <aside class="filter-sidebar theme-transition" id="filterSidebar">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md);">
+ <span class="filter-label">Filter</span>
+ <button aria-label="Filter yopish" id="filterSidebarClose" style="font-size:1.25rem;color:var(--indigo-400);padding:0.25rem;background:none;border:none;cursor:pointer;">✕</button>
+ </div>
+ <div class="filter-group">
+ <span class="filter-label">Kategoriya</span>
+ <div class="filter-options" id="filterCategory">
+ <!-- Populated by JS -->
+ </div>
+ </div>
+ <div class="filter-group">
+ <span class="filter-label">Grade (Sifat)</span>
+ <div class="filter-options" id="filterGrade">
+ <label class="filter-option active" data-grade="">
+ <span>Barcha grade'lar</span>
+ </label>
+ <label class="filter-option" data-grade="A">
+ <span>A — Yangi</span>
+ </label>
+ <label class="filter-option" data-grade="B">
+ <span>B — Yaxshi</span>
+ </label>
+ <label class="filter-option" data-grade="C">
+ <span>C — Qoniqarli</span>
+ </label>
+ </div>
+ </div>
+ <div class="filter-group">
+ <span class="filter-label">Narx oralig'i</span>
+ <div class="price-inputs">
+ <input type="number" id="minPrice" placeholder="Min" min="0">
+ <span>—</span>
+ <input type="number" id="maxPrice" placeholder="Maks" min="0">
+ </div>
+ <button class="filter-clear" id="filterClear"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Filtrlarni tozalash</button>
+ </aside>
+
+ <!-- Lots Grid -->
+ <div>
+ <div class="lots-grid" id="lotsGrid"></div>
+ <div id="loadMoreContainer" style="text-align:center;margin-top:var(--space-lg);display:none;">
+ <button class="btn btn-secondary" id="loadMoreBtn">Yana ko'rsat →</button>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+FEATURES — 20 ta imkoniyat
+============================================================ -->
+<section class="features theme-transition" id="features">
+ <div class="container">
+ <div class="reveal" style="text-align:center;margin-bottom:var(--space-xl)">
+ <span class="section-badge">20+ Imkoniyat</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">Nega aynan DeLiKet? Uzum va OLX'dan farqi</h2>
+ <p class="section-subtitle" style="margin:var(--space-sm) auto 0;max-width:600px;">
+ Uzum'da 15-25% komissiya to'laysiz. OLX'da ishonchsizlik va scam.
+ DeLiKet'da <strong>0% komissiya</strong>, <strong>AI Trust Score</strong> va 
+ <strong>ESCROW himoyasi</strong> bilan xavfsiz savdo.
+ </p>
+ </div>
+
+ <!-- Competitive Comparison -->
+ <div class="comparison-table reveal">
+ <table>
+ <thead>
+ <tr>
+ <th>Xususiyat</th>
+ <th>DeLiKet</th>
+ <th>Uzum</th>
+ <th>OLX</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr><td>Komissiya</td><td><span class="text-green">0%</span></td><td><span style="color:var(--red);font-weight:600;">15-25%</span></td><td>Bepul (premium bor)</td></tr>
+ <tr><td>Target</td><td><span class="text-green">B2B Deadstock</span></td><td>B2C Retail</td><td>C2C E'lonlar</td></tr>
+ <tr><td>Ishonch tizimi</td><td><span class="text-green">AI Trust Score</span></td><td>Oddiy reyting</td><td><span style="color:var(--red);font-weight:600;">Yo'q</span></td></tr>
+ <tr><td>ESCROW himoya</td><td><span class="text-green">Mavjud</span></td><td>Mavjud</td><td><span style="color:var(--red);font-weight:600;">Yo'q</span></td></tr>
+ <tr><td>Partiyaviy savdo</td><td><span class="text-green">1-1000 dona</span></td><td>Birma-bir</td><td>Birma-bir</td></tr>
+ <tr><td>AI Assisted Search</td><td><span class="text-green">Bor</span></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td></tr>
+ <tr><td>Telegram native</td><td><span class="text-green">Bot + Web</span></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td></tr>
+ <tr><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg> Grade tizimi (A/B/C)</td><td><span class="text-green">Sifat nazorati</span></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td></tr>
+ <tr><td>Crypto to'lov</td><td><span class="text-green">USDT/USDC</span></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td></tr>
+ <tr><td>Market Intelligence</td><td><span class="text-green">Real vaqt</span></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td></tr>
+ <tr><td>Ro'yxatdan o'tish</td><td><span class="text-green">1 daqiqa</span></td><td>10+ daqiqa</td><td>2 daqiqa</td></tr>
+ <tr><td><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Scam/Fraud himoya</td><td><span class="text-green">AI anti-fraud</span></td><td>O'rtacha</td><td><span style="color:var(--red);font-weight:600;"> Yuqori xavf</span></td></tr>
+ </tbody>
+ </table>
+ </div>
+
+ <!-- 20 Features Grid -->
+ <h3 class="section-subtitle" style="margin:var(--space-xl) 0 var(--space-md);text-align:center;max-width:100%;font-size:1.25rem;font-weight:700;color:var(--text-primary);">
+ Barcha 20 ta imkoniyat
+ </h3>
+ <div class="features-grid reveal-stagger">
+ <a href="/subscription" class="feature-card feature-diff" style="text-decoration:none;display:flex;flex-direction:column">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+ <h3>Premium Subscription</h3>
+ <p>Cheksiz lotlar, AI Price Optimizer, Cross-Border va premium badge — barchasi bir joyda</p>
+ <span class="feature-tag feature-tag-green">Premium →</span>
+ </a>
+ <a href="/academy" class="feature-card feature-diff" style="text-decoration:none;display:flex;flex-direction:column">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+ <h3>Seller Academy</h3>
+ <p>5 ta interaktiv dars, XP to'plang, sotuv mahoratingizni oshiring va badge'lar yeching</p>
+ <span class="feature-tag feature-tag-blue">O'qish →</span>
+ </a>
+ <a href="/dispute" class="feature-card feature-diff" style="text-decoration:none;display:flex;flex-direction:column">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+ <h3>Dispute Center</h3>
+ <p>Nizolarni adolat bilan hal qiling. Adminlar 48 soat ichida javob beradi</p>
+ <span class="feature-tag feature-tag-rose">Dispute →</span>
+ </a>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+ <h3>Smart Bildirimlar</h3>
+ <p>Yangi taklif, qabul qilish, narx tushishi haqida real-time Telegram bildirishnomalari</p>
+ <span class="feature-tag feature-tag-blue">/notifications</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+ <h3>Wishlist / Sevimlilar</h3>
+ <p>Lotlarni sevimlilarga qo'shing va tezda kirish imkoniyati</p>
+ <span class="feature-tag feature-tag-rose">/wishlist</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+ <h3>Saqlangan Qidiruvlar</h3>
+ <p>Qidiruv shartlarini saqlang, yangi lot chiqishi bilan xabar oling</p>
+ <span class="feature-tag feature-tag-blue">/savesearch</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+ <h3>Narx Kuzatish</h3>
+ <p>Lot narxi maqsadli narxdan pastga tushganda darhol xabar oling</p>
+ <span class="feature-tag feature-tag-amber">/pricealert</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+ <h3>Shaxsiy Analitika</h3>
+ <p>G'alaba darajasi, sarflangan mablag', xaridor/sotuvchi statistikasi</p>
+ <span class="feature-tag feature-tag-green">/myanalytics</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+ <h3>Sotuvchiga Savol</h3>
+ <p>Lot haqida savol bering, sotuvchi javob berishi bilan xabar oling</p>
+ <span class="feature-tag feature-tag-blue">/ask</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+ <h3>Lotni Ulashish</h3>
+ <p>Lotlarni Telegram chat/guruhlarga chiroyli karta bilan ulashing</p>
+ <span class="feature-tag feature-tag-rose">/share</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+ <h3>Xaridor Himoyasi</h3>
+ <p>Escrow tizimi: to'lov xavfsiz saqlanadi, mahsulot kelganda yechiladi</p>
+ <span class="feature-tag feature-tag-green">/escrow</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
+ <h3>Ommaviy Boshqaruv</h3>
+ <p>Barcha lotlarni bir vaqtda arxivlash, aktivlashtirish yoki ko'rish</p>
+ <span class="feature-tag feature-tag-amber">/bulk</span>
+ </div>
+ <div class="feature-card feature-user">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+ <h3>Shaxsiy Tavsiyalar</h3>
+ <p>Faoliyatingizga asoslangan aqlli lot tavsiyalari</p>
+ <span class="feature-tag feature-tag-blue">/recommend</span>
+ </div>
+ <!-- Competitor-differentiating features -->
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 8 9 8 9"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 16 9 16 9"/><path d="M12 12v9"/><path d="M8 21h8"/><path d="M12 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></div>
+ <h3>Ishonch Reytingi</h3>
+ <p>Ko'p komponentli ishonch tizimi: bitimlar, reyting, javob vaqti</p>
+ <span class="feature-tag feature-tag-green">/trustscore</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+ <h3>Anti-Fraud Tizimi</h3>
+ <p>Shubhali lotlarni xabar qiling, adminlar tezda tekshiradi</p>
+ <span class="feature-tag feature-tag-red">/report</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+ <h3>Bozor Narxlari Intel</h3>
+ <p>Kategoriya va grade bo'yicha o'rtacha narx, minimal/maksimal tahlil</p>
+ <span class="feature-tag feature-tag-blue">/marketprice</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+ <h3>Batafsil Sharhlar</h3>
+ <p>Rasmli, javob vaqti va yetkazish sifati bilan to'liq sharh tizimi</p>
+ <span class="feature-tag feature-tag-rose">/review</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg></div>
+ <h3>Gamification</h3>
+ <p>XP, Level, Badge'lar va Weekly Leaderboard — faollikni rag'batlantirish</p>
+ <span class="feature-tag feature-tag-amber">/leaderboard</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+ <h3>Dark Mode</h3>
+ <p>Botda ham, Web'da ham professional dark theme qo'llab-quvvatlanadi</p>
+ <span class="feature-tag feature-tag-blue">/theme</span>
+ </div>
+ <a href="/crossborder" class="feature-card feature-diff" style="text-decoration:none;display:flex;flex-direction:column">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+ <h3>Cross-Border</h3>
+ <p>KGZ, KAZ, TJK va RUS bozorlariga chiqing. Yetkazish xarajati bilan lotlaringizni chet elga soting</p>
+ <span class="feature-tag feature-tag-green">Cross-Border →</span>
+ </a>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+ <h3>Cross-Platform</h3>
+ <p>Telegram bot + Web UI — to'liq sinxronizatsiya, bir hisob</p>
+ <span class="feature-tag feature-tag-green">Real-time</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+ <h3>Crypto To'lov</h3>
+ <p>Katta summalar uchun USDT/USDC/BTC to'lov — minimal komissiya</p>
+ <span class="feature-tag feature-tag-amber">/crypto</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="16" rx="2" ry="2"/><path d="M9 22v-4"/><path d="M15 22v-4"/><path d="M8 8h.01"/><path d="M16 8h.01"/><circle cx="12" cy="12" r="2"/></svg></div>
+ <h3>AI Yordamchi</h3>
+ <p>Tabiiy tilda lot qidirish: "400$ gacha notebook kerak" → topib beradi</p>
+ <span class="feature-tag feature-tag-blue">/ai</span>
+ </div>
+ <div class="feature-card feature-diff">
+ <div class="feature-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+ <h3>Niche Tech Focus</h3>
+ <p>Faqat elektronika va texnologiyalar — Uzum/Ozon'dan tor, ammo sifatli</p>
+ <span class="feature-tag feature-tag-green">Premium</span>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+CTA (lazy-loaded)
+============================================================ -->
+<section class="cta-section theme-transition lazy-section" id="cta-section" data-lazy="true">
+ <div class="lazy-section-placeholder"><span>Yuklanmoqda...</span></div>
+ <div class="lazy-content" style="display:none;">
+ <div class="container" style="position:relative;z-index:1;">
+ <h2>Omboringizdagi <span class="text-gradient">deadstock</span> ni likvidatsiya qiling</h2>
+ <p>Telegram bot orqali <strong>1 daqiqada</strong> ro'yxatdan o'ting, lot yarating va <strong>0% komissiya</strong> bilan soting. Distribyutor, retailer va importchilar uchun maxsus B2B platforma.</p>
+ <div class="cta-actions">
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="btn btn-primary btn-lg">Botga o'tish — 1 daqiqa</a>
+ <a href="#marketplace" class="btn btn-secondary btn-lg">Bozorni ko'rish</a>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+FOOTER (lazy-loaded)
+============================================================ -->
+<footer class="footer theme-transition lazy-section" id="footer" data-lazy="true">
+ <div class="lazy-section-placeholder"><span> Yuklanmoqda...</span></div>
+ <div class="lazy-content" style="display:none;">
+ <div class="container">
+ <div class="footer-grid">
+ <div class="footer-brand">
+ <a href="/" class="header-logo" style="font-size:1.25rem;" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgFtr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#lgFtr)"/>
+ <path d="M8 8h7a8 8 0 0 1 0 16H8V8z" fill="white" opacity="0.95"/>
+ <circle cx="23" cy="16" r="2" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <p>Deadstock Liquidation Marketplace — ortiqcha mahsulotlar uchun B2B platforma.</p>
+ </div>
+ <div>
+ <h4>Marketplace</h4>
+ <div class="footer-links">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Telegram Bot</a>
+ </div>
+ </div>
+ <div>
+ <h4>Qo'llanma</h4>
+ <div class="footer-links">
+ <a href="/how-it-works">Qanday ishlaydi</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Botni ishga tushirish</a>
+ <a href="#">F.A.Q.</a>
+ </div>
+ </div>
+ <div>
+ <h4>Loyiha</h4>
+ <div class="footer-links">
+ <a href="#">Hisobot</a>
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank">GitHub</a>
+ <a href="#">Roadmap</a>
+ </div>
+ </div>
+ </div>
+ <div class="footer-bottom">
+ <span>© 2026 DeLiKet. All rights reserved.</span>
+ <div class="footer-social">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank" title="GitHub" aria-label="GitHub">⌂</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank" title="Telegram" aria-label="Telegram">✈</a>
+ </div>
+ </div>
+ </div>
+ </div>
+</footer>
+
+<!-- ============================================================
+LOT DETAIL MODAL
+============================================================ -->
+<div class="modal-overlay" id="lotModal">
+ <div class="modal">
+ <div class="modal-header">
+ <h2 id="modalTitle">Loading...</h2>
+ <button class="modal-close" id="modalCloseBtn" aria-label="Yopish">✕</button>
+ </div>
+ <div class="modal-body" id="modalBody">
+ <div class="loader"></div>
+ </div>
+ <div class="modal-footer" id="modalFooter">
+ <a href="#" class="btn btn-primary" id="modalBidBtn" target="_blank">Taklif yuborish</a>
+ <button class="btn btn-secondary" id="modalCloseBtn2">Yopish</button>
+ </div>
+ </div>
+</div>
+
+<!-- ============================================================
+JAVASCRIPT
+============================================================ -->
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+ lots: [],
+ categories: [],
+ stats: null,
+ filters: { category: 'all', grade: '', search: '', minPrice: '', maxPrice: '', offset: 0, limit: 50 }
+};
+
+// ============================================================
+// API
+// ============================================================
+const API = {
+ async get(endpoint) {
+ const res = await fetch(endpoint);
+ if (!res.ok) throw new Error(`API error: ${res.status}`);
+ return res.json();
+ },
+ lots(params = {}) {
+ const qs = new URLSearchParams();
+ if (params.category && params.category !== 'all') qs.set('category', params.category);
+ if (params.grade) qs.set('grade', params.grade);
+ if (params.search) qs.set('search', params.search);
+ if (params.minPrice) qs.set('min_price', params.minPrice);
+ if (params.maxPrice) qs.set('max_price', params.maxPrice);
+ if (params.sort) qs.set('sort', params.sort);
+ if (params.order) qs.set('order', params.order);
+ qs.set('limit', params.limit || 50);
+ qs.set('offset', params.offset || 0);
+ return this.get(`/api/lots?${qs}`);
+ },
+ lot(id) { return this.get(`/api/lots/${id}`); },
+ categories() { return this.get('/api/categories'); },
+ stats() { return this.get('/api/stats'); }
+};
+
+// ============================================================
+// DOM REFS
+// ============================================================
+const $ = (id) => document.getElementById(id);
+const dom = {
+ searchInput: $('searchInput'),
+ mobileSearchInput: $('mobileSearchInput'),
+ mobileSearchOverlay: $('mobileSearchOverlay'),
+ headerNav: $('headerNav'),
+ mobileToggle: $('mobileToggle'),
+ filterSidebar: $('filterSidebar'),
+ filterToggle: $('filterToggleBtn'),
+ filterClose: $('filterSidebarClose'),
+ filterClear: $('filterClear'),
+ sortSelect: $('sortSelect'),
+ filterCategory: $('filterCategory'),
+ filterGrade: $('filterGrade'),
+ minPrice: $('minPrice'),
+ maxPrice: $('maxPrice'),
+ lotsGrid: $('lotsGrid'),
+ loadMoreContainer: $('loadMoreContainer'),
+ loadMoreBtn: $('loadMoreBtn'),
+ categoriesGrid: $('categoriesGrid'),
+ modal: $('lotModal'),
+ modalTitle: $('modalTitle'),
+ modalBody: $('modalBody'),
+ modalFooter: $('modalFooter'),
+ modalBidBtn: $('modalBidBtn'),
+ modalClose: $('modalCloseBtn'),
+ modalClose2: $('modalCloseBtn2'),
+ scrollTop: $('scrollTop'),
+ header: $('header'),
+};
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const observer = new IntersectionObserver((entries) => {
+ entries.forEach(entry => {
+ if (entry.isIntersecting) {
+ entry.target.classList.add('visible');
+ observer.unobserve(entry.target);
+ }
+ });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+function initReveal() {
+ document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-stagger').forEach(el => {
+ observer.observe(el);
+ });
+}
+
+// Hero particles removed -- professional design
+
+// ============================================================
+// SCROLL EVENTS
+// ============================================================
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+ const y = window.scrollY;
+ dom.header.classList.toggle('scrolled', y > 50);
+ dom.scrollTop.classList.toggle('visible', y > 400);
+ // Scroll progress bar
+ const scrollProgress = $('scrollProgressBar');
+ if (scrollProgress) {
+ const max = document.documentElement.scrollHeight - window.innerHeight;
+ scrollProgress.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+ }
+}, { passive: true });
+
+dom.scrollTop.addEventListener('click', () => {
+ window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ============================================================
+// TOAST SYSTEM
+// ============================================================
+function showToast(message, type = 'info') {
+ const container = $('toastContainer');
+ if (!container) return;
+ const toast = document.createElement('div');
+ toast.className = `toast toast-${type}`;
+ const icons = { success: '✓', error: '✕', info: 'i' };
+ toast.innerHTML = `<span>${icons[type] || 'i'}</span><span>${message}</span>`;
+ container.appendChild(toast);
+ setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+let searchTimer;
+dom.searchInput.addEventListener('input', (e) => {
+ state.filters.search = e.target.value;
+ state.filters.offset = 0;
+ clearTimeout(searchTimer);
+ searchTimer = setTimeout(loadLots, 300);
+});
+dom.mobileSearchInput.addEventListener('input', (e) => {
+ dom.searchInput.value = e.target.value;
+ state.filters.search = e.target.value;
+ state.filters.offset = 0;
+ clearTimeout(searchTimer);
+ searchTimer = setTimeout(loadLots, 300);
+});
+
+// ============================================================
+// FILTER SIDEBAR
+// ============================================================
+dom.filterToggle.addEventListener('click', () => {
+ dom.filterSidebar.classList.toggle('open');
+});
+dom.filterClose.addEventListener('click', () => {
+ dom.filterSidebar.classList.remove('open');
+});
+
+function filterByCategory(cat) {
+ setFilter('category', cat);
+ $('marketplace').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ============================================================
+// FILTERS
+// ============================================================
+function setFilter(key, value) {
+ state.filters[key] = value;
+ state.filters.offset = 0;
+
+ document.querySelectorAll(`[data-${key}]`).forEach(el => {
+ el.classList.toggle('active', el.dataset[key] === value);
+ });
+
+ // Grade filter
+ dom.filterGrade.querySelectorAll('.filter-option').forEach(el => {
+ el.classList.toggle('active', el.dataset.grade === state.filters.grade);
+ });
+
+ loadLots();
+}
+
+// Category filter clicks
+dom.filterCategory.addEventListener('click', (e) => {
+ const opt = e.target.closest('.filter-option');
+ if (!opt) return;
+ setFilter('category', opt.dataset.category);
+});
+
+// Grade filter clicks
+dom.filterGrade.addEventListener('click', (e) => {
+ const opt = e.target.closest('.filter-option');
+ if (!opt) return;
+ setFilter('grade', opt.dataset.grade || '');
+});
+
+// Sort
+dom.sortSelect.addEventListener('change', () => {
+ state.filters.offset = 0;
+ loadLots();
+});
+
+// Price inputs
+let priceTimer;
+dom.minPrice.addEventListener('input', function() {
+ state.filters.minPrice = this.value;
+ clearTimeout(priceTimer);
+ priceTimer = setTimeout(() => { state.filters.offset = 0; loadLots(); }, 500);
+});
+dom.maxPrice.addEventListener('input', function() {
+ state.filters.maxPrice = this.value;
+ clearTimeout(priceTimer);
+ priceTimer = setTimeout(() => { state.filters.offset = 0; loadLots(); }, 500);
+});
+
+// Clear filters
+dom.filterClear.addEventListener('click', () => {
+ state.filters = { category: 'all', grade: '', search: '', minPrice: '', maxPrice: '', offset: 0, limit: 50 };
+ dom.minPrice.value = '';
+ dom.maxPrice.value = '';
+ dom.searchInput.value = '';
+ dom.mobileSearchInput.value = '';
+ dom.filterCategory.querySelectorAll('.filter-option').forEach(el => el.classList.remove('active'));
+ dom.filterGrade.querySelectorAll('.filter-option').forEach(el => el.classList.remove('active'));
+ dom.filterCategory.querySelector('[data-category="all"]')?.classList.add('active');
+ dom.filterGrade.querySelector('[data-grade=""]')?.classList.add('active');
+ loadLots();
+});
+
+// ============================================================
+// SKELETON LOADING
+// ============================================================
+function showSkeleton(count = 6) {
+ dom.lotsGrid.innerHTML = Array(count).fill(0).map(() => `
+ <div class="lot-card-skeleton">
+ <div class="skeleton skeleton-img"></div>
+ <div class="skeleton-body">
+ <div class="skeleton skeleton-text" style="width:40%"></div>
+ <div class="skeleton skeleton-text"></div>
+ <div class="skeleton skeleton-text-sm"></div>
+ </div>
+ </div>
+ `).join('');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+ showSkeleton(6);
+ // initParticles removed -- professional design
+
+ try {
+ const [statsData, catsData] = await Promise.all([
+ API.stats(),
+ API.categories()
+ ]);
+ state.stats = statsData;
+ state.categories = catsData.categories;
+ renderStats();
+ renderCategories();
+ renderFilterCategories();
+ initReveal();
+ await loadLots();  } catch (e) {
+   console.error('Init error:', e);
+   dom.lotsGrid.innerHTML = `
+     <div class="lots-empty">
+       <div class="lots-empty-icon"></div>
+       <div class="lots-empty-text">Server bilan bog'lanib bo'lmadi</div>
+       <p style="color:var(--indigo-400);font-size:0.9rem;margin-top:0.5rem;">API server ishga tushganligiga ishonch hosil qiling</p>
+       <button class="btn btn-primary" style="margin-top:1rem;" onclick="init()">Qayta urinish</button>
+     </div>`;
+  }
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function animateNumber(el, target) {
+ if (!el) return;
+ let current = 0;
+ const duration = 1200;
+ const startTime = performance.now();
+
+ function update(now) {
+ const elapsed = now - startTime;
+ const progress = Math.min(elapsed / duration, 1);
+ const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+ current = Math.round(eased * target);
+ el.textContent = current.toLocaleString();
+ if (progress < 1) requestAnimationFrame(update);
+ }
+ requestAnimationFrame(update);
+}
+
+function renderStats() {
+ if (!state.stats) return;
+ const s = state.stats;
+ animateNumber($('statUsers'), s.users);
+ animateNumber($('statLots'), s.active_lots);
+ animateNumber($('statBids'), s.bids);
+
+ const formatMln = (v) => v ? (v / 1000000).toFixed(1) + ' mln so\'m' : '--';
+ $('heroAvgPrice').textContent = formatMln(s.price_range?.avg);
+ $('heroMinPrice').textContent = formatMln(s.price_range?.min);
+
+ const cats = Object.entries(s.categories).sort((a, b) => b[1] - a[1]);
+ const labels = { smartfon: 'Smartfon', notebook: ' Notebook', tv: ' TV', audio: ' Audio', aksesuar: ' Aksesuar', kiyim: ' Kiyim' };
+ if (cats.length > 0) {
+ $('heroTopTitle').textContent = (labels[cats[0][0]] || cats[0][0]) + ' -- ' + cats[0][1] + ' ta lot';
+ }
+ $('heroMinCat').textContent = cats.length > 0 ? (labels[cats[cats.length-1][0]] || cats[cats.length-1][0]) : '--';
+}
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+function renderCategories() {
+ const icons = { smartfon: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><rect x=5 y=2 width=14 height=20 rx=2/><line x1=12 y1=18 x2=12.01 y2=18/></svg>", notebook: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><rect x=2 y=3 width=20 height=14 rx=2 ry=2/><line x1=2 y1=20 x2=22 y2=20/><line x1=9 y1=3 x2=9 y2=20/><line x1=14 y1=3 x2=14 y2=20/></svg>", tv: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><rect x=2 y=3 width=20 height=14 rx=2 ry=2/><line x1=2 y1=20 x2=22 y2=20/><line x1=9 y1=3 x2=9 y2=20/><line x1=15 y1=3 x2=15 y2=20/></svg>", audio: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><path d='M9 18V5l12-2v13/'/><circle cx=6 cy=18 r=3'/><circle cx=18 cy=16 r=3/></svg>", aksesuar: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><path d='M4 9a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V9z/'/><line x1=15 y1=3 x2=9 y2=3'/><line x1=12 y1=3 x2=12 y2=7/></svg>", kiyim: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><path d='M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z/'/></svg>" };
+ dom.categoriesGrid.innerHTML = state.categories.filter(c => c.name !== 'all').map(c => `
+ <div class="category-card" data-cat="${c.name}">
+ <span class="category-icon">${icons[c.name] || '' }</span>
+ <div class="category-name">${c.label.replace(/^[^\s]+\s/, '')}</div>
+ <div class="category-count">${c.count} ta lot</div>
+ </div>
+ `).join('');
+
+ dom.categoriesGrid.querySelectorAll('.category-card').forEach(el => {
+ el.addEventListener('click', () => filterByCategory(el.dataset.cat));
+ });
+}
+
+function renderFilterCategories() {
+ dom.filterCategory.innerHTML = state.categories.map(c => `
+ <div class="filter-option ${c.name === (state.filters.category || 'all') ? 'active' : ''}"
+ data-category="${c.name}">
+ <span>${c.label}</span>
+ <span class="filter-option-count">${c.count}</span>
+ </div>
+ `).join('');
+}
+
+// ============================================================
+// LOTS
+// ============================================================
+async function loadLots() {
+ showSkeleton(6);
+ state.filters.offset = 0;
+
+ // On mobile, load fewer initial lots for better performance
+ const isMobile = window.innerWidth <= 768;
+ const initialLimit = isMobile ? Math.min(state.filters.limit, 8) : state.filters.limit;
+
+ const [sortField, sortOrder] = dom.sortSelect.value.split('|');
+ const params = {
+ category: state.filters.category,
+ grade: state.filters.grade,
+ search: state.filters.search,
+ minPrice: state.filters.minPrice || undefined,
+ maxPrice: state.filters.maxPrice || undefined,
+ limit: initialLimit,
+ offset: 0,
+ sort: sortField,
+ order: sortOrder,
+ };
+
+ try {
+ const data = await API.lots(params);
+ state.lots = data.items;
+
+ // Stagger animation
+ renderLots(state.lots);
+ dom.loadMoreContainer.style.display = data.total > data.items.length ? 'block' : 'none';
+ 
+ // Init interactive effects after render
+ } catch (e) {
+ dom.lotsGrid.innerHTML = `
+ <div class="lots-empty">
+ <div class="lots-empty-icon"></div>
+ <div class="lots-empty-text">Lotlarni yuklashda xatolik</div>
+ </div>`;
+ }
+}
+
+async function loadMore() {
+ state.filters.offset += state.filters.limit;
+ const [sortField, sortOrder] = dom.sortSelect.value.split('|');
+ const params = {
+ category: state.filters.category,
+ grade: state.filters.grade,
+ search: state.filters.search,
+ minPrice: state.filters.minPrice || undefined,
+ maxPrice: state.filters.maxPrice || undefined,
+ limit: state.filters.limit,
+ offset: state.filters.offset,
+ sort: sortField,
+ order: sortOrder,
+ };
+
+ try {
+ const data = await API.lots(params);
+ state.lots = [...state.lots, ...data.items];
+ renderLots(state.lots);
+ dom.loadMoreContainer.style.display = data.total > state.lots.length ? 'block' : 'none';
+ } catch (e) {
+ console.error('Load more error:', e);
+ }
+}
+
+dom.loadMoreBtn.addEventListener('click', loadMore);
+
+function renderLots(lots) {
+ const icons = { smartfon: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><rect x=5 y=2 width=14 height=20 rx=2/><line x1=12 y1=18 x2=12.01 y2=18/></svg>", notebook: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><rect x=2 y=3 width=20 height=14 rx=2 ry=2/><line x1=2 y1=20 x2=22 y2=20/><line x1=9 y1=3 x2=9 y2=20/><line x1=14 y1=3 x2=14 y2=20/></svg>", tv: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><rect x=2 y=3 width=20 height=14 rx=2 ry=2/><line x1=2 y1=20 x2=22 y2=20/><line x1=9 y1=3 x2=9 y2=20/><line x1=15 y1=3 x2=15 y2=20/></svg>", audio: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><path d='M9 18V5l12-2v13/'/><circle cx=6 cy=18 r=3'/><circle cx=18 cy=16 r=3/></svg>", aksesuar: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><path d='M4 9a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V9z/'/><line x1=15 y1=3 x2=9 y2=3'/><line x1=12 y1=3 x2=12 y2=7/></svg>", kiyim: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2><path d='M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z/'/></svg>" };
+ const gradeColors = { A: 'badge-grade-a', B: 'badge-grade-b', C: 'badge-grade-c' };
+ const gradeLabels = { A: 'A -- Yangi', B: 'B -- Yaxshi', C: 'C -- Qoniqarli' };
+
+ if (lots.length === 0) {
+ dom.lotsGrid.innerHTML = `
+ <div class="lots-empty">
+ <div class="lots-empty-icon"></div>
+ <div class="lots-empty-text">Hech narsa topilmadi</div>
+ <p style="color:var(--indigo-400);font-size:0.9rem;margin-top:0.5rem;">Boshqa filtrlarni sinab ko'ring</p>
+ </div>`;
+ return;
+ }
+
+ dom.lotsGrid.innerHTML = lots.map((lot, i) => `
+ <div class="lot-card" data-id="${lot.id}" style="animation:fadeSlideUp 0.4s var(--ease-out) ${i*0.05}s both">
+ <div class="lot-card-img">
+ <span class="lot-emoji">${icons[lot.category] || '' }</span>
+ <div class="lot-card-badges">
+ <span class="hero-card-badge ${gradeColors[lot.grade] || 'badge-grade-b'}">${gradeLabels[lot.grade] || lot.grade}</span>
+ </div>
+ </div>
+ <div class="lot-card-body">
+ <div class="lot-card-category">${state.categories.find(c => c.name === lot.category)?.label?.replace(/^[^\s]+\s/, '') || lot.category}</div>
+ <div class="lot-card-title">${lot.title}</div>
+ <div class="lot-card-meta">
+ <span class="lot-card-meta-item">${lot.quantity} dona</span>
+ <span class="lot-card-meta-item">${lot.bid_count} ta taklif</span>
+ </div>
+ <div class="lot-card-footer">
+ <div class="lot-card-price">${formatPrice(lot.price)}</div>
+ <div class="lot-card-seller">
+ ${getTrustBadge(lot)}
+ <span>${lot.seller?.name || 'Noma\'lum'}</span>
+ <span class="lot-card-seller-stars">${'☆'.repeat(Math.min(5, Math.round((lot.seller?.rating || 0) / 2)))}</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ `).join('');
+
+ // Bind click events
+ dom.lotsGrid.querySelectorAll('.lot-card').forEach(el => {
+ el.addEventListener('click', () => openLot(parseInt(el.dataset.id)));
+ });
+}
+
+function formatPrice(price) {
+ if (!price) return '--';
+ if (price >= 1000000) return (price / 1000000).toFixed(1) + ' mln';
+ if (price >= 1000) return (price / 1000).toFixed(0) + ' ming';
+ return price.toLocaleString() + ' so\'m';
+}
+
+// Trust system helpers
+function getTrustLevel(rating, txCount) {
+ if (!rating) return 'new';
+ if (rating >= 7 && txCount >= 10) return 'premium';
+ if (rating >= 5 && txCount >= 3) return 'verified';
+ return 'new';
+}
+
+function getTrustBadge(lot) {
+ const rating = lot.seller?.rating || 0;
+ const txCount = lot.seller?.tx_count || 0;
+ const level = getTrustLevel(rating, txCount);
+ const badges = {
+ verified: { label: 'Verified', tooltip: 'Tasdiqlangan sotuvchi -- 5+ reyting, 3+ tranzaksiya' },
+ premium: { label: 'Premium', tooltip: 'Premium sotuvchi -- 7+ reyting, 10+ tranzaksiya' },
+ new: { label: 'New', tooltip: 'Yangi sotuvchi -- hali tasdiqlanmagan' }
+ };
+ const badge = badges[level];
+ return `<span class="trust-badge trust-badge-${level} trust-badge-glow">${badge.label}<span class="trust-tooltip">${badge.tooltip}</span></span>`;
+}
+
+// ============================================================
+// LOT DETAIL MODAL
+// ============================================================
+async function openLot(id) {
+ dom.modal.classList.add('open');
+ document.body.style.overflow = 'hidden';
+ dom.modalTitle.textContent = 'Loading...';
+ dom.modalBody.innerHTML = '<div class="loader"></div>';
+ dom.modalFooter.style.display = 'none';
+
+ try {
+ const lot = await API.lot(id);
+ dom.modalTitle.textContent = lot.title;
+
+ const gradeLabels = { A: 'A -- Yangi', B: 'B -- Yaxshi', C: 'C -- Qoniqarli' };
+ const gradeColors = { A: 'badge-grade-a', B: 'badge-grade-b', C: 'badge-grade-c' };
+ const statusLabels = { aktiv: 'Aktiv', sotilgan: 'Sotilgan', arxiv: 'Arxiv' };
+
+ dom.modalBody.innerHTML = `
+ <div class="modal-info-grid">
+ <div class="modal-info-item">
+ <div class="modal-info-label">Narx</div>
+ <div class="modal-info-value">${formatPrice(lot.price)}</div>
+ </div>
+ <div class="modal-info-item">
+ <div class="modal-info-label">Miqdor</div>
+ <div class="modal-info-value">${lot.quantity} dona</div>
+ </div>
+ <div class="modal-info-item">
+ <div class="modal-info-label">Grade</div>
+ <div class="modal-info-value"><span class="hero-card-badge ${gradeColors[lot.grade]}">${gradeLabels[lot.grade] || lot.grade}</span></div>
+ </div>
+ <div class="modal-info-item">
+ <div class="modal-info-label">Holat</div>
+ <div class="modal-info-value">${statusLabels[lot.status] || lot.status}</div>
+ </div>
+ <div class="modal-info-item">
+ <div class="modal-info-label">Sotuvchi</div>
+ <div class="modal-info-value">${lot.seller?.name || 'Noma\'lum'} ${lot.seller?.rating ? '☆' + lot.seller.rating : ''}</div>
+ </div>
+ <div class="modal-info-item">
+ <div class="modal-info-label">Kategoriya</div>
+ <div class="modal-info-value">${state.categories.find(c => c.name === lot.category)?.label || lot.category}</div>
+ </div>
+ </div>
+
+ <div class="modal-section-title">Tavsif</div>
+ <div class="modal-desc">${lot.description || 'Tavsif mavjud emas'}</div>
+
+ <div class="modal-section-title">Takliflar (${lot.bids.length})</div>
+ ${lot.bids.length > 0 ? `
+ <table class="bids-table">
+ <thead><tr><th>Xaridor</th><th>Narx</th><th>Miqdor</th><th>Status</th></tr></thead>
+ <tbody>
+ ${lot.bids.map(b => `
+ <tr>
+ <td><strong>${b.buyer?.name || 'Noma\'lum'}</strong></td>
+ <td>${formatPrice(b.price)}</td>
+ <td>${b.quantity} dona</td>
+ <td><span class="bid-status bid-status-${b.status}">${b.status === 'kutmoqda' ? 'Kutilmoqda' : b.status === 'qabul' ? 'Qabul qilingan' : 'Rad etilgan'}</span></td>
+ </tr>
+ `).join('')}
+ </tbody>
+ </table>
+ ` : '<p style="color:var(--indigo-400);font-size:0.9rem;">Hali takliflar mavjud emas</p>'}`;
+
+ dom.modalFooter.style.display = 'flex';
+ dom.modalBidBtn.href = `https://t.me/DeLiKatbot?start=bid_${lot.id}`;
+ } catch (e) {
+ dom.modalBody.innerHTML = '<p style="text-align:center;color:var(--red-500);padding:2rem;">Xatolik yuz berdi</p>';
+ }
+}
+
+function closeModal() {
+ dom.modal.classList.remove('open');
+ document.body.style.overflow = '';
+}
+
+dom.modalClose.addEventListener('click', closeModal);
+dom.modalClose2.addEventListener('click', closeModal);
+
+// Close modal on overlay click
+dom.modal.addEventListener('click', (e) => {
+ if (e.target === e.currentTarget) closeModal();
+});
+
+// Close on Escape
+document.addEventListener('keydown', (e) => {
+ if (e.key === 'Escape') closeModal();
+});
+
+// ============================================================
+// DARK MODE TOGGLE
+// ============================================================
+function setTheme(theme) {
+ document.documentElement.setAttribute('data-theme', theme);
+ localStorage.setItem('deliket-theme', theme);
+}
+
+function initTheme() {
+ const saved = localStorage.getItem('deliket-theme');
+ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+ const theme = saved || (prefersDark ? 'dark' : 'light');
+ document.documentElement.setAttribute('data-theme', theme);
+}
+
+function toggleTheme() {
+ const current = document.documentElement.getAttribute('data-theme');
+ setTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+// Desktop theme toggle (visible on desktop)
+dom.themeToggleDesktop = $('themeToggle');
+if (dom.themeToggleDesktop) {
+ dom.themeToggleDesktop.addEventListener('click', toggleTheme);
+}
+
+// Mobile theme toggle (shown when mobile nav is open)
+dom.themeToggleMobile = $('themeToggleMobile');
+if (dom.themeToggleMobile) {
+ dom.themeToggleMobile.addEventListener('click', toggleTheme);
+}
+
+// Show mobile toggle when nav opens, sync with desktop
+function syncThemeToggleVisibility() {
+ if (!dom.themeToggleMobile) return;
+ if (window.innerWidth <= 768 && dom.headerNav.classList.contains('open')) {
+ dom.themeToggleMobile.style.display = 'inline-flex';
+ } else {
+ dom.themeToggleMobile.style.display = 'none';
+ }
+}
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+ if (!localStorage.getItem('deliket-theme')) {
+ document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+ }
+});
+
+// Patch mobile-nav toggle to show theme button
+dom.mobileToggle.addEventListener('click', () => {
+ dom.mobileToggle.classList.toggle('active');
+ dom.headerNav.classList.toggle('open');
+ dom.mobileSearchOverlay.classList.toggle('open');
+ if (dom.headerNav.classList.contains('open')) {
+ dom.mobileSearchInput.focus();
+ }
+ syncThemeToggleVisibility();
+});
+
+// Close mobile nav on link click - restore original logic
+const origNavLinks = dom.headerNav.querySelectorAll('a');
+origNavLinks.forEach(a => {
+ a.addEventListener('click', () => {
+ dom.mobileToggle.classList.remove('active');
+ dom.headerNav.classList.remove('open');
+ dom.mobileSearchOverlay.classList.remove('open');
+ syncThemeToggleVisibility();
+ });
+});
+
+// ============================================================
+// Tilt and ripple effects removed -- professional design
+
+// ============================================================
+// LAZY-LOAD SECTIONS -- load HTML when scrolled into view
+// ============================================================
+function initLazySections() {
+ const lazySections = document.querySelectorAll('[data-lazy="true"]');
+ if (!lazySections.length) return;
+
+ const lazyObserver = new IntersectionObserver((entries) => {
+ entries.forEach(entry => {
+ if (!entry.isIntersecting) return;
+ const section = entry.target;
+ const lazyContent = section.querySelector('.lazy-content');
+ if (lazyContent) {
+ lazyContent.style.display = '';
+ section.classList.add('loaded');
+ // Trigger reveal animations after content is shown
+ setTimeout(() => {
+ section.querySelectorAll('.reveal').forEach(el => {
+ const ro = new IntersectionObserver((e) => {
+ if (e[0].isIntersecting) {
+ e[0].target.classList.add('visible');
+ ro.unobserve(e[0].target);
+ }
+ }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+ ro.observe(el);
+ });
+ section.querySelectorAll('.reveal-stagger').forEach(el => {
+ const ro = new IntersectionObserver((e) => {
+ if (e[0].isIntersecting) {
+ e[0].target.classList.add('visible');
+ ro.unobserve(e[0].target);
+ }
+ }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+ ro.observe(el);
+ });
+ }, 100);
+ }
+ lazyObserver.unobserve(section);
+ });
+ }, { threshold: 0.05, rootMargin: '0px 0px 200px 0px' });
+
+ lazySections.forEach(el => lazyObserver.observe(el));
+}
+
+// ============================================================
+// AUTH STATE -- show profile if logged in
+// ============================================================
+async function checkAuthState() {
+ try {
+ const res = await fetch('/api/auth/me', { credentials: 'include' });
+ if (res.ok) {
+ const data = await res.json();
+ if (data.ok && data.user) {
+ document.querySelectorAll('.auth-link-login').forEach(el => el.style.display = 'none');
+ document.querySelectorAll('.auth-link-register').forEach(el => el.style.display = 'none');
+ document.querySelectorAll('.auth-link-profile').forEach(el => {
+ el.style.display = 'inline-flex';
+ el.textContent = `${data.user.name}`;
+ el.href = '/profile';
+ });
+ }
+ }
+ } catch (e) { /* not logged in */ }
+}
+
+// ============================================================
+// SERVICE WORKER REGISTRATION (PWA)
+if ('serviceWorker' in navigator) {
+ window.addEventListener('load', () => {
+ navigator.serviceWorker.register('/service-worker.js').then(() => {
+ console.log('PWA: Service Worker registered');
+ }).catch((err) => {
+ console.warn('PWA: SW registration failed', err);
+ });  });
+}
+
+// ============================================================
+// PAGE LOADER -- ensure it's hidden after everything loads
+// ============================================================
+function hidePageLoader() {
+  const loader = document.getElementById('pageLoader');
+  if (!loader || loader.classList.contains('hidden')) return;
+  loader.classList.add('hidden');
+  setTimeout(() => {
+    if (loader.parentNode) {
+      loader.style.display = 'none';
+    }
+  }, 450);
+}
+
+// Safety fallback: hide loader on window load even if DOMContentLoaded was delayed
+window.addEventListener('load', hidePageLoader);
+
+// START
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+ document.body.classList.add('page-enter');
+ // Hide page loader FIRST -- before any async calls that might fail
+ hidePageLoader();
+ initTheme();
+ init();
+ checkAuthState();
+ setTimeout(hidePageLoader, 400);
+ initLazySections();
+});
+
+// Final safety: hide loader after 5 seconds regardless of any error
+setTimeout(hidePageLoader, 5000);
+</script>
+</body>
+</html>

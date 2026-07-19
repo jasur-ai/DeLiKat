@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ma'lumot Manbalari — DeLiKet Research</title>
+<meta name="description" content="DeLiKet ma'lumot manbalari — 4 haftalik tadqiqot, 24 sektor, 10,000+ data point">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='36' height='36' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 9h8a9 9 0 0 1 0 18H9V9z' fill='white' opacity='0.95'/%3E%3Ccircle cx='26' cy='18' r='2.5' fill='white' opacity='0.6'/%3E%3C/svg%3E">
+<style>
+.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-lg);margin-top:var(--space-xl)}
+.research-card{background:var(--bg-card);border:1.5px solid var(--border-card);border-radius:var(--radius-lg);padding:var(--space-lg);transition:all .35s var(--ease-out)}
+.research-card:hover{border-color:var(--amber-400);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.research-card h3{font-size:1.1rem;font-weight:700;color:var(--text-heading);margin-bottom:var(--space-sm);display:flex;align-items:center;gap:.5rem}
+.research-card p{font-size:.9rem;color:var(--text-muted);line-height:1.65;margin-bottom:var(--space-sm)}
+.research-card .meta-list{list-style:none;padding:0}
+.research-card .meta-list li{font-size:.82rem;color:var(--text-body);padding:.3rem 0;display:flex;align-items:center;gap:.5rem}
+.research-card .meta-list li::before{content:'<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M12 2a2 2 0 0 1 2 2v2h2v2h-2v7a4 4 0 0 1-8 0V6h2v7a2 2 0 0 0 4 0V4a2 2 0 0 1 2-2z/"/></svg>';font-size:.7rem}
+.source-table{width:100%;border-collapse:collapse;margin-top:var(--space-md)}
+.source-table th{text-align:left;padding:.625rem .75rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);border-bottom:2px solid var(--border-card)}
+.source-table td{padding:.625rem .75rem;font-size:.85rem;color:var(--text-body);border-bottom:1px solid var(--border-card)}
+.source-table tr:hover td{background:var(--bg-section)}
+.method-step{display:flex;gap:var(--space-md);margin-bottom:var(--space-lg);align-items:flex-start}
+.method-step-num{width:40px;height:40px;min-width:40px;background:linear-gradient(135deg,var(--amber-500),var(--amber-400));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:var(--indigo-900)}
+.method-step-content h4{font-size:.95rem;font-weight:700;color:var(--text-heading);margin-bottom:4px}
+.method-step-content p{font-size:.85rem;color:var(--text-muted);line-height:1.6}
+.attribution-banner{background:linear-gradient(135deg,var(--amber-50),var(--amber-100));border:1.5px solid rgba(245,158,11,.2);border-radius:var(--radius-lg);padding:var(--space-lg);margin-top:var(--space-xl);position:relative}
+[data-theme="dark"] .attribution-banner{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.12));border-color:rgba(245,158,11,.15)}
+@media(max-width:768px){.research-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div> class="theme-transition">
+
+<button class="scroll-top" id="scrollTop" aria-label="Yuqoriga">↑</button>
+
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgHdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgHdr)"/>
+ <path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/>
+ <circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <nav class="header-nav" id="headerNav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="/how-it-works">Qo'llanma</a>
+ <a href="/data-sources" class="active">Manbalar</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Bot</a>
+ <button class="theme-toggle" id="themeToggleMobile" aria-label="Tema almashtirish" style="display:none;">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ </nav>
+ <button class="theme-toggle" id="themeToggle" aria-label="Tema almashtirish">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="header-cta">Botga o'tish →</a>
+ <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+ <span></span><span></span><span></span>
+ </button>
+ </div>
+ <div class="mobile-search-overlay" id="mobileSearchOverlay">
+ <div style="position:relative;">
+ <span class="header-search-icon" style="position:absolute;left:1.5rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);font-size:0.9rem;pointer-events:none;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+ <input type="text" placeholder="Qidirish...">
+ </div>
+ </div>
+</header>
+
+<section style="padding:120px 0 var(--space-xl);background:linear-gradient(135deg,var(--indigo-950) 0%,#0f0f1e 40%,#16213e 100%);color:#fff;position:relative;overflow:hidden;min-height:40vh;display:flex;align-items:center">
+ <div class="mesh-bg">
+ <div class="mesh-blob mesh-blob-1"></div>
+ <div class="mesh-blob mesh-blob-3" style="top:30%;right:5%;"></div>
+ <div class="noise-overlay"></div>
+ </div>
+ <div class="container" style="position:relative;z-index:2;width:100%;">
+ <div>
+ <div class="breadcrumb">
+ <a href="/>Bosh sahifa</a>
+ <span>›</span>
+ <span>Ma'lumot manbalari</span>
+ </div>
+ <h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-top:var(--space-sm)">Ma'lumot <span style="background:linear-gradient(135deg,var(--amber-400),var(--amber-300));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Manbalari</span></h1>
+ <p style="font-size:1.1rem;color:var(--indigo-300);max-width:640px;line-height:1.7;margin-top:var(--space-md)">
+ Ushbu platformadagi barcha ma'lumotlar 4 haftalik tadqiqot (Iyul 2026) 
+ asosida tayyorlangan. Quyida ma'lumotlarning qayerdan olingani, 
+ qanday usullar bilan tahlil qilingani va metodologiya batafsil ko'rsatilgan.
+ </p>
+ </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="container">
+ <div class="section-header reveal">
+ <span class="section-badge"> Tadqiqot metodologiyasi</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">4 haftalik tadqiqot jarayoni</h2>
+ <p class="section-subtitle" style="margin:var(--space-sm) auto 0">24 sektor, 10,000+ ma'lumot nuqtasi, 4 bosqich</p>
+ </div>
+
+ <div class="reveal" style="max-width:700px;margin:var(--space-xl) auto 0;">
+ <div class="method-step">
+ <div class="method-step-num">1</div>
+ <div class="method-step-content">
+ <h4>Week 1 — Og'riq tahlili (10,155+ nuqta)</h4>
+ <p>O'zbekiston bozorida deadstock muammosini o'rganish. Retail, distributsiya va import segmentlarida 24 sektor bo'yicha ma'lumot yig'ildi. <strong>TOP-100 og'riqlar</strong> aniqlandi. Eng katta muammo: <em>"Pul muzlaydi — yangi tovar ololmayman"</em> (Top-1 og'riq).</p>
+ <p><strong>Manba:</strong> <code>DeLiKet/week1/</code> — 1-hafta_ogriq_malumotlari.md</p>
+ </div>
+ </div>
+
+ <div class="method-step">
+ <div class="method-step-num">2</div>
+ <div class="method-step-content">
+ <h4>Week 2 — Yechim tadqiqoti (18 platforma)</h4>
+ <p>O'zbekiston va global deadstock/platforma ekotizimini o'rganish. 18 ta platforma tahlil qilindi (Uzum, OLX, Telegram kanallari, Asaxiy, B-Stock, DirectLiquidation va boshqalar). <strong>$500M+ bozor hajmi</strong> aniqlandi.</p>
+ <p><strong>Manba:</strong> <code>DeLiKet/week2/tahlil/</code> — raqobatchilar-matritsasi.md</p>
+ </div>
+ </div>
+
+ <div class="method-step">
+ <div class="method-step-num">3</div>
+ <div class="method-step-content">
+ <h4>Week 3 — Real data metodologiyasi</h4>
+ <p>SPIN suhbat, Mom Test va bozor monitoringi usullari bilan real sotuvchilar va xaridorlar bilan suhbatlar o'tkazildi. <strong>6 ta kategoriya</strong> bo'yicha ma'lumotlar strukturalashtirildi.</p>
+ <p><strong>Manba:</strong> <code>DeLiKet/week3/</code> — Real data metodologiyasi</p>
+ </div>
+ </div>
+
+ <div class="method-step">
+ <div class="method-step-num">4</div>
+ <div class="method-step-content">
+ <h4>Week 4 — MVP RICE prioritet + Weak points</h4>
+ <p>Eng muhim funksiyalarni RICE (Reach, Impact, Confidence, Effort) usuli bilan prioritetlashtirish. Weak points tahlili va MVP roadmap tayyorlash.</p>
+ <p><strong>Manba:</strong> <code>DeLiKet/week4/tahlil/</code> — mvp-features.md, weak-points.md</p>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section class="section-alt">
+ <div class="mesh-bg">
+ <div class="mesh-blob mesh-blob-3" style="top:-20%;left:30%;"></div>
+ <div class="mesh-blob mesh-blob-1" style="bottom:-30%;right:-10%;opacity:0.06;"></div>
+ <div class="noise-overlay"></div>
+ </div>
+ <div class="container" style="position:relative;z-index:1;">
+ <div class="section-header reveal">
+ <span class="section-badge">Ma'lumotlar jadvali</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">Real bozor ma'lumotlari</h2>
+ <p class="section-subtitle" style="margin:var(--space-sm) auto 0">Quyidagi ma'lumotlar Week 2 tadqiqoti va ochiq manbalardan olindi</p>
+ </div>
+
+ <div class="reveal" style="overflow-x:auto;">
+ <table class="source-table">
+ <thead>
+ <tr>
+ <th>Ko'rsatkich</th>
+ <th>Qiymat</th>
+ <th>Manba</th>
+ <th>Izoh</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>O'zbekiston deadstock</strong></td>
+ <td>$500M+/yil</td>
+ <td>Week 1-2 hisobi</td>
+ <td>24 sektor bo'yicha ekstrapolyatsiya</td>
+ </tr>
+ <tr>
+ <td><strong>Uzum Market GMV</strong></td>
+ <td>$500M+ (17,000+ sotuvchi)</td>
+ <td>Uzum Press (2024-2025)</td>
+ <td>Rasmiy press-reliz</td>
+ </tr>
+ <tr>
+ <td><strong>Telegram foydalanuvchi</strong></td>
+ <td>70% aholi (~25-30M)</td>
+ <td>Gazeta.uz (2024)</td>
+ <td>O'zbekiston bo'yicha</td>
+ </tr>
+ <tr>
+ <td><strong>OLX MAU</strong></td>
+ <td>5.4M+</td>
+ <td>TBC Bank (2024)</td>
+ <td>O'zbekiston bo'yicha</td>
+ </tr>
+ <tr>
+ <td><strong>E-commerce hajmi</strong></td>
+ <td>$1.2B (3.8% retail)</td>
+ <td>ITA Commerce (2024)</td>
+ <td>O'zbekiston bo'yicha</td>
+ </tr>
+ <tr>
+ <td><strong>WB o'zbek eksporti</strong></td>
+ <td>$1B+ (2023-2024)</td>
+ <td>SME Asia (2024)</td>
+ <td>Wildberries orqali</td>
+ </tr>
+ <tr>
+ <td><strong>Smartfon deadstock</strong></td>
+ <td>40-50% model eskirishi</td>
+ <td>Week 1 tahlili</td>
+ <td>200+ data point</td>
+ </tr>
+ <tr>
+ <td><strong>Kiyim deadstock</strong></td>
+ <td>85-90% sezon o'tishi</td>
+ <td>Week 1 tahlili</td>
+ <td>1,000+ data point</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="container">
+ <div class="section-header reveal">
+ <span class="section-badge">Kategoriyalar</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">24 sektor → 6 kategoriya</h2>
+ <p class="section-subtitle" style="margin:var(--space-sm) auto 0">Tadqiqotda 24 sektor o'rganilgan, MVP uchun 6 ta asosiy kategoriya tanlangan</p>
+ </div>
+
+ <div class="research-grid reveal-stagger">
+ <div class="research-card">
+ <h3>Smartfonlar</h3>
+ <p>200+ data point. Model eskirishi 40-50%, IMEI muammosi 30-50%. iPhone, Samsung, Redmi.</p>
+ <ul class="meta-list">
+ <li>Eng ko'p qoladigan: iPhone Pro Max (30% tushish)</li>
+ <li>Eng ko'p raqobat: Redmi (50+ sotuvchi)</li>
+ <li>Partiyaviy tavsiya: 5-20 dona</li>
+ </ul>
+ </div>
+ <div class="research-card">
+ <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/><line x1="9" y1="3" x2="9" y2="20"/><line x1="14" y1="3" x2="14" y2="20"/></svg> Notebooklar</h3>
+ <p>150+ data point. MacBook M1 narxi 30% tushgan (M3 chiqishi bilan).</p>
+ <ul class="meta-list">
+ <li>Biznes segment: ThinkPad (25% arzon)</li>
+ <li>Gaming: Bitcoin qulashidan talab pasaygan (65%)</li>
+ <li>Partiyaviy tavsiya: 2-5 dona</li>
+ </ul>
+ </div>
+ <div class="research-card">
+ <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/><line x1="9" y1="3" x2="9" y2="20"/><line x1="15" y1="3" x2="15" y2="20"/></svg> TV & Video</h3>
+ <p>100+ data point. Qaytarilgan TV 40-60% zarar. OLED qimmat — sekin ketadi.</p>
+ <ul class="meta-list">
+ <li>DSLR bozori telefonlarga o'tmoqda (50%)</li>
+ <li>Veb-kamera: pandemiya qoldig'i (70% chegirma)</li>
+ <li>Partiyaviy tavsiya: 1-5 dona</li>
+ </ul>
+ </div>
+ <div class="research-card">
+ <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Audio</h3>
+ <p>100+ data point. Original AirPods kopiyaga raqobatda yutqazadi (80%).</p>
+ <ul class="meta-list">
+ <li>Trend o'tgan: JBL quloqchin (75% chastota)</li>
+ <li>Bluetooth kolonka: talab pasaygan (45%)</li>
+ <li>Partiyaviy tavsiya: 5-20 dona</li>
+ </ul>
+ </div>
+ <div class="research-card">
+ <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9z"/><line x1="15" y1="3" x2="9" y2="3"/><line x1="12" y1="3" x2="12" y2="7"/></svg> Aksessuarlar</h3>
+ <p>100+ data point. Modelga bog'liq — model eskirsa, chexol keraksiz (90%).</p>
+ <ul class="meta-list">
+ <li>Micro USB: Type-C kelishi bilan eskirgan (75%)</li>
+ <li>Powerbank: hamma bir xil sotadi (80% raqobat)</li>
+ <li>Partiyaviy tavsiya: 50-100 dona</li>
+ </ul>
+ </div>
+ <div class="research-card">
+ <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg> Kiyim</h3>
+ <p>1,000+ data point. Sezon o'tishi 90% chastota — eng katta deadstock.</p>
+ <ul class="meta-list">
+ <li>Bolalar: bola o'sadi, o'lcham o'tib ketadi (85%)</li>
+ <li>Maktab formasi: sentyabrdan keyin qoladi (90%)</li>
+ <li>Partiyaviy tavsiya: 20-100 dona</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section class="section-alt">
+ <div class="container">
+ <div class="attribution-banner reveal">
+ <h3 style="font-size:1.1rem;font-weight:700;color:var(--text-heading);margin-bottom:var(--space-sm)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z/"/><polyline points=14 2 14 8 20 8"/></svg> Ma'lumotlardan foydalanish shartlari</h3>
+ <p style="font-size:.88rem;color:var(--text-body);line-height:1.7;margin-bottom:var(--space-sm)">
+ Ushbu platformadagi barcha ma'lumotlar <strong>4 haftalik tadqiqot (Iyul 2026)</strong> 
+ davomida to'plangan bo'lib, <strong>24 sektor</strong> bo'yicha <strong>10,000+ ma'lumot nuqtasi</strong> 
+ tahlili asosida tayyorlangan.
+ </p>
+ <p style="font-size:.88rem;color:var(--text-body);line-height:1.7;margin-bottom:var(--space-sm)">
+ <strong>Tadqiqot mualliflari:</strong> DeLiKet Research Team (Buffy + Claude AI) |
+ <strong>Metodologiya:</strong> SPIN suhbat + Mom Test + Bozor monitoringi
+ </p>
+ <p style="font-size:.82rem;color:var(--text-muted);line-height:1.6;">
+ <strong>Asosiy manbalar:</strong> DeLiKet/ week1/ (og'riq tahlili), week2/ (yechim tadqiqoti, 
+ raqobatchilar matritsasi — 18 platforma), week3/ (real data metodologiyasi), 
+ week4/ (MVP RICE, weak points). Tashqi manbalar: Uzum Press, Gazeta.uz, 
+ TBC Bank, ITA Commerce, SME Asia.
+ </p>
+ </div>
+ </div>
+</section>
+
+<footer class="footer theme-transition">
+ <div class="container">
+ <div class="footer-grid">
+ <div class="footer-brand">
+ <a href="/" class="header-logo" style="font-size:1.25rem;" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgFtr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#lgFtr)"/>
+ <path d="M8 8h7a8 8 0 0 1 0 16H8V8z" fill="white" opacity="0.95"/>
+ <circle cx="23" cy="16" r="2" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <p>Deadstock Liquidation Marketplace — ortiqcha mahsulotlar uchun B2B platforma.</p>
+ </div>
+ <div>
+ <h4>Marketplace</h4>
+ <div class="footer-links">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="/data-sources">Ma'lumot manbalari</a>
+ </div>
+ </div>
+ <div>
+ <h4>Qo'llanma</h4>
+ <div class="footer-links">
+ <a href="/how-it-works">Qanday ishlaydi</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Telegram Bot</a>
+ <a href="#!">F.A.Q.</a>
+ </div>
+ </div>
+ <div>
+ <h4>Loyiha</h4>
+ <div class="footer-links">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank">GitHub</a>
+ <a href="#!">Roadmap</a>
+ </div>
+ </div>
+ </div>
+ <div class="footer-bottom">
+ <span>© 2026 DeLiKet. All rights reserved.</span>
+ <div class="footer-social">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank" title="GitHub">⌂</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank" title="Telegram">✈</a>
+ </div>
+ </div>
+ </div>
+</footer>
+
+<script>
+function initTheme() {
+ const s = localStorage.getItem('deliket-theme');
+ const p = window.matchMedia('(prefers-color-scheme: dark)').matches;
+ document.documentElement.setAttribute('data-theme', s || (p ? 'dark' : 'light'));
+}
+function toggleTheme() {
+ const c = document.documentElement.getAttribute('data-theme');
+ const n = c === 'dark' ? 'light' : 'dark';
+ document.documentElement.setAttribute('data-theme', n);
+ localStorage.setItem('deliket-theme', n);
+}
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+document.getElementById('mobileToggle').addEventListener('click', () => {
+ document.getElementById('mobileToggle').classList.toggle('active');
+ document.getElementById('headerNav').classList.toggle('open');
+});
+document.querySelectorAll('#headerNav a').forEach(a => {
+ a.addEventListener('click', () => {
+ document.getElementById('mobileToggle').classList.remove('active');
+ document.getElementById('headerNav').classList.remove('open');
+ });
+});
+window.addEventListener('scroll', () => {
+ document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
+ document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+document.getElementById('scrollTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+const observer = new IntersectionObserver((entries) => {
+ entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }});
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+
+initTheme();
+</script>
+</body>
+</html>

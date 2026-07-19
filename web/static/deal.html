@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Bitim # — DeLiKet</title>
+ <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M11 5a5 5 0 0 1 10 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a5 5 0 0 1 10 0z/"/><path d="M3 15v2a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-2/"/></svg></text></svg>">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+ <style>
+ *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ :root {
+ --bg: #0b0d10;
+ --surface: #14171c;
+ --surface-2: #1c2028;
+ --border: #262b36;
+ --text: #e8edf5;
+ --text-2: #8896a8;
+ --text-3: #5c6a7e;
+ --primary: #6c5ce7;
+ --primary-glow: rgba(108,92,231,0.15);
+ --success: #00c853;
+ --warning: #ffb300;
+ --danger: #ff3d71;
+ --info: #4fc3f7;
+ --orange: #ff6d00;
+ --radius: 14px;
+ --radius-sm: 10px;
+ --radius-xs: 8px;
+ }
+ body {
+ font-family: 'Inter', -apple-system, sans-serif;
+ background: var(--bg);
+ color: var(--text);
+ min-height: 100vh;
+ line-height: 1.6;
+ }
+
+ /* ── Navbar ── */
+ .navbar {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding: 16px 32px;
+ border-bottom: 1px solid var(--border);
+ background: rgba(11,13,16,0.85);
+ backdrop-filter: blur(16px);
+ position: sticky;
+ top: 0;
+ z-index: 100;
+ }
+ .navbar-brand {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ font-weight: 800;
+ font-size: 1.25rem;
+ color: var(--text);
+ text-decoration: none;
+ }
+ .navbar-brand span { background: linear-gradient(135deg, var(--primary), #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+ .navbar-links { display: flex; align-items: center; gap: 12px; }
+ .nav-link {
+ color: var(--text-2);
+ text-decoration: none;
+ font-size: 0.875rem;
+ font-weight: 500;
+ padding: 8px 16px;
+ border-radius: var(--radius-xs,8px);
+ transition: all 0.2s;
+ }
+ .nav-link:hover { color: var(--text); background: var(--surface-2); }
+
+ /* ── Container ── */
+ .container { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+ /* ── Loading / Error states ── */
+ .loading-state, .error-state {
+ display: flex; flex-direction: column; align-items: center; justify-content: center;
+ min-height: 400px; text-align: center;
+ }
+ .loader { width: 48px; height: 48px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }
+ @keyframes spin { to { transform: rotate(360deg); } }
+ .error-state h2 { color: var(--danger); margin-bottom: 8px; }
+ .error-state p { color: var(--text-2); margin-bottom: 20px; }
+
+ /* ── Deal Header ── */
+ .deal-header {
+ display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+ margin-bottom: 28px;
+ }
+ .deal-title h1 { font-size: 1.75rem; font-weight: 800; }
+ .deal-title .deal-id { color: var(--text-3); font-weight: 500; }
+ .deal-title .deal-subtitle { color: var(--text-2); font-size: 0.95rem; margin-top: 4px; }
+ .status-badge {
+ display: inline-flex; align-items: center; gap: 6px;
+ padding: 8px 18px; border-radius: 100px;
+ font-size: 0.85rem; font-weight: 600;
+ white-space: nowrap;
+ }
+ .status-badge.pending { background: rgba(255,179,0,0.12); color: var(--warning); }
+ .status-badge.shipped { background: rgba(79,195,247,0.12); color: var(--info); }
+ .status-badge.delivered { background: rgba(108,92,231,0.12); color: #a29bfe; }
+ .status-badge.completed { background: rgba(0,200,83,0.12); color: var(--success); }
+ .status-badge.disputed { background: rgba(255,61,113,0.12); color: var(--danger); }
+ .status-badge.cancelled { background: rgba(92,106,126,0.12); color: var(--text-3); }
+ .status-badge.processing { background: rgba(255,109,0,0.12); color: var(--orange); }
+
+ /* ── Meta row ── */
+ .meta-row {
+ display: flex; flex-wrap: wrap; gap: 24px;
+ padding: 16px 20px; background: var(--surface); border-radius: var(--radius-sm);
+ margin-bottom: 28px; border: 1px solid var(--border);
+ }
+ .meta-item { display: flex; flex-direction: column; gap: 2px; }
+ .meta-item .label { font-size: 0.75rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+ .meta-item .value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+ .meta-item .value.amount { color: var(--success); }
+
+ /* ── Two-column grid ── */
+ .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+ @media(max-width:720px){ .detail-grid { grid-template-columns: 1fr; } }
+
+ .card {
+ background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border);
+ padding: 20px; transition: border-color 0.2s;
+ }
+ .card:hover { border-color: rgba(108,92,231,0.3); }
+ .card-title {
+ font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+ color: var(--text-3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+ }
+
+ /* ── User card ── */
+ .user-card { display: flex; align-items: center; gap: 14px; }
+ .user-avatar {
+ width: 50px; height: 50px; border-radius: 50%;
+ background: linear-gradient(135deg, var(--primary), #a29bfe);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 1.2rem; font-weight: 700; color: #fff; flex-shrink: 0;
+ }
+ .user-info h3 { font-size: 1rem; font-weight: 600; }
+ .user-info .user-rating { font-size: 0.85rem; color: var(--warning); }
+ .user-info .user-meta { font-size: 0.8rem; color: var(--text-2); margin-top: 2px; }
+ .user-link {
+ display: inline-flex; align-items: center; gap: 4px;
+ margin-top: 8px; font-size: 0.8rem; color: var(--primary); text-decoration: none;
+ font-weight: 500; transition: color 0.2s;
+ }
+ .user-link:hover { color: #a29bfe; }
+
+ /* ── Amount display ── */
+ .amount-display {
+ text-align: center; padding: 16px; background: var(--surface-2); border-radius: var(--radius-xs,8px);
+ margin-top: 12px;
+ }
+ .amount-display .big-amount { font-size: 1.6rem; font-weight: 800; color: var(--success); }
+ .amount-display .amount-label { font-size: 0.8rem; color: var(--text-2); margin-top: 2px; }
+
+ /* ── Status timeline ── */
+ .timeline { position: relative; padding-left: 28px; }
+ .timeline::before {
+ content: ''; position: absolute; left: 10px; top: 8px; bottom: 8px;
+ width: 2px; background: var(--border);
+ }
+ .timeline-item {
+ position: relative; padding-bottom: 20px; padding-left: 16px;
+ }
+ .timeline-item:last-child { padding-bottom: 0; }
+ .timeline-item::before {
+ content: ''; position: absolute; left: -22px; top: 6px;
+ width: 12px; height: 12px; border-radius: 50%;
+ background: var(--surface-2); border: 2px solid var(--border);
+ transition: all 0.3s;
+ }
+ .timeline-item.active::before {
+ background: var(--primary); border-color: var(--primary);
+ box-shadow: 0 0 12px var(--primary-glow);
+ }
+ .timeline-item.completed::before {
+ background: var(--success); border-color: var(--success);
+ }
+ .timeline-item .tl-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+ .timeline-item .tl-time { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
+ .timeline-item.active .tl-label { color: var(--primary); }
+
+ /* ── Lot info ── */
+ .lot-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+ .lot-info-item {
+ display: flex; flex-direction: column; gap: 2px;
+ padding: 10px 12px; background: var(--surface-2); border-radius: var(--radius-xs,8px);
+ }
+ .lot-info-item .li-label { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; font-weight: 600; }
+ .lot-info-item .li-value { font-size: 0.9rem; font-weight: 600; }
+
+ /* ── Action buttons ── */
+ .actions-section { margin-bottom: 28px; }
+ .actions-section h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-3); margin-bottom: 12px; }
+ .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+ .btn {
+ display: inline-flex; align-items: center; gap: 6px;
+ padding: 10px 20px; border-radius: var(--radius-xs,8px);
+ font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer;
+ transition: all 0.2s; text-decoration: none;
+ }
+ .btn-primary { background: var(--primary); color: #fff; }
+ .btn-primary:hover { background: #5b4bd6; transform: translateY(-1px); box-shadow: 0 4px 16px var(--primary-glow); }
+ .btn-success { background: var(--success); color: #fff; }
+ .btn-success:hover { background: #00b548; }
+ .btn-danger { background: var(--danger); color: #fff; }
+ .btn-danger:hover { background: #e63664; }
+ .btn-warning { background: var(--orange); color: #fff; }
+ .btn-warning:hover { background: #e66200; }
+ .btn-outline {
+ background: transparent; color: var(--text-2); border: 1px solid var(--border);
+ }
+ .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+ .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+ .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+ /* ── Disputes ── */
+ .dispute-card {
+ padding: 14px; background: rgba(255,61,113,0.05); border: 1px solid rgba(255,61,113,0.15);
+ border-radius: var(--radius-sm); margin-bottom: 10px;
+ }
+ .dispute-card:last-child { margin-bottom: 0; }
+ .dispute-card .dispute-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+ .dispute-card .dispute-reason { font-size: 0.85rem; color: var(--text); }
+ .dispute-card .dispute-status { font-size: 0.75rem; padding: 3px 10px; border-radius: 100px; font-weight: 600; }
+ .dispute-status.open { background: rgba(255,61,113,0.12); color: var(--danger); }
+ .dispute-status.resolved { background: rgba(0,200,83,0.12); color: var(--success); }
+
+ /* ── Toast ── */
+ .toast {
+ position: fixed; bottom: 24px; right: 24px; z-index: 999;
+ padding: 14px 20px; border-radius: var(--radius-sm);
+ font-size: 0.85rem; font-weight: 500;
+ transform: translateY(100px); opacity: 0;
+ transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+ max-width: 380px;
+ }
+ .toast.show { transform: translateY(0); opacity: 1; }
+ .toast.success { background: rgba(0,200,83,0.15); border: 1px solid rgba(0,200,83,0.3); color: var(--success); }
+ .toast.error { background: rgba(255,61,113,0.15); border: 1px solid rgba(255,61,113,0.3); color: var(--danger); }
+
+ /* ── Full-width card ── */
+ .full-card { margin-bottom: 20px; }
+
+ /* ── Collapsible ── */
+ .collapsible-header {
+ display: flex; justify-content: space-between; align-items: center;
+ cursor: pointer; user-select: none;
+ }
+ .collapsible-header .toggle-icon { transition: transform 0.3s; color: var(--text-3); }
+ .collapsible-header.open .toggle-icon { transform: rotate(180deg); }
+ .collapsible-body { overflow: hidden; max-height: 0; transition: max-height 0.4s ease; }
+ .collapsible-body.open { max-height: 1000px; }
+
+ /* ── Bids table ── */
+ .bids-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+ .bids-table th { text-align: left; padding: 8px 12px; color: var(--text-3); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+ .bids-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+ .bids-table tr:last-child td { border-bottom: none; }
+ .bid-status { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; }
+ .bid-status.accepted { background: rgba(0,200,83,0.12); color: var(--success); }
+ .bid-status.pending { background: rgba(255,179,0,0.12); color: var(--warning); }
+ .bid-status.rejected { background: rgba(255,61,113,0.12); color: var(--danger); }
+
+ /* ── Responsive ── */
+ @media(max-width:600px){
+ .container { padding: 20px 16px; }
+ .navbar { padding: 12px 16px; }
+ .deal-title h1 { font-size: 1.35rem; }
+ .detail-grid { gap: 14px; }
+ .lot-info-grid { grid-template-columns: 1fr; }
+ }
+ 
+/* ── Mobile Navigation (universal) ── */
+.mobile-toggle-btn{display:none;flex-direction:column;gap:5px;padding:8px;border-radius:var(--radius-xs,8px);cursor:pointer;background:none;border:none}
+.mobile-toggle-btn:hover{opacity:0.8}
+.mobile-toggle-btn span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all 0.25s ease;transform-origin:center}
+.mobile-toggle-btn.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.mobile-toggle-btn.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+.mobile-toggle-btn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-nav-overlay{position:fixed;inset:0;z-index:200;background:var(--bg,#0b0d10);transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow-y:auto}
+.mobile-nav-overlay.open{transform:translateX(0)}
+.mobile-nav-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border,#262b36)}
+.mobile-nav-brand{font-size:1.125rem;font-weight:700;color:var(--text,#e8edf5);text-decoration:none}
+.mobile-nav-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--text-2,#8896a8);cursor:pointer;background:none;border:none;border-radius:var(--radius-xs,8px);transition:all 0.15s}
+.mobile-nav-close:hover{background:var(--surface-2,#1c2028);color:var(--text,#e8edf5)}
+.mobile-nav-links{display:flex;flex-direction:column;padding:8px}
+.mobile-nav-links a{padding:12px 16px;font-size:0.9375rem;font-weight:500;color:var(--text-2,#8896a8);text-decoration:none;border-radius:var(--radius-xs,8px);transition:all 0.15s}
+.mobile-nav-links a:hover{background:var(--surface-2,#1c2028);color:var(--text,#e8edf5)}
+@media(max-width:768px){.mobile-toggle-btn{display:flex}}
+
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+ <a href="/" class="navbar-brand"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M11 5a5 5 0 0 1 10 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a5 5 0 0 1 10 0z/"/><path d="M3 15v2a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-2/"/></svg> <span>DeLiKet</span></a>
+ <div class="navbar-links">
+ <a href="/crm" class="nav-link">CRM</a>
+ <a href="/deals" class="nav-link">Bitimlar</a>
+ <a href="/dokonlar" class="nav-link">Do'konlar</a>
+   
+<button class="mobile-toggle-btn" id="mobileToggleBtn" aria-label="Menyu">
+<span></span><span></span><span></span>
+</button>
+  </div>
+</nav>
+
+<div class="container" id="app">
+ <!-- Loading -->
+ <div class="loading-state" id="loading">
+ <div class="loader"></div>
+ <p style="color:var(--text-2)">Bitim ma'lumotlari yuklanmoqda...</p>
+ </div>
+
+ <!-- Error -->
+ <div class="error-state" id="error" style="display:none">
+ <div style="font-size:3rem;margin-bottom:8px"></div>
+ <h2>Bitim topilmadi</h2>
+ <p id="errorMsg">Ushbu bitim mavjud emas yoki URL noto'g'ri.</p>
+ <a href="/crm" class="btn btn-primary">️ CRM ga qaytish</a>
+ </div>
+
+ <!-- Content (hidden initially) -->
+ <div id="content" style="display:none">
+
+ <!-- Deal Header -->
+ <div class="deal-header">
+ <div class="deal-title">
+ <h1>Bitim <span class="deal-id" id="dealIdDisplay"></span></h1>
+ <div class="deal-subtitle" id="dealSubtitle"></div>
+ </div>
+ <div>
+ <span class="status-badge" id="statusBadge"></span>
+ </div>
+ </div>
+
+ <!-- Meta row -->
+ <div class="meta-row" id="metaRow"></div>
+
+ <!-- Action Buttons -->
+ <div class="actions-section" id="actionsSection" style="display:none">
+ <h3>Bitim boshqaruvi</h3>
+ <div class="action-buttons" id="actionButtons"></div>
+ <p style="font-size:0.75rem;color:var(--text-3);margin-top:8px">
+ Statusni o'zgartirish uchun yuqoridagi tugmalardan foydalaning.
+ </p>
+ </div>
+
+ <!-- Grid: Buyer + Seller -->
+ <div class="detail-grid">
+ <div class="card">
+ <div class="card-title">Xaridor</div>
+ <div class="user-card" id="buyerCard"></div>
+ </div>
+ <div class="card">
+ <div class="card-title">Sotuvchi</div>
+ <div class="user-card" id="sellerCard"></div>
+ </div>
+ </div>
+
+ <!-- Timeline + Lot Info -->
+ <div class="detail-grid">
+ <div class="card">
+ <div class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z/"/><polyline points=14 2 14 8 20 8"/></svg> Status tarixi</div>
+ <div class="timeline" id="timeline"></div>
+ </div>
+ <div class="card">
+ <div class="card-title">Lot ma'lumotlari</div>
+ <div class="lot-info-grid" id="lotInfo"></div>
+ <div class="amount-display">
+ <div class="big-amount" id="dealAmount"></div>
+ <div class="amount-label">Bitim summasi</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Bids (collapsible) -->
+ <div class="card full-card">
+ <div class="collapsible-header" onclick="toggleCollapse('bidsBody',this)">
+ <div class="card-title" style="margin-bottom:0">Takliflar (Bids)</div>
+ <span class="toggle-icon">▼</span>
+ </div>
+ <div class="collapsible-body" id="bidsBody">
+ <table class="bids-table" id="bidsTable">
+ <thead><tr><th>Xaridor</th><th>Narx</th><th>Soni</th><th>Holati</th><th>Sana</th></tr></thead>
+ <tbody id="bidsBodyContent"></tbody>
+ </table>
+ <div id="noBids" style="text-align:center;padding:16px;color:var(--text-3);font-size:0.85rem">Takliflar mavjud emas</div>
+ </div>
+ </div>
+
+ <!-- Counter Offers (collapsible) -->
+ <div class="card full-card">
+ <div class="collapsible-header" onclick="toggleCollapse('countersBody',this)">
+ <div class="card-title" style="margin-bottom:0"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M11 5a5 5 0 0 1 10 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a5 5 0 0 1 10 0z/"/><path d="M3 15v2a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-2/"/></svg> Savdolashish (Counter Offers)</div>
+ <span class="toggle-icon">▼</span>
+ </div>
+ <div class="collapsible-body" id="countersBody">
+ <table class="bids-table" id="countersTable">
+ <thead><tr><th>Xaridor</th><th>Taklif</th><th>Qarshi taklif</th><th>Holati</th><th>Sana</th></tr></thead>
+ <tbody id="countersBodyContent"></tbody>
+ </table>
+ <div id="noCounters" style="text-align:center;padding:16px;color:var(--text-3);font-size:0.85rem">Savdolashish mavjud emas</div>
+ </div>
+ </div>
+
+ <!-- Chat (mavjud chat bo'lsa) -->
+ <div class="card full-card">
+ <div class="collapsible-header" onclick="toggleCollapse('chatBody',this)">
+ <div class="card-title" style="margin-bottom:0">Suhbat (Chat)</div>
+ <span class="toggle-icon">▼</span>
+ </div>
+ <div class="collapsible-body" id="chatBody">
+ <div id="chatContent" style="padding:8px 0">
+ <p style="color:var(--text-2);font-size:0.85rem;margin-bottom:12px">
+ Xaridor va sotuvchi o'rtasidagi muzokaralar <b>Telegram bot</b> orqali amalga oshiriladi.
+ </p>
+ <div id="chatLinks" style="display:flex;flex-direction:column;gap:10px">
+ <a href="https://t.me/DeLiKatbot?start=deal_{{dealId}}" target="_blank" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;width:fit-content">
+ Telegram botda muhokama qilish
+ </a>
+ <p style="font-size:0.75rem;color:var(--text-3);margin-top:4px">
+ Botda <code>/start deal_{{dealId}}</code> ni bosing va bitim haqida xabar yozing.
+ Xabar avtomatik tarzda bitimning ikkinchi tomoniga yetkaziladi.
+ </p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Hujjatlar (Documents) -->
+ <div class="card full-card">
+ <div class="collapsible-header" onclick="toggleCollapse('docsBody',this)">
+ <div class="card-title" style="margin-bottom:0"> Hujjatlar va eslatmalar</div>
+ <span class="toggle-icon">▼</span>
+ </div>
+ <div class="collapsible-body" id="docsBody">
+ <div id="docsContent" style="padding:8px 0">
+ <div class="lot-info-grid" style="margin-bottom:14px">
+ <div class="lot-info-item">
+ <span class="li-label">Bitim ID</span>
+ <span class="li-value" id="docDealId">#—</span>
+ </div>
+ <div class="lot-info-item">
+ <span class="li-label">Lot ID</span>
+ <span class="li-value" id="docLotId">#—</span>
+ </div>
+ <div class="lot-info-item">
+ <span class="li-label">Sotuvchi (Seller)</span>
+ <span class="li-value" id="docSeller">—</span>
+ </div>
+ <div class="lot-info-item">
+ <span class="li-label">Xaridor (Buyer)</span>
+ <span class="li-value" id="docBuyer">—</span>
+ </div>
+ <div class="lot-info-item">
+ <span class="li-label">Summa</span>
+ <span class="li-value" id="docAmount">—</span>
+ </div>
+ <div class="lot-info-item">
+ <span class="li-label">Holat</span>
+ <span class="li-value" id="docStatus">—</span>
+ </div>
+ </div>
+ <div style="background:var(--surface-2);border-radius:var(--radius-xs,8px);padding:14px;font-size:0.85rem;color:var(--text-2);line-height:1.7">
+ <p><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M12 2a2 2 0 0 1 2 2v2h2v2h-2v7a4 4 0 0 1-8 0V6h2v7a2 2 0 0 0 4 0V4a2 2 0 0 1 2-2z/"/></svg> <b>ESCROW shartlari:</b> To'lov xaridor tomonidan <b>kafolatlangan</b> holda saqlanadi.
+ Mahsulot yetkazilib, xaridor tomonidan <b>Yakunlandi</b> tugmasi bosilganda,
+ pul mablag'lari sotuvchiga o'tkaziladi.</p>
+ <p style="margin-top:8px"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M12 2a2 2 0 0 1 2 2v2h2v2h-2v7a4 4 0 0 1-8 0V6h2v7a2 2 0 0 0 4 0V4a2 2 0 0 1 2-2z/"/></svg> <b>0% komissiya:</b> DeLiKet bitimdan komissiya olmaydi.
+ Barcha summa to'liq sotuvchiga o'tadi.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Disputes -->
+ <div class="card full-card" id="disputesSection" style="display:none">
+ <div class="card-title"> Bahslar (Disputes)</div>
+ <div id="disputesBody"></div>
+ </div>
+
+ </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Utils ──
+function $(id) { return document.getElementById(id); }
+function showToast(msg, type='success') {
+ const t = $('toast');
+ t.textContent = msg; t.className = `toast ${type}`;
+ setTimeout(() => t.classList.add('show'), 10);
+ setTimeout(() => t.classList.remove('show'), 3500);
+}
+function toggleCollapse(id, header) {
+ const body = $(id);
+ header.classList.toggle('open');
+ body.classList.toggle('open');
+}
+
+// ── Status helpers ──
+const STATUS_LABELS = {
+ kutmoqda: { label: 'Kutmoqda', cls: 'pending' },
+ yigilmoqda: { label: 'Yig\'ilmoqda', cls: 'processing' },
+ "jo'natildi": { label: ' Jo\'natildi', cls: 'shipped' },
+ yetkazildi: { label: 'Yetkazildi', cls: 'delivered' },
+ yakunlandi: { label: ' Yakunlandi', cls: 'completed' },
+ bahslashilgan: { label: ' Bahslashilgan', cls: 'disputed' },
+ bekor_qilindi: { label: 'Bekor qilindi', cls: 'cancelled' },
+};
+
+const STATUS_FLOW = {
+ kutmoqda: ['jo\'natildi'],
+ yigilmoqda: ['jo\'natildi'],
+ "jo'natildi": ['yetkazildi'],
+ yetkazildi: ['yakunlandi'],
+};
+
+const DISPUTE_STATUSES = ['bahslashilgan', 'bekor_qilindi'];
+
+function canTransition(current) {
+ if (DISPUTE_STATUSES.includes(current)) return [];
+ const next = STATUS_FLOW[current] || [];
+ const terminal = ['yakunlandi', 'bahslashilgan', 'bekor_qilindi'];
+ if (terminal.includes(current)) return [];
+ return [
+ ...next,
+ ...(current !== 'bahslashilgan' && current !== 'bekor_qilindi' ? ['bahslashilgan'] : []),
+ ...(current !== 'bahslashilgan' && current !== 'bekor_qilindi' ? ['bekor_qilindi'] : []),
+ ];
+}
+
+function formatCurrency(n) {
+ if (!n) return '0 UZS';
+ return new Intl.NumberFormat('uz-UZ').format(Math.round(n)) + ' UZS';
+}
+
+function formatDate(iso) {
+ if (!iso) return '--';
+ const d = new Date(iso);
+ return d.toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// ── Load data ──
+async function loadDeal() {
+ const dealId = window.location.pathname.split('/').pop();
+ if (!dealId || isNaN(dealId)) { showError('Noto\'g\'ri bitim ID'); return; }
+ $('dealIdDisplay').textContent = '#' + dealId;
+
+ try {
+ const res = await fetch(`/api/deals/${dealId}`);
+ const data = await res.json();
+ if (!data.ok) throw new Error(data.detail || 'Xatolik');
+ renderDeal(data.deal);
+ } catch (e) {
+ console.error('Load error:', e);
+ showError(e.message);
+ }
+}
+
+function showError(msg) {
+ $('loading').style.display = 'none';
+ $('error').style.display = 'flex';
+ $('errorMsg').textContent = msg;
+}
+
+function renderDeal(deal) {
+ $('loading').style.display = 'none';
+ $('content').style.display = 'block';
+ document.title = `Bitim #${deal.id} -- DeLiKet`;
+
+ // Status badge
+ const sb = STATUS_LABELS[deal.status] || { label: deal.status, cls: 'pending' };
+ const badge = $('statusBadge');
+ badge.textContent = sb.label;
+ badge.className = `status-badge ${sb.cls}`;
+
+ // Subtitle
+ $('dealSubtitle').textContent = `Lot: ${deal.lot_title || 'Noma\'lum'} · ${deal.lot_category || ''}`.trim();
+
+ // Meta row
+ const stageColors = {
+ pending: 'var(--warning)', processing: 'var(--orange)',
+ shipped: 'var(--info)', delivered: '#a29bfe',
+ completed: 'var(--success)', disputed: 'var(--danger)', cancelled: 'var(--text-3)'
+ };
+ $('metaRow').innerHTML = `
+ <div class="meta-item"><span class="label">Bosqich</span><span class="value">${deal.stage || '--'}</span></div>
+ <div class="meta-item"><span class="label">To'lov</span><span class="value" style="color:${deal.payment_status === 'released' ? 'var(--success)' : 'var(--warning)'}">${deal.payment_status === 'escrow' ? ' ESCROW' : deal.payment_status === 'released' ? 'To\'langan' : '--'}</span></div>
+ <div class="meta-item"><span class="label">Yaratilgan</span><span class="value">${formatDate(deal.created_at)}</span></div>
+ <div class="meta-item"><span class="label">Yakunlangan</span><span class="value">${deal.completed_at ? formatDate(deal.completed_at) : '--'}</span></div>
+ <div class="meta-item"><span class="label">Soni</span><span class="value">${deal.quantity || 1} dona</span></div>
+ `;
+
+ // Buyer card
+ $('buyerCard').innerHTML = `
+ <div class="user-avatar">${(deal.buyer.name || '?')[0]}</div>
+ <div class="user-info">
+ <h3>${deal.buyer.name || 'Noma\'lum'}</h3>
+ <div class="user-rating">${'☆'.repeat(Math.round(deal.buyer.rating || 0))}${'☆'.repeat(5 - Math.round(deal.buyer.rating || 0))} ${(deal.buyer.rating || 0).toFixed(1)}</div>
+ <div class="user-meta">ID: ${deal.buyer.id}</div>
+ <a href="/shop/${deal.buyer.id}" class="user-link">Profil →</a>
+ </div>
+ `;
+
+ // Seller card
+ $('sellerCard').innerHTML = `
+ <div class="user-avatar" style="background:linear-gradient(135deg,var(--success),#00e676)">${(deal.seller.name || '?')[0]}</div>
+ <div class="user-info">
+ <h3>${deal.seller.name || 'Noma\'lum'}</h3>
+ <div class="user-rating">${'☆'.repeat(Math.round(deal.seller.rating || 0))}${'☆'.repeat(5 - Math.round(deal.seller.rating || 0))} ${(deal.seller.rating || 0).toFixed(1)}</div>
+ <div class="user-meta">ID: ${deal.seller.id}</div>
+ <a href="/shop/${deal.seller.id}" class="user-link">Profil →</a>
+ </div>
+ `;
+
+ // Timeline
+ const timeline = $('timeline');
+ if (deal.status_history && deal.status_history.length) {
+ timeline.innerHTML = deal.status_history.map((s, i) => {
+ const isLast = i === deal.status_history.length - 1;
+ let cls = s.is_current ? 'active' : '';
+ if (!s.is_current && i < deal.status_history.length - 1) cls = 'completed';
+ return `<div class="timeline-item ${cls}">
+ <div class="tl-label">${s.label}</div>
+ <div class="tl-time">${s.timestamp ? formatDate(s.timestamp) : '--'}</div>
+ </div>`;
+ }).join('');
+ } else {
+ timeline.innerHTML = '<p style="color:var(--text-3);font-size:0.85rem">Status tarixi mavjud emas</p>';
+ }
+
+ // Lot info
+ $('lotInfo').innerHTML = `
+ <div class="lot-info-item"><span class="li-label">Lot ID</span><span class="li-value">#${deal.lot_id || '--'}</span></div>
+ <div class="lot-info-item"><span class="li-label">Kategoriya</span><span class="li-value">${deal.lot_category_label || '--'}</span></div>
+ <div class="lot-info-item"><span class="li-label">Narx</span><span class="li-value">${formatCurrency(deal.bid_price || deal.amount)}</span></div>
+ <div class="lot-info-item"><span class="li-label">Sifat (Grade)</span><span class="li-value">${deal.lot_grade_label || '--'}</span></div>
+ <div class="lot-info-item" style="grid-column:1/-1"><span class="li-label">Tavsif</span><span class="li-value" style="font-weight:400;color:var(--text-2)">${deal.lot_description || '--'}</span></div>
+ `;
+
+ // Amount
+ $('dealAmount').textContent = formatCurrency(deal.amount);
+
+ // Bids
+ const bidsBody = $('bidsBodyContent');
+ if (deal.bids && deal.bids.length) {
+ $('noBids').style.display = 'none';
+ bidsBody.innerHTML = deal.bids.map(b => {
+ const bs = b.status === 'qabul' ? 'accepted' : b.status === 'rad' ? 'rejected' : 'pending';
+ const bl = b.status === 'qabul' ? 'Qabul' : b.status === 'rad' ? 'Rad' : 'Kutilmoqda';
+ return `<tr>
+ <td>${b.buyer_name || '--'}</td>
+ <td>${formatCurrency(b.price)}</td>
+ <td>${b.quantity || 1}</td>
+ <td><span class="bid-status ${bs}">${bl}</span></td>
+ <td>${formatDate(b.created_at)}</td>
+ </tr>`;
+ }).join('');
+ } else {
+ $('noBids').style.display = 'block';
+ bidsBody.innerHTML = '';
+ }
+
+ // Counter offers
+ const countersBody = $('countersBodyContent');
+ if (deal.counter_offers && deal.counter_offers.length) {
+ $('noCounters').style.display = 'none';
+ countersBody.innerHTML = deal.counter_offers.map(co => {
+ const cs = co.status === 'qabul' ? 'accepted' : co.status === 'rad' ? 'rejected' : 'pending';
+ const cl = co.status === 'qabul' ? 'Qabul' : co.status === 'rad' ? 'Rad' : 'Kutilmoqda';
+ return `<tr>
+ <td>${co.buyer_name || '--'}</td>
+ <td>${formatCurrency(co.offer_price)}</td>
+ <td>${co.counter_price ? formatCurrency(co.counter_price) : '--'}</td>
+ <td><span class="bid-status ${cs}">${cl}</span></td>
+ <td>${formatDate(co.created_at)}</td>
+ </tr>`;
+ }).join('');
+ } else {
+ $('noCounters').style.display = 'block';
+ countersBody.innerHTML = '';
+ }
+
+ // Documents section
+ $('docDealId').textContent = `#${deal.id}`;
+ $('docLotId').textContent = `#${deal.lot_id || '--'}`;
+ $('docSeller').textContent = deal.seller.name || '--';
+ $('docBuyer').textContent = deal.buyer.name || '--';
+ $('docAmount').textContent = formatCurrency(deal.amount);
+ $('docStatus').textContent = deal.status || '--';
+
+ // Chat link -- replace template
+ const chatLink = document.querySelector('#chatLinks a');
+ if (chatLink) {
+ chatLink.href = `https://t.me/DeLiKatbot?start=deal_${deal.id}`;
+ }
+ const chatCode = document.querySelector('#chatLinks code');
+ if (chatCode) {
+ chatCode.textContent = `/start deal_${deal.id}`;
+ }
+
+ // Disputes
+ if (deal.disputes && deal.disputes.length) {
+ $('disputesSection').style.display = 'block';
+ $('disputesBody').innerHTML = deal.disputes.map(d => `
+ <div class="dispute-card">
+ <div class="dispute-header">
+ <span style="font-weight:600;font-size:0.85rem">${d.initiator_name || 'Noma\'lum'} tomonidan ochilgan</span>
+ <span class="dispute-status ${d.status === 'ochiq' ? 'open' : 'resolved'}">${d.status === 'ochiq' ? 'Ochiq' : 'Yopilgan'}</span>
+ </div>
+ <div class="dispute-reason">${d.reason}</div>
+ ${d.resolution ? `<div style="margin-top:6px;font-size:0.8rem;color:var(--success)">Yechim: ${d.resolution}</div>` : ''}
+ <div style="margin-top:4px;font-size:0.7rem;color:var(--text-3)">${formatDate(d.created_at)}</div>
+ </div>
+ `).join('');
+ }
+
+ // Action buttons
+ const transitions = canTransition(deal.status);
+ if (transitions.length > 0) {
+ $('actionsSection').style.display = 'block';
+ const btnConfigs = {
+ "jo'natildi": { label: ' Jo\'natildi', cls: 'btn-warning' },
+ yetkazildi: { label: 'Yetkazildi', cls: 'btn-primary' },
+ yakunlandi: { label: ' Yakunlandi', cls: 'btn-success' },
+ bahslashilgan: { label: ' Bahs ochish', cls: 'btn-danger' },
+ bekor_qilindi: { label: 'Bekor qilish', cls: 'btn-outline' },
+ };
+ $('actionButtons').innerHTML = transitions.map(t => {
+ const cfg = btnConfigs[t] || { label: t, cls: 'btn-outline' };
+ return `<button aria-label="${cfg.label}" class="btn ${cfg.cls}" onclick="updateStatus('${t}')">${cfg.label}</button>`;
+ }).join('');
+ }
+}
+
+// ── Update status ──
+async function updateStatus(status) {
+ const dealId = window.location.pathname.split('/').pop();
+ try {
+ const res = await fetch(`/api/deals/${dealId}`, {
+ method: 'PATCH',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ status }),
+ });
+ const data = await res.json();
+ if (!data.ok) throw new Error(data.detail || 'Xatolik');
+ showToast(`Bitim statusi "${status}" ga o'zgartirildi`);
+ setTimeout(() => location.reload(), 1200);
+ } catch (e) {
+ showToast(`Xatolik: ${e.message}`, 'error');
+ }
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', loadDeal);
+
+
+// Theme
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('deliket-theme',t)}
+function initTheme(){var s=localStorage.getItem('deliket-theme'),p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'))}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');setTheme(c==='dark'?'light':'dark')}
+
+
+document.addEventListener('DOMContentLoaded',function(){
+var btn=document.getElementById('mobileToggleBtn'),nav=document.getElementById('mobileNav'),close=document.getElementById('mobileNavClose');
+if(btn&&nav){btn.addEventListener('click',function(){btn.classList.toggle('active');nav.classList.toggle('open')})}
+if(close&&nav){close.addEventListener('click',function(){btn.classList.remove('active');nav.classList.remove('open')})}
+nav&&nav.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){btn.classList.remove('active');nav.classList.remove('open')})})
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+# ──────────────────────────────────
+# Python
+# ──────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+.virtualenv/
+*.so
+*.pyd
+
+# Tests & Coverage
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+*.coverage
+coverage.xml
+*.mo
+*.pot
+
+# ──────────────────────────────────
+# Environment & Secrets
+# ──────────────────────────────────
+.env
+.env.local
+.env.production
+.env.development
+.env.staging
+*.pem
+*.key
+*.cert
+
+# ──────────────────────────────────
+# Database
+# ──────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# ──────────────────────────────────
+# IDE & Editors
+# ──────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+.history/
+.nyc_output/
+
+# ──────────────────────────────────
+# OS
+# ──────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.dmg
+*.app
+
+# ──────────────────────────────────
+# Logs & Temp
+# ──────────────────────────────────
+*.log
+*.tmp
+*.temp
+/tmp/
+
+# ──────────────────────────────────
+# Vercel
+# ──────────────────────────────────
+.vercel
+
+# ──────────────────────────────────
+# Screenshots
+# ──────────────────────────────────
+/tmp/deliket-*-screenshots/
+
+# ──────────────────────────────────
+# Node (if any tooling installed)
+# ──────────────────────────────────
+node_modules/

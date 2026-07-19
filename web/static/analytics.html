@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLiKet — Analytics Dashboard</title>
+<meta name="description" content="DeLiKet bozor tahlili — real-time statistikalar, trendlar va sotuvchilar reytingi">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+.an-page{padding:120px 0 var(--space-2xl);min-height:100vh}
+.an-hero{margin-bottom:var(--space-xl)}
+.an-hero h1{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;letter-spacing:-0.03em}
+.an-hero h1 span{background:linear-gradient(135deg,var(--accent),#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.an-hero p{color:var(--text-tertiary);max-width:500px;font-size:0.9375rem}
+.an-hero-meta{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-top:var(--space-sm)}
+.an-hero-meta span{font-size:0.75rem;color:var(--text-tertiary);display:flex;align-items:center;gap:0.375rem}
+.an-hero-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald);display:inline-block;animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* Stats Grid */
+.an-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-md);margin-bottom:var(--space-xl)}
+.an-stat{padding:var(--space-lg);border:1px solid var(--border-primary);border-radius:var(--radius-lg);background:var(--bg-secondary);transition:border-color 0.2s,transform 0.2s}
+.an-stat:hover{border-color:var(--accent);transform:translateY(-2px)}
+.an-stat-icon{font-size:1.25rem;display:block;margin-bottom:var(--space-xs)}
+.an-stat-num{font-size:1.75rem;font-weight:800;font-family:var(--font-display);letter-spacing:-0.02em;line-height:1}
+.an-stat-label{font-size:0.75rem;color:var(--text-tertiary);margin-top:0.25rem}
+.an-stat-sub{font-size:0.6875rem;color:var(--text-quaternary);margin-top:0.125rem}
+
+/* Section */
+.an-section{margin-bottom:var(--space-xl)}
+.an-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-md)}
+.an-section-title{font-size:1rem;font-weight:700}
+.an-section-sub{font-size:0.75rem;color:var(--text-tertiary)}
+
+/* Charts Grid */
+.an-charts{display:grid;grid-template-columns:2fr 1fr;gap:var(--space-md);margin-bottom:var(--space-xl)}
+.an-card{padding:var(--space-lg);border:1px solid var(--border-primary);border-radius:var(--radius-lg);transition:border-color 0.2s}
+.an-card:hover{border-color:var(--text-tertiary)}
+.an-card-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin-bottom:var(--space-md)}
+
+/* SVG Chart */
+.chart-svg-wrap{width:100%;overflow:visible}
+.chart-svg-wrap svg{width:100%;height:auto;overflow:visible}
+.chart-bar-rect{transition:height 0.6s cubic-bezier(0.16,1,0.3,1);transform-origin:bottom}
+.chart-bar-label{font-size:10px;fill:var(--text-quaternary);text-anchor:middle}
+.chart-bar-value{font-size:9px;font-weight:600;fill:var(--text-tertiary);text-anchor:middle;opacity:0;transition:opacity 0.2s}
+.chart-bar-group:hover .chart-bar-value{opacity:1}
+.chart-grid-line{stroke:var(--border-primary);stroke-width:1;stroke-dasharray:3,3;opacity:0.4}
+
+/* Category List */
+.an-cat-item{display:flex;align-items:center;gap:var(--space-sm);padding:0.5rem 0}
+.an-cat-item+.an-cat-item{border-top:1px solid var(--border-primary)}
+.an-cat-icon{width:28px;height:28px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0}
+.an-cat-info{flex:1;min-width:0}
+.an-cat-name{font-size:0.8125rem;font-weight:600}
+.an-cat-count{font-size:0.6875rem;color:var(--text-tertiary)}
+.an-cat-bar{width:60px;height:6px;background:var(--border-primary);border-radius:3px;overflow:hidden;flex-shrink:0}
+.an-cat-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(0.16,1,0.3,1)}
+
+/* Distribution */
+.an-dist-item{display:flex;align-items:center;gap:var(--space-sm);padding:0.5rem 0}
+.an-dist-item+.an-dist-item{border-top:1px solid var(--border-primary)}
+.an-dist-bar{width:80px;height:6px;background:var(--border-primary);border-radius:3px;overflow:hidden;flex-shrink:0}
+.an-dist-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(0.16,1,0.3,1)}
+
+/* Seller Row */
+.an-seller{display:flex;align-items:center;gap:var(--space-md);padding:0.5rem 0}
+.an-seller+.an-seller{border-top:1px solid var(--border-primary)}
+.an-seller-rank{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6875rem;font-weight:700;flex-shrink:0}
+.an-seller-rank.gold{background:rgba(245,158,11,0.12);color:#d97706}
+.an-seller-rank.silver{background:rgba(99,102,241,0.1);color:#6366f1}
+.an-seller-rank.bronze{background:rgba(239,68,68,0.1);color:#dc2626}
+.an-seller-name{font-size:0.8125rem;font-weight:600;flex:1}
+.an-seller-meta{font-size:0.6875rem;color:var(--text-tertiary);text-align:right}
+.an-seller-meta strong{color:var(--text-primary)}
+
+/* Price Grid */
+.an-price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--space-sm)}
+.an-price-item{text-align:center;padding:var(--space-sm);background:var(--bg-secondary);border-radius:var(--radius-md)}
+.an-price-val{font-size:1rem;font-weight:700}
+.an-price-label{font-size:0.6875rem;color:var(--text-tertiary);margin-top:0.0625rem}
+
+/* Activity */
+.an-activity{display:flex;flex-direction:column;gap:0.5rem}
+.an-activity-item{display:flex;align-items:center;gap:var(--space-sm);padding:0.5rem;border-radius:var(--radius-md);transition:background 0.1s}
+.an-activity-item:hover{background:var(--bg-secondary)}
+.an-activity-icon{font-size:0.875rem}
+.an-activity-text{font-size:0.8125rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.an-activity-time{font-size:0.6875rem;color:var(--text-quaternary);flex-shrink:0}
+
+/* Skeleton */
+.skel{background:var(--bg-secondary);border-radius:var(--radius-sm);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* Empty */
+.an-empty{text-align:center;padding:var(--space-lg);color:var(--text-tertiary);font-size:0.875rem}
+
+@media(max-width:768px){
+ .an-charts{grid-template-columns:1fr}
+ .an-stats{grid-template-columns:repeat(2,1fr)}
+ .an-stat{padding:var(--space-md)}
+ .an-stat-num{font-size:1.25rem}
+}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div>>
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo">
+ <svg viewBox="0 0 36 36" fill="none"><defs><linearGradient id="lgAn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs><rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgAn)"/><path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/><circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/></svg>
+ DeLi<span>Ket</span>
+ </a>
+ <nav class="header-nav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics" class="active">Analytics</a>
+ <a href="/leaderboard">Reyting</a>
+ <a href="/reviews">Sharhlar</a>
+ </nav>
+ <button class="theme-toggle" id="themeToggle" aria-label="Temani almashtirish">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+ <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ <a href="https://t.me/DeLiKatbot" class="header-cta" target="_blank">Bot</a>
+ </div>
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+<span></span><span></span><span></span>
+</button>
+</header>
+
+<div class="an-page">
+ <div class="container" style="max-width:1100px">
+
+ <!-- Hero -->
+ <div class="an-hero">
+ <span class="section-badge">Bozor tahlili</span>
+ <h1>Real-time <span>Analytics</span> Dashboard</h1>
+ <p>Bozor ko'rsatkichlari, kategoriya taqsimoti, narx trendlari va sotuvchilar faoliyati</p>
+ <div class="an-hero-meta">
+ <span><span class="dot"></span> <span id="refreshStatus">Ma'lumotlar yuklanmoqda...</span></span>
+ </div>
+ </div>
+
+ <!-- Stats -->
+ <div class="an-stats" id="statsGrid">
+ <div class="an-stat"><span class="an-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></span><div class="an-stat-num" id="statLots">—</div><div class="an-stat-label">Faol lotlar</div></div>
+ <div class="an-stat"><span class="an-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><circle cx=12 cy=12 r=10/><path d="M12 6v12M8 12h8/"/></svg></span><div class="an-stat-num" id="statBids">—</div><div class="an-stat-label">Jami takliflar</div><div class="an-stat-sub"><span id="statPendingBids">—</span> kutmoqda</div></div>
+ <div class="an-stat"><span class="an-stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2/"/><circle cx=9 cy=7 r=4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87/"/><path d="M16 3.13a4 4 0 0 1 0 7.75/"/></svg></span><div class="an-stat-num" id="statUsers">—</div><div class="an-stat-label">Foydalanuvchilar</div></div>
+ <div class="an-stat"><span class="an-stat-icon"></span><div class="an-stat-num" id="statAvgPrice">—</div><div class="an-stat-label">O'rtacha narx</div></div>
+ <div class="an-stat"><span class="an-stat-icon"></span><div class="an-stat-num" id="statPriceRange">—</div><div class="an-stat-label">Narx oralig'i</div></div>
+ </div>
+
+ <!-- Price Insights -->
+ <div class="an-section">
+ <div class="an-section-header">
+ <span class="an-section-title">Narx tahlili</span>
+ <span class="an-section-sub">Kategoriya bo'yicha</span>
+ </div>
+ <div class="an-price-grid" id="priceGrid">
+ <div class="an-price-item"><div class="an-price-val skel" style="width:60%;margin:0 auto">&nbsp;</div><div class="an-price-label">Yuklanmoqda...</div></div>
+ </div>
+ </div>
+
+ <!-- Charts -->
+ <div class="an-charts">
+ <div class="an-card">
+ <div class="an-card-title">Kategoriya bo'yicha lotlar</div>
+ <div class="chart-svg-wrap" id="chartWrap" style="display:none"><svg id="catChart" viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
+ <line class="chart-grid-line" x1="0" y1="40" x2="560" y2="40"/>
+ <line class="chart-grid-line" x1="0" y1="80" x2="560" y2="80"/>
+ <line class="chart-grid-line" x1="0" y1="120" x2="560" y2="120"/>
+ <line class="chart-grid-line" x1="0" y1="160" x2="560" y2="160"/>
+ </svg></div>
+ <div class="skel" id="chartSkel" style="height:160px;border-radius:var(--radius-md)"></div>
+ </div>
+ <div class="an-card">
+ <div class="an-card-title">Eng ko'p lotli kategoriyalar</div>
+ <div id="topCatsList">
+ <div class="skel" style="height:12px;width:80%;margin-bottom:10px"></div>
+ <div class="skel" style="height:12px;width:65%;margin-bottom:10px"></div>
+ <div class="skel" style="height:12px;width:50%;margin-bottom:10px"></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Price History Trends -->
+ <div class="an-section" id="trendSection" style="display:none">
+ <div class="an-section-header">
+ <span class="an-section-title">Narx trendlari</span>
+ <span class="an-section-sub">Kategoriya bo'yicha o'rtacha narx o'zgarishi</span>
+ </div>
+ <div class="an-charts" id="trendGrid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))"></div>
+ </div>
+
+ <!-- Grade + Role Distribution -->
+ <div class="an-charts">
+ <div class="an-card">
+ <div class="an-card-title">Grade bo'yicha taqsimot</div>
+ <div id="gradeDist">
+ <div class="skel" style="height:12px;width:70%;margin-bottom:10px"></div>
+ <div class="skel" style="height:12px;width:50%;margin-bottom:10px"></div>
+ <div class="skel" style="height:12px;width:30%;margin-bottom:10px"></div>
+ </div>
+ </div>
+ <div class="an-card">
+ <div class="an-card-title">Foydalanuvchi rollari</div>
+ <div id="roleDist">
+ <div class="skel" style="height:12px;width:60%;margin-bottom:10px"></div>
+ <div class="skel" style="height:12px;width:40%;margin-bottom:10px"></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Sellers + Activity -->
+ <div class="an-charts">
+ <div class="an-card">
+ <div class="an-card-title">Eng faol sotuvchilar</div>
+ <div id="topSellersList">
+ <div class="skel" style="height:14px;width:85%;margin-bottom:10px"></div>
+ <div class="skel" style="height:14px;width:60%;margin-bottom:10px"></div>
+ </div>
+ </div>
+ <div class="an-card">
+ <div class="an-card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><circle cx=12 cy=12 r=10/><polyline points=12 6 12 12 16 14/></svg> So'nggi faoliyat</div>
+ <div id="recentActivity">
+ <div class="skel" style="height:12px;width:75%;margin-bottom:8px"></div>
+ <div class="skel" style="height:12px;width:55%;margin-bottom:8px"></div>
+ </div>
+ </div>
+ </div>
+
+ </div>
+</div>
+
+<script>
+var SVG_ICONS = {
+  smartfon: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2 stroke-linecap=round stroke-linejoin=round><rect x=5 y=2 width=14 height=20 rx=2/><line x1=12 y1=18 x2=12.01 y2=18/></svg>",
+  notebook: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2 stroke-linecap=round stroke-linejoin=round><rect x=2 y=3 width=20 height=14 rx=2 ry=2/><line x1=2 y1=20 x2=22 y2=20/><line x1=9 y1=3 x2=9 y2=20/><line x1=14 y1=3 x2=14 y2=20/></svg>",
+  tv: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2 stroke-linecap=round stroke-linejoin=round><rect x=2 y=3 width=20 height=14 rx=2 ry=2/><line x1=2 y1=20 x2=22 y2=20/><line x1=9 y1=3 x2=9 y2=20/><line x1=15 y1=3 x2=15 y2=20/></svg>",
+  audio: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d=''M9 18V5l12-2v13''/><circle cx=6 cy=18 r=3'/><circle cx=18 cy=16 r=3/></svg>",
+  aksesuar: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d=''M4 9a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V9z''/><line x1=15 y1=3 x2=9 y2=3'/><line x1=12 y1=3 x2=12 y2=7/></svg>",
+  kiyim: "<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d='''M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z'/></svg>"
+};
+
+// ── Helpers ──
+const LABELS = { smartfon:'Smartfonlar', notebook:' Notebooklar', tv:' TV & Video', audio:' Audio', aksesuar:' Aksessuarlar', kiyim:' Kiyim' };
+const ICONS = SVG_ICONS;
+const COLORS = { smartfon:'#f59e0b', notebook:'#6366f1', tv:'#10b981', audio:'#ec4899', aksesuar:'#8b5cf6', kiyim:'#ef4444' };
+
+function fmt(v) { if (!v && v!==0) return '--'; if(v>=1e6) return (v/1e6).toFixed(1)+' mln'; if(v>=1e3) return (v/1e3).toFixed(0)+' ming'; return v.toLocaleString(); }
+function fmtFull(v) { if (!v && v!==0) return '--'; return v.toLocaleString()+' so\'m'; }
+
+// ── Load ──
+async function init() {
+ try {
+ const res = await fetch('/api/analytics');
+ const data = await res.json();
+ if (!data.ok) throw new Error(data.error || 'Xatolik');
+
+ const s = data.stats;
+ document.getElementById('refreshStatus').textContent = 'So\'ngi yangilanish: ' + new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit',minute:'2-digit'});
+
+ // Stats
+ document.getElementById('statLots').textContent = s.active_lots;
+ document.getElementById('statBids').textContent = s.total_bids;
+ document.getElementById('statPendingBids').textContent = s.pending_bids + ' ta';
+ document.getElementById('statUsers').textContent = s.users;
+ document.getElementById('statAvgPrice').textContent = fmt(s.price_range.avg);
+ document.getElementById('statPriceRange').textContent = fmt(s.price_range.min) + ' -- ' + fmt(s.price_range.max);
+
+ // Price grid
+ const pg = document.getElementById('priceGrid');
+ if (data.category_prices && data.category_prices.length) {
+ pg.innerHTML = data.category_prices.map(c => `
+ <div class="an-price-item">
+ <div class="an-price-val">${fmtFull(c.avg_price)}</div>
+ <div class="an-price-label">${ICONS[c.name]|| '' } ${LABELS[c.name]?.replace(/^[^\s]+\s/,'')||c.name} (${c.count})</div>
+ </div>
+ `).join('');
+ }
+
+ // Category bar chart (SVG)
+ const cats = Object.entries(data.categories).sort((a,b) => b[1]-a[1]);
+ const maxCat = Math.max(...cats.map(c=>c[1]), 1);
+ const svg = document.getElementById('catChart');
+ svg.querySelectorAll('.chart-bar-group').forEach(e=>e.remove());
+ const barW = Math.min(48, (520 - cats.length*15) / cats.length);
+
+ document.getElementById('chartSkel').style.display = 'none';
+ document.getElementById('chartWrap').style.display = 'block';
+
+ cats.forEach(([name, count], i) => {
+ const x = 20 + i * (barW + 15);
+ const h = (count / maxCat) * 155;
+ const color = COLORS[name] || '#f59e0b';
+ const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+ g.setAttribute('class','chart-bar-group');
+ g.setAttribute('transform',`translate(${x},0)`);
+
+ const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+ rect.setAttribute('class','chart-bar-rect');
+ rect.setAttribute('x','0'); rect.setAttribute('y','180');
+ rect.setAttribute('width',String(barW)); rect.setAttribute('height','0');
+ rect.setAttribute('rx','4'); rect.setAttribute('fill',color); rect.setAttribute('opacity','0.8');
+
+ const val = document.createElementNS('http://www.w3.org/2000/svg','text');
+ val.setAttribute('class','chart-bar-value');
+ val.setAttribute('x',String(barW/2)); val.setAttribute('y','170');
+ val.textContent = count;
+
+ const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+ lbl.setAttribute('class','chart-bar-label');
+ lbl.setAttribute('x',String(barW/2)); lbl.setAttribute('y','195');
+ lbl.textContent = (LABELS[name]||name).slice(0,8);
+
+ g.append(rect, val, lbl);
+ svg.appendChild(g);
+ setTimeout(()=>{ rect.setAttribute('y',String(180-h)); rect.setAttribute('height',String(h)); val.setAttribute('y',String(180-h-6)); }, 100+i*60);
+ });
+
+ // Price history trends
+ const ph = data.price_history || {};
+ const phEntries = Object.entries(ph).filter(([,v]) => v.length > 0);
+ if (phEntries.length > 0) {
+ document.getElementById('trendSection').style.display = 'block';
+ const tg = document.getElementById('trendGrid');
+ tg.innerHTML = phEntries.slice(0,4).map(([cat, points]) => `
+ <div class="an-card">
+ <div class="an-card-title">${ICONS[cat]|| '' } ${LABELS[cat]?.replace(/^[^\s]+\s/,'')||cat}</div>
+ <div style="display:flex;gap:0.375rem;flex-wrap:wrap">
+ ${points.slice(-5).map(p => `
+ <div style="text-align:center;padding:0.375rem;background:var(--bg-secondary);border-radius:var(--radius-sm);flex:1;min-width:50px">
+ <div style="font-size:0.75rem;font-weight:700">${fmt(p.avg_price)}</div>
+ <div style="font-size:0.5625rem;color:var(--text-quaternary)">${p.date?.slice(5)||''}</div>
+ </div>
+ `).join('')}
+ </div>
+ </div>
+ `).join('');
+ }
+
+ // Top categories list
+ const tcl = document.getElementById('topCatsList');
+ tcl.innerHTML = cats.slice(0,6).map(([name, count]) => `
+ <div class="an-cat-item">
+ <div class="an-cat-icon" style="background:${COLORS[name]||'#f59e0b'}20">${ICONS[name]|| '' }</div>
+ <div class="an-cat-info"><div class="an-cat-name">${LABELS[name]||name}</div><div class="an-cat-count">${count} ta lot</div></div>
+ <div class="an-cat-bar"><div class="an-cat-fill" style="width:0%;background:${COLORS[name]||'#f59e0b'}" data-w="${(count/maxCat*100)}"></div></div>
+ </div>
+ `).join('');
+ setTimeout(()=>{ tcl.querySelectorAll('.an-cat-fill').forEach(e=>{ e.style.width=e.dataset.w+'%'; }); }, 300);
+
+ // Grade distribution
+ const gd = document.getElementById('gradeDist');
+ const grades = data.grade_distribution || {};
+ const gradeTotal = Object.values(grades).reduce((a,b)=>a+b,0) || 1;
+ const gradeItems = [
+ {key:'A',label:'A -- Yangi',emoji:'A',color:'#10b981'},
+ {key:'B',label:'B -- Yaxshi',emoji:'B',color:'#f59e0b'},
+ {key:'C',label:'C -- Qoniqarli',emoji:'C',color:'#ef4444'},
+ ];
+ gd.innerHTML = gradeItems.map(g => {
+ const c = grades[g.key] || 0;
+ const p = (c/gradeTotal*100);
+ return `<div class="an-dist-item"><span>${g.emoji}</span><span style="flex:1;font-size:0.8125rem">${g.label}</span><span style="font-size:0.75rem;color:var(--text-tertiary);width:30px">${c}</span><div class="an-dist-bar"><div class="an-dist-fill" style="width:0%;background:${g.color}" data-w="${p}"></div></div></div>`;
+ }).join('');
+ setTimeout(()=>{ gd.querySelectorAll('.an-dist-fill').forEach(e=>{ e.style.width=e.dataset.w+'%'; }); }, 350);
+
+ // Role distribution
+ const rd = document.getElementById('roleDist');
+ const roles = data.role_distribution || {};
+ const roleTotal = Object.values(roles).reduce((a,b)=>a+b,0) || 1;
+ const roleItems = [
+ {key:'sotuvchi',label:'Sotuvchi',color:'#6366f1'},
+ {key:'xaridor',label:'️ Xaridor',color:'#10b981'},
+ {key:'ikkalasi',label:'Ikkalasi',color:'#f59e0b'},
+ ];
+ rd.innerHTML = roleItems.map(r => {
+ const c = roles[r.key] || 0;
+ const p = (c/roleTotal*100);
+ return `<div class="an-dist-item"><span style="flex:1;font-size:0.8125rem">${r.label}</span><span style="font-size:0.75rem;color:var(--text-tertiary);width:30px">${c}</span><div class="an-dist-bar"><div class="an-dist-fill" style="width:0%;background:${r.color}" data-w="${p}"></div></div></div>`;
+ }).join('');
+ setTimeout(()=>{ rd.querySelectorAll('.an-dist-fill').forEach(e=>{ e.style.width=e.dataset.w+'%'; }); }, 400);
+
+ // Top sellers
+ const ts = document.getElementById('topSellersList');
+ const sellers = data.top_sellers || [];
+ if (!sellers.length) {
+ ts.innerHTML = '<div class="an-empty">Hozircha sotuvchilar yo\'q</div>';
+ } else {
+ const rankClass = ['gold','silver','bronze'];
+ ts.innerHTML = sellers.slice(0,5).map((s,i) => `
+ <div class="an-seller">
+ <div class="an-seller-rank ${rankClass[i]||''}">${i+1}</div>
+ <div style="width:32px;height:32px;border-radius:50%;background:rgba(37,99,235,0.1);display:flex;align-items:center;justify-content:center;font-size:0.8125rem;flex-shrink:0">${s.name?.charAt(0)||'?'}</div>
+ <div class="an-seller-name">${s.name} ${s.is_verified?'✓':''}</div>
+ <div class="an-seller-meta"><strong>${s.active_lots}</strong> lot<br>☆ ${s.rating}</div>
+ </div>
+ `).join('');
+ }
+
+ // Recent activity
+ const ra = document.getElementById('recentActivity');
+ const activity = data.recent_activity || [];
+ if (!activity.length) {
+ ra.innerHTML = '<div class="an-empty">Hozircha faoliyat yo\'q</div>';
+ } else {
+ ra.innerHTML = activity.map(a => `
+ <div class="an-activity-item">
+ <span class="an-activity-icon"></span>
+ <span class="an-activity-text">${a.title}</span>
+ <span class="an-activity-time">${a.time?.slice(11,16)||''}</span>
+ </div>
+ `).join('');
+ }
+
+ } catch (e) {
+ document.getElementById('refreshStatus').textContent = ' Yuklashda xatolik';
+ console.error('Analytics error:', e);
+ }
+}
+
+// ── Theme ──
+function initTheme(){const s=localStorage.getItem('deliket-theme');const p=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'));}
+function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');document.documentElement.setAttribute('data-theme',c==='dark'?'light':'dark');localStorage.setItem('deliket-theme',c==='dark'?'light':'dark');}
+document.addEventListener('DOMContentLoaded', initTheme);
+document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',(e)=>{if(!localStorage.getItem('deliket-theme')){document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');}});
+
+document.addEventListener('DOMContentLoaded', init);
+
+
+document.addEventListener('DOMContentLoaded',function(){
+var mt=document.getElementById('mobileToggle'),hn=document.getElementById('headerNav');
+if(mt&&hn){mt.addEventListener('click',function(){mt.classList.toggle('active');hn.classList.toggle('open')})}
+});</script>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil navigatsiya">
+<div class="mobile-bottom-nav-items">
+<a href="/" class="active"><span class="nav-icon"></span><span class="nav-label">Bosh</span></a>
+<a href="/analytics"><span class="nav-icon"></span><span class="nav-label">Analytics</span></a>
+<a href="/seller"><span class="nav-icon"></span><span class="nav-label">Sotuvchilar</span></a>
+<a href="/deals"><span class="nav-icon"></span><span class="nav-label">Bitimlar</span></a>
+<a href="/academy"><span class="nav-icon"></span><span class="nav-label">Academy</span></a>
+</div>
+</nav>
+</body>
+</html>

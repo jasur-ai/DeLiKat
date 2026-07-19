@@ -1,0 +1,52 @@
+name: 🔗 Manual Webhook Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      webhook_url:
+        description: 'Vercel deployment URL (e.g., https://delikat.vercel.app)'
+        required: true
+        default: ''
+
+jobs:
+  set-webhook:
+    name: 🔗 Set Webhook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install python-telegram-bot
+        run: pip install python-telegram-bot==20.7
+      - name: Set webhook
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          WEBHOOK_URL: ${{ github.event.inputs.webhook_url }}
+        run: |
+          python3 -c "
+import os, asyncio, telegram
+token = os.getenv('BOT_TOKEN')
+url = os.getenv('WEBHOOK_URL')
+if not token or token.startswith('123456'):
+    print('❌ BOT_TOKEN not configured in GitHub Secrets')
+    exit(1)
+if not url:
+    print('❌ WEBHOOK_URL input required')
+    exit(1)
+
+async def set_webhook():
+    bot = telegram.Bot(token)
+    webhook_url = f'{url.rstrip(\"/\")}/webhook'
+    result = await bot.set_webhook(url=webhook_url)
+    info = await bot.get_webhook_info()
+    print(f'✅ Webhook set to: {info.url}')
+    print(f'📊 Pending updates: {info.pending_update_count}')
+    print(f'✅ Custom certificate: {info.has_custom_certificate}')
+    if info.last_error_date:
+        print(f'⚠️ Last error: {info.last_error_date}')
+    else:
+        print('✅ No errors')
+
+asyncio.run(set_webhook())
+"

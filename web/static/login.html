@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLiKet — Kirish</title>
+<meta name="description" content="DeLiKet hisobingizga kiring">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+/* ── Auth Page ── */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 1rem 2rem;background:var(--bg-primary)}
+.auth-container{width:100%;max-width:420px}
+.auth-card{background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);padding:2rem;box-shadow:var(--shadow-lg)}
+.auth-logo{display:flex;align-items:center;justify-content:center;gap:0.5rem;font-size:1.25rem;font-weight:700;margin-bottom:0.25rem}
+.auth-logo span{color:var(--accent)}
+.auth-title{text-align:center;font-size:1.25rem;font-weight:700;margin-bottom:0.25rem}
+.auth-subtitle{text-align:center;font-size:0.875rem;color:var(--text-tertiary);margin-bottom:1.5rem}
+.auth-error{background:var(--red-50);color:var(--red-dark);padding:0.625rem 0.75rem;border-radius:var(--radius-md);font-size:0.8125rem;margin-bottom:1rem;display:none}
+[data-theme="dark"] .auth-error{background:rgba(239,68,68,0.12);color:#f87171}
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.375rem;text-transform:uppercase;letter-spacing:0.03em}
+.form-input{width:100%;padding:0.625rem 0.75rem;font-size:0.875rem;border:1px solid var(--border-primary);border-radius:var(--radius-md);color:var(--text-primary);background:var(--bg-primary);transition:border-color 0.15s,box-shadow 0.15s;outline:none}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1)}
+.form-input::placeholder{color:var(--text-quaternary)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.75rem center;padding-right:2rem}
+.btn-block{width:100%;justify-content:center;padding:0.75rem}
+.auth-footer{text-align:center;margin-top:1rem;font-size:0.8125rem;color:var(--text-tertiary)}
+.auth-footer a{color:var(--accent);font-weight:600;transition:color 0.15s}
+.auth-footer a:hover{color:var(--accent-dark)}
+.auth-divider{display:flex;align-items:center;gap:0.75rem;margin:1.25rem 0;color:var(--text-quaternary);font-size:0.75rem}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border-primary)}
+.auth-alt-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;padding:0.625rem;border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:0.8125rem;font-weight:500;color:var(--text-secondary);transition:border-color 0.15s,background 0.15s;text-decoration:none}
+.auth-alt-btn:hover{background:var(--bg-secondary);border-color:var(--text-tertiary)}
+.password-toggle{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);font-size:0.8125rem;color:var(--text-tertiary);cursor:pointer;padding:0.25rem;background:none;border:none}
+.form-input-wrap{position:relative}
+.loader-dots{display:inline-flex;gap:3px}
+.loader-dots span{width:5px;height:5px;background:currentColor;border-radius:50%;animation:dotPulse 0.8s ease-in-out infinite}
+.loader-dots span:nth-child(2){animation-delay:0.15s}
+.loader-dots span:nth-child(3){animation-delay:0.3s}
+@keyframes dotPulse{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+.success-check{width:48px;height:48px;border-radius:50%;background:var(--emerald-50);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem}
+@media(max-width:480px){.auth-card{padding:1.5rem}}
+
+/* Mobile toggle for auth pages */
+.auth-mobile-toggle{display:none;flex-direction:column;gap:5px;padding:8px;border-radius:var(--radius-md);cursor:pointer;background:none;border:none;z-index:101;position:fixed;top:12px;right:12px}
+.auth-mobile-toggle:hover{opacity:0.8}
+.auth-mobile-toggle span{display:block;width:20px;height:2px;background:var(--text-primary);border-radius:2px;transition:all 0.25s var(--ease-out);transform-origin:center}
+.auth-mobile-toggle.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.auth-mobile-toggle.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+.auth-mobile-toggle.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-bottom-nav.open{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:100;background:var(--surface);border-top:none;padding:80px 20px}
+.mobile-bottom-nav.open .mobile-bottom-nav-items{flex-direction:column;gap:8px;max-width:none}
+.mobile-bottom-nav.open .mobile-bottom-nav-items a{font-size:1.125rem;padding:12px 20px}
+@media(max-width:768px){.auth-mobile-toggle{display:flex}}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div>>
+<div class="auth-page">
+ <div class="auth-container">
+ <div class="auth-card">
+
+ <a href="/" class="auth-logo" style="text-decoration:none">
+ <svg viewBox="0 0 36 36" fill="none" style="width:28px;height:28px">
+ <defs><linearGradient id="lgAl" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgAl)"/><path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/><circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+
+ <h1 class="auth-title">Xush kelibsiz</h1>
+ <p class="auth-subtitle">Hisobingizga kiring yoki yangi hisob yarating</p>
+
+ <div class="auth-error" id="errorMsg"></div>
+
+ <form id="loginForm">
+ <div class="form-group">
+ <label class="form-label" for="email">Email</label>
+ <input class="form-input" id="email" type="email" placeholder="email@example.com" required autocomplete="email">
+ </div>
+ <div class="form-group">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.375rem">
+ <label class="form-label" for="password" style="margin-bottom:0">Parol</label>
+ <a href="/reset-password" style="font-size:0.75rem;color:var(--accent);font-weight:500">Parolni unutdingizmi?</a>
+ </div>
+ <div class="form-input-wrap">
+ <input class="form-input" id="password" type="password" placeholder="••••••••" required autocomplete="current-password">
+ <button type="button" class="password-toggle" id="togglePassword" aria-label="Parolni ko'rsatish"></button>
+ </div>
+ </div>
+ <button aria-label="Kirish" type="submit" class="btn btn-primary btn-block" id="submitBtn">
+ <span id="submitText">Kirish</span>
+ <span id="submitLoader" style="display:none"><span class="loader-dots"><span></span><span></span><span></span></span></span>
+ </button>
+ </form>
+
+ <div class="auth-divider">yoki</div>
+
+ <div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem">
+ <!-- Telegram Login Widget (one-click) -->
+ <div id="tgWidgetContainer" style="min-height:48px;display:flex;align-items:center;justify-content:center"></div>
+
+ <div id="tgWidgetFallback" <button type="button" class="auth-alt-btn" id="tgBtn">
+ 6 xonali kod bilan kirish
+ </button>
+
+ <div id="tgForm" style="display:none;margin-top:0.75rem">
+ <div style="font-size:0.8125rem;color:var(--text-tertiary);margin-bottom:0.75rem;line-height:1.6;text-align:center">
+ Telegram botda <strong style="color:var(--text-primary)">/web_login</strong> buyrug'ini yuboring.
+ <br>Bot sizga <strong>6 xonali kod</strong> beradi. Shu kodni kiriting:
+ </div>
+ <div style="display:flex;gap:0.5rem">
+ <input class="form-input" id="tgToken" type="text" placeholder="000000" maxlength="6"
+ style="text-align:center;font-size:1.25rem;letter-spacing:0.3em;font-weight:700;font-family:var(--font-mono)"
+ <button type="button" class="btn btn-primary" id="tgSubmitBtn" style="padding:0.625rem 1rem;flex-shrink:0">
+ <span id="tgSubmitText">Kirish</span>
+ <span id="tgSubmitLoader" style="display:none"><span class="loader-dots"><span></span><span></span><span></span></span></span>
+ </button>
+ </div>
+ <div style="text-align:center;margin-top:0.5rem">
+ <a href="https://t.me/DeLiKatbot" target="_blank" style="font-size:0.75rem;color:var(--accent)">Botga o'tish</a>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div class="auth-footer">
+ Hisobingiz yo'qmi? <a href="/register">Ro'yxatdan o'tish</a>
+ </div>
+
+ </div>
+ </div>
+</div>
+
+<script>
+const form = document.getElementById('loginForm');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const errorMsg = document.getElementById('errorMsg');
+const submitBtn = document.getElementById('submitBtn');
+const submitText = document.getElementById('submitText');
+const submitLoader = document.getElementById('submitLoader');
+const togglePassword = document.getElementById('togglePassword');
+
+// ── Telegram Login Widget (one-click) ──
+const BOT_USERNAME = 'DeLiKatbot';
+
+function onTelegramAuth(user) {
+ fetch('/api/auth/telegram-widget-login', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(user),
+ })
+ .then(res => res.json())
+ .then(data => {
+ if (data.ok) {
+ window.location.href = '/';
+ } else {
+ errorMsg.textContent = data.detail || 'Xatolik yuz berdi';
+ errorMsg.style.display = 'block';
+ }
+ })
+ .catch(err => {
+ errorMsg.textContent = 'Xatolik: ' + err.message;
+ errorMsg.style.display = 'block';
+ });
+}
+
+// Inject the Telegram widget script dynamically
+(function() {
+ var script = document.createElement('script');
+ script.async = true;
+ script.src = 'https://telegram.org/js/telegram-widget.js?22';
+ script.setAttribute('data-telegram-login', BOT_USERNAME);
+ script.setAttribute('data-size', 'large');
+ script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+ script.setAttribute('data-request-access', 'write');
+ document.getElementById('tgWidgetContainer').appendChild(script);
+})();
+
+// ── Telegram Login (6-digit sync token fallback) ──
+const tgBtn = document.getElementById('tgBtn');
+const tgForm = document.getElementById('tgForm');
+const tgToken = document.getElementById('tgToken');
+const tgSubmitBtn = document.getElementById('tgSubmitBtn');
+const tgSubmitText = document.getElementById('tgSubmitText');
+const tgSubmitLoader = document.getElementById('tgSubmitLoader');
+
+tgBtn.addEventListener('click', () => {
+ tgForm.style.display = tgForm.style.display === 'none' ? 'block' : 'none';
+ if (tgForm.style.display === 'block') tgToken.focus();
+});
+
+tgToken.addEventListener('input', () => {
+ tgToken.value = tgToken.value.replace(/[^0-9]/g, '').slice(0, 6);
+});
+
+tgToken.addEventListener('keydown', (e) => {
+ if (e.key === 'Enter' && tgToken.value.length === 6) tgSubmitBtn.click();
+});
+
+tgSubmitBtn.addEventListener('click', async () => {
+ const code = tgToken.value.trim();
+ if (code.length !== 6) {
+ errorMsg.textContent = '6 xonali kodni to\'liq kiriting';
+ errorMsg.style.display = 'block';
+ return;
+ }
+ errorMsg.style.display = 'none';
+ tgSubmitText.style.display = 'none';
+ tgSubmitLoader.style.display = 'inline-flex';
+ tgSubmitBtn.disabled = true;
+
+ try {
+ const res = await fetch('/api/auth/telegram-login', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ token: code }),
+ });
+ const data = await res.json();
+ if (!res.ok) throw new Error(data.detail || 'Xatolik');
+ window.location.href = '/';
+ } catch (err) {
+ errorMsg.textContent = err.message;
+ errorMsg.style.display = 'block';
+ tgSubmitText.style.display = 'inline';
+ tgSubmitLoader.style.display = 'none';
+ tgSubmitBtn.disabled = false;
+ }
+});
+
+// Toggle password visibility
+togglePassword.addEventListener('click', () => {
+ const isPassword = password.type === 'password';
+ password.type = isPassword ? 'text' : 'password';
+ togglePassword.textContent = isPassword ? '' : '';
+});
+
+form.addEventListener('submit', async (e) => {
+ e.preventDefault();
+ errorMsg.style.display = 'none';
+ submitText.style.display = 'none';
+ submitLoader.style.display = 'inline-flex';
+ submitBtn.disabled = true;
+
+ try {
+ const res = await fetch('/api/auth/login', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ email: email.value.trim(), password: password.value }),
+ });
+ const data = await res.json();
+ if (!res.ok) {
+ throw new Error(data.detail || 'Kirishda xatolik');
+ }
+ // Redirect to home
+ window.location.href = '/';
+ } catch (err) {
+ errorMsg.textContent = err.message;
+ errorMsg.style.display = 'block';
+ submitText.style.display = 'inline';
+ submitLoader.style.display = 'none';
+ submitBtn.disabled = false;
+ }
+});
+
+
+// Theme
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('deliket-theme',t)}
+function initTheme(){var s=localStorage.getItem('deliket-theme'),p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'))}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');setTheme(c==='dark'?'light':'dark')}
+
+document.addEventListener('DOMContentLoaded',initTheme);
+</script>
+
+<button class="auth-mobile-toggle" id="mobileToggleBtn" aria-label="Menyu">
+<span></span><span></span><span></span>
+</button>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil navigatsiya">
+<div class="mobile-bottom-nav-items">
+<a href="/" class="active"><span class="nav-icon"></span><span class="nav-label">Bosh</span></a>
+<a href="/analytics"><span class="nav-icon"></span><span class="nav-label">Analytics</span></a>
+<a href="/seller"><span class="nav-icon"></span><span class="nav-label">Sotuvchilar</span></a>
+<a href="/deals"><span class="nav-icon"></span><span class="nav-label">Bitimlar</span></a>
+<a href="/academy"><span class="nav-icon"></span><span class="nav-label">Academy</span></a>
+</div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+var btn=document.getElementById('mobileToggleBtn'),bn=document.querySelector('.mobile-bottom-nav');
+if(btn&&bn){btn.addEventListener('click',function(){btn.classList.toggle('active');bn.classList.toggle('open')})}
+});
+</script>
+</body>
+</html>

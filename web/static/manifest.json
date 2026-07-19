@@ -1,0 +1,21 @@
+{
+  "name": "DeLiKet — Deadstock Marketplace",
+  "short_name": "DeLiKet",
+  "description": "B2B deadstock va ortiqcha mahsulotlar bozori. Partiyaviy soting yoki 70% gacha arzon narxda sotib oling.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "shopping"],
+  "lang": "uz",
+  "dir": "ltr"
+}

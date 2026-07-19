@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do'kon — DeLiKet</title>
+<meta name="description" content="DeLiKet do'kon profili — lotlar, bitimlar, reyting.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+/* ── Shop Profile Styles ── */
+.shop-page{padding:120px 0 var(--space-12)}
+
+/* Header */
+.shop-header{display:flex;gap:var(--space-6);align-items:flex-start;margin-bottom:var(--space-6);flex-wrap:wrap}
+.shop-avatar{width:72px;height:72px;border-radius:var(--radius-full);background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;font-weight:700;flex-shrink:0}
+.shop-info{flex:1;min-width:200px}
+.shop-name{font-size:1.5rem;font-weight:700;font-family:var(--font-display);letter-spacing:-0.02em;line-height:1.2}
+.shop-meta{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-1);font-size:0.8125rem;color:var(--text-tertiary)}
+.shop-meta-item{display:flex;align-items:center;gap:4px}
+.shop-rating{color:var(--amber);font-weight:600}
+.shop-badge{display:inline-flex;align-items:center;gap:4px;padding:0.1875rem 0.5rem;border-radius:100px;font-size:0.6875rem;font-weight:600}
+.shop-badge-verified{background:var(--emerald-50);color:var(--emerald-dark);border:1px solid rgba(16,185,129,0.2)}
+.shop-badge-premium{background:var(--amber-50);color:var(--amber-dark);border:1px solid rgba(245,158,11,0.2)}
+.shop-actions{display:flex;gap:var(--space-2);margin-top:var(--space-3);flex-wrap:wrap}
+
+/* Stats row */
+.shop-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-3);margin-bottom:var(--space-6)}
+.shop-stat-card{padding:var(--space-3);border:1px solid var(--border-primary);border-radius:var(--radius-lg);background:var(--bg-primary);text-align:center}
+.shop-stat-value{font-size:1.25rem;font-weight:700;font-family:var(--font-display);letter-spacing:-0.02em;line-height:1}
+.shop-stat-label{font-size:0.6875rem;color:var(--text-tertiary);margin-top:var(--space-1);text-transform:uppercase;letter-spacing:0.03em;font-weight:600}
+
+/* Section tabs */
+.shop-tabs{display:flex;gap:var(--space-1);margin-bottom:var(--space-4);border-bottom:1px solid var(--border-primary);padding-bottom:0}
+.shop-tab{padding:var(--space-2) var(--space-4);font-size:0.875rem;font-weight:600;color:var(--text-tertiary);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;background:none;font-family:inherit}
+.shop-tab:hover{color:var(--text-primary)}
+.shop-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* Lots grid */
+.lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-3)}
+.lot-card{background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);padding:var(--space-3);transition:all 0.2s ease}
+.lot-card:hover{border-color:var(--text-tertiary);box-shadow:var(--shadow-card-hover)}
+.lot-card-title{font-size:0.875rem;font-weight:600;line-height:1.3;margin-bottom:var(--space-2)}
+.lot-card-title a{color:var(--text-primary)}
+.lot-card-title a:hover{color:var(--accent)}
+.lot-card-meta{display:flex;gap:var(--space-3);font-size:0.75rem;color:var(--text-tertiary);margin-bottom:var(--space-2);flex-wrap:wrap}
+.lot-card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-2);border-top:1px solid var(--border-primary);font-size:0.8125rem}
+.lot-card-price{font-weight:700;font-family:var(--font-display);color:var(--emerald-dark)}
+
+/* Deals timeline */
+.deals-timeline{display:flex;flex-direction:column;gap:var(--space-2)}
+.deal-item{padding:var(--space-3);border:1px solid var(--border-primary);border-radius:var(--radius-lg);background:var(--bg-primary);transition:all 0.15s}
+.deal-item:hover{border-color:var(--text-tertiary)}
+.deal-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-1);flex-wrap:wrap;gap:var(--space-2)}
+.deal-item-title{font-size:0.8125rem;font-weight:600}
+.deal-item-meta{display:flex;gap:var(--space-3);font-size:0.75rem;color:var(--text-tertiary);flex-wrap:wrap}
+.deal-item-amount{font-weight:700;color:var(--emerald-dark);font-size:0.875rem}
+
+/* Rating section */
+.rating-distribution{display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-4)}
+.rating-row{display:flex;align-items:center;gap:var(--space-2);font-size:0.8125rem}
+.rating-label{min-width:40px;color:var(--text-tertiary);font-weight:500}
+.rating-bar{flex:1;height:8px;background:var(--bg-secondary);border-radius:100px;overflow:hidden}
+.rating-bar-fill{height:100%;border-radius:100px;background:var(--amber);transition:width 0.3s}
+.rating-count{min-width:30px;text-align:right;color:var(--text-tertiary);font-size:0.75rem}
+
+.recent-ratings{display:flex;flex-direction:column;gap:var(--space-2)}
+.rating-card{display:flex;gap:var(--space-3);padding:var(--space-3);border:1px solid var(--border-primary);border-radius:var(--radius-lg)}
+.rating-card-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:0.875rem;flex-shrink:0}
+.rating-card-body{flex:1}
+.rating-card-name{font-size:0.8125rem;font-weight:600}
+.rating-card-stars{font-size:0.75rem;color:var(--amber)}
+.rating-card-text{font-size:0.75rem;color:var(--text-tertiary);margin-top:2px;line-height:1.4}
+.rating-card-date{font-size:0.625rem;color:var(--text-quaternary);margin-top:2px}
+
+/* Empty states */
+.empty-state{text-align:center;padding:var(--space-8);color:var(--text-tertiary)}
+.empty-state-icon{font-size:2rem;margin-bottom:var(--space-2);display:block}
+.empty-state-text{font-size:0.875rem;font-weight:500;color:var(--text-secondary)}
+
+/* Skeleton */
+.shop-skeleton{padding:var(--space-4);background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl)}
+@media(max-width:768px){
+ .shop-stats{grid-template-columns:repeat(3,1fr)}
+ .shop-header{flex-direction:column;align-items:center;text-align:center}
+ .shop-actions{justify-content:center}
+ .lots-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .shop-stats{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body
+<h1 class="sr-only">Do'kon - DeLiKet</h1>
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div> class="theme-transition">
+
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo"><svg viewBox="0 0 36 36" fill="none"><defs><linearGradient id="lgS" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs><rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgS)"/><path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/><circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/></svg>DeLi<span>Ket</span></a>
+ <nav class="header-nav" id="headerNav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/deals">Bitimlar</a>
+ <a href="/crm">CRM</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Bot</a>
+ <button class="theme-toggle" id="themeToggleMobile" aria-label="Tema" style="display:none;"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+ </nav>
+ <button class="theme-toggle" id="themeToggle" aria-label="Tema"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="header-cta">Botga o'tish →</a>
+ <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu"><span></span><span></span><span></span></button>
+ </div>
+</header>
+
+<section class="page-hero" style="padding-bottom:0">
+ <div class="container">
+ <div class="breadcrumb" id="breadcrumb"><a href="/>Bosh sahifa</a><span>›</span><a href="/crm">CRM</a><span>›</span><span id="breadcrumbShop">Do'kon</span></div>
+ </div>
+</section>
+
+<section class="shop-page" style="padding-top:var(--space-6)" id="mainContent">
+ <div class="container">
+
+ <!-- Skeleton loading -->
+ <div id="skeletonLoader">
+ <div class="shop-skeleton" style="margin-bottom:var(--space-4)">
+ <div class="skeleton skeleton-text" style="width:40%;height:2rem"></div>
+ <div class="skeleton skeleton-text-sm" style="width:60%;margin-top:8px"></div>
+ <div class="skeleton skeleton-text-sm" style="width:30%;margin-top:8px"></div>
+ </div>
+ <div class="shop-stats">
+ <div class="shop-skeleton" style="padding:var(--space-3)"><div class="skeleton skeleton-text-sm" style="width:50%;margin:0 auto"></div><div class="skeleton skeleton-text-sm" style="width:70%;margin:4px auto 0"></div></div>
+ <div class="shop-skeleton" style="padding:var(--space-3)"><div class="skeleton skeleton-text-sm" style="width:50%;margin:0 auto"></div><div class="skeleton skeleton-text-sm" style="width:70%;margin:4px auto 0"></div></div>
+ <div class="shop-skeleton" style="padding:var(--space-3)"><div class="skeleton skeleton-text-sm" style="width:50%;margin:0 auto"></div><div class="skeleton skeleton-text-sm" style="width:70%;margin:4px auto 0"></div></div>
+ <div class="shop-skeleton" style="padding:var(--space-3)"><div class="skeleton skeleton-text-sm" style="width:50%;margin:0 auto"></div><div class="skeleton skeleton-text-sm" style="width:70%;margin:4px auto 0"></div></div>
+ <div class="shop-skeleton" style="padding:var(--space-3)"><div class="skeleton skeleton-text-sm" style="width:50%;margin:0 auto"></div><div class="skeleton skeleton-text-sm" style="width:70%;margin:4px auto 0"></div></div>
+ </div>
+ </div>
+
+ <!-- Shop content (hidden until loaded) -->
+ <div id="shopContent" style="display:none">
+ <div class="shop-header" id="shopHeader"></div>
+ <div class="shop-stats" id="statsGrid"></div>
+
+ <div class="shop-tabs">
+ <button aria-label="Lotlar" class="shop-tab active" data-tab="lot<button aria-label="b" data-tab="deals">" class="shop-tab" da<button aria-label="/button>
+ Reyting" class="shop-tab" data-tab="ratings">/button>
+ <button class="shop-tab" data-tab="ratings">Reyting</button>
+ </div>
+
+ <div id="tabLots" class="tab-content"></div>
+ <div id="tabDeals" class="tab-content" style="display:none"></div>
+ <div id="tabRatings" class="tab-content" style="display:none"></div>
+ </div>
+
+ <!-- Error state -->
+ <div id="shopError" style="display:none;text-align:center;padding:var(--space-16)">
+ <span style="font-size:3rem;display:block;margin-bottom:var(--space-4)"></span>
+ <h2 style="font-size:1.25rem;font-weight:600;margin-bottom:var(--space-2)">Do'kon topilmadi</h2>
+ <p style="font-size:0.875rem;color:var(--text-tertiary);margin-bottom:var(--space-4)" id="errorMessage">Ma'lumotlar yuklanmadi</p>
+ <a href="/crm" class="btn btn-primary">CRM ga qaytish</a>
+ </div>
+
+ </div>
+</section>
+
+<footer class="footer theme-transition">
+ <div class="container">
+ <div class="footer-grid">
+ <div class="footer-brand">
+ <a href="/" class="header-logo" style="font-size:1.25rem;"><svg viewBox="0 0 32 32" fill="none" style="width:32px;height:32px;"><defs><linearGradient id="lgF2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs><rect x="0" y="0" width="32" height="32" rx="8" fill="url(#lgF2)"/><path d="M8 8h7a8 8 0 0 1 0 16H8V8z" fill="white" opacity="0.95"/><circle cx="23" cy="16" r="2" fill="white" opacity="0.6"/></svg>DeLi<span>Ket</span></a>
+ <p>Deadstock Liquidation Marketplace — 0% komissiya, AI Trust Score, ESCROW himoya.</p>
+ </div>
+ <div><h4>Marketplace</h4><div class="footer-links"><a href="/>Bosh sahifa</a><a href="/deals">Bitimlar</a><a href="/crm">CRM</a><a href="/seller">Sotuvchilar</a></div></div>
+ <div><h4>Qo'llanma</h4><div class="footer-links"><a href="/how-it-works">Qanday ishlaydi</a><a href="https://t.me/DeLiKatbot" target="_blank">Telegram Bot</a></div></div>
+ <div><h4>Loyiha</h4><div class="footer-links"><a href="https://github.com/jasur-ai/DeLiKat" target="_blank">GitHub</a></div></div>
+ </div>
+ <div class="footer-bottom"><span id="footerYear">© 2026</span> DeLiKet</div>
+ </div>
+</footer>
+
+<script>
+const API = { async get(e){ const r=await fetch(e); if(!r.ok) throw Error(r.status+' '+r.statusText); return r.json(); } };
+const fmt = (p) => p >= 1000000 ? (p/1000000).toFixed(1)+' mln' : p >= 1000 ? (p/1000).toFixed(0)+' ming' : (p||0).toLocaleString()+' som';
+
+// ── Get shop ID from URL ──
+const pathParts = window.location.pathname.split('/').filter(Boolean);
+const shopId = pathParts.length >= 2 ? parseInt(pathParts[pathParts.length - 1]) : 0;
+
+// ── Tab switching ──
+document.querySelectorAll('.shop-tab').forEach(tab => {
+ tab.addEventListener('click', function() {
+ document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+ document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+ this.classList.add('active');
+ const target = document.getElementById('tab' + this.dataset.tab.charAt(0).toUpperCase() + this.dataset.tab.slice(1));
+ if (target) target.style.display = '';
+ });
+});
+
+// ── Render functions ──
+function renderShopHeader(s) {
+ const initial = s.name ? s.name.charAt(0).toUpperCase() : '?';
+ const stars = '☆'.repeat(Math.min(5, Math.round(s.rating)))+'☆'.repeat(Math.max(0,5-Math.min(5,Math.round(s.rating))));
+ const trustCls = s.trust_score >= 7 ? 'shop-badge-premium' : s.trust_score >= 5 ? 'shop-badge-verified' : '';
+ const trustLbl = s.trust_score >= 7 ? 'Premium' : s.trust_score >= 5 ? 'Verified' : '';
+ return `
+ <div class="shop-avatar">${initial}</div>
+ <div class="shop-info">
+ <div class="shop-name">${s.name}</div>
+ <div class="shop-meta">
+ <span class="shop-meta-item shop-rating">${stars} ${s.rating.toFixed(1)}</span>
+ <span class="shop-meta-item">${s.phone || '--'}</span>
+ <span class="shop-meta-item">${s.registered_at ? new Date(s.registered_at).toLocaleDateString('uz-UZ') : '--'}</span>
+ ${trustLbl ? `<span class="shop-badge ${trustCls}">${trustLbl}</span>` : ''}
+ ${s.is_verified ? '<span class="shop-badge shop-badge-verified">Tasdiqlangan</span>' : ''}
+ </div>
+ <div class="shop-actions">
+ <a href="/deals?seller_id=${s.id}" class="btn btn-sm btn-primary">Bitimlar</a>
+ <a href="https://t.me/DeLiKatbot?start=shop_${s.id}" target="_blank" class="btn btn-sm btn-ghost">Bot</a>
+ </div>
+ </div>`;
+}
+
+function renderStats(s) {
+ return [
+ {label:'Jami lotlar', value:s.total_lots, cls:''},
+ {label:'Aktiv', value:s.active_lots, cls:''},
+ {label:'Sotilgan', value:s.sold_lots, cls:''},
+ {label:'Bitimlar', value:s.total_deals, cls:''},
+ {label:`Aylanma`, value:fmt(s.total_volume), cls:'', small:true},
+ ].map(st => `
+ <div class="shop-stat-card">
+ <div class="shop-stat-value" style="${st.small?'font-size:0.9375rem;':''}">${st.value}</div>
+ <div class="shop-stat-label">${st.label}</div>
+ </div>`).join('');
+}
+
+function renderLots(lots) {
+ if (!lots || lots.length === 0) return `<div class="empty-state"><span class="empty-state-icon"></span><div class="empty-state-text">Hozircha lotlar yo'q</div></div>`;
+ const gradeE = {'A':'A','B':'B','C':'C'};
+ return `<div class="lots-grid">${lots.map(l => `
+ <div class="lot-card">
+ <div class="lot-card-title"><a href="/lot/${l.id}">${l.title}</a></div>
+ <div class="lot-card-meta">
+ <span>${gradeE[l.grade]||''} ${l.grade || '--'}</span>
+ <span> ${l.category || '--'}</span>
+ <span>️ ${l.view_count || 0}</span>
+ <span>${l.bid_count || 0}</span>
+ </div>
+ <div class="lot-card-footer">
+ <span class="lot-card-price">${fmt(l.price)}</span>
+ <span style="font-size:0.75rem;color:var(--text-tertiary)">${l.quantity} dona</span>
+ <a href="/lot/${l.id}" class="btn btn-sm btn-ghost">Batafsil</a>
+ </div>
+ </div>`).join('')}</div>`;
+}
+
+function renderDeals(deals) {
+ if (!deals || deals.length === 0) return `<div class="empty-state"><span class="empty-state-icon"></span><div class="empty-state-text">Hozircha bitimlar yo'q</div></div>`;
+ const statusE = {'kutmoqda':'','jo\'natildi':'','yetkazildi':'✓','yakunlandi':'','bahslashilgan':'️','bekor_qilindi':'✕'};
+ return `<div class="deals-timeline">${deals.map(d => `
+ <div class="deal-item">
+ <div class="deal-item-header">
+ <span class="deal-item-title">${d.lot_title || 'Bitim #'+d.id}</span>
+ <span class="deal-item-amount">${fmt(d.amount)}</span>
+ </div>
+ <div class="deal-item-meta">
+ <span>${d.buyer_name || '--'}</span>
+ <span>${statusE[d.status]||''} ${d.status}</span>
+ <span>${d.created_at ? new Date(d.created_at).toLocaleDateString('uz-UZ') : '--'}</span>
+ ${d.completed_at ? `<span>${new Date(d.completed_at).toLocaleDateString('uz-UZ')}</span>` : ''}
+ </div>
+ </div>`).join('')}</div>`;
+}
+
+function renderRatings(s) {
+ const rc = s.rating_counts || {};
+ const total = Object.values(rc).reduce((a,b)=>a+b, 0) || 1;
+ const rr = s.recent_ratings || [];
+ let html = '<div class="rating-distribution">';
+ for (let i = 5; i >= 1; i--) {
+ const pct = Math.round(((rc[i]||0) / total) * 100);
+ html += `<div class="rating-row"><span class="rating-label">${i} ☆</span><div class="rating-bar"><div class="rating-bar-fill" style="width:${pct}%"></div></div><span class="rating-count">${rc[i]||0}</span></div>`;
+ }
+ html += '</div>';
+ if (rr.length > 0) {
+ html += '<div style="font-size:0.875rem;font-weight:600;margin-bottom:var(--space-3)">Oxirgi sharhlar</div><div class="recent-ratings">';
+ rr.forEach(r => {
+ html += `<div class="rating-card"><div class="rating-card-avatar">${(r.rater_name||'?').charAt(0).toUpperCase()}</div><div class="rating-card-body"><div class="rating-card-name">${r.rater_name||'--'}</div><div class="rating-card-stars">${'☆'.repeat(r.score)+'☆'.repeat(5-r.score)}</div>${r.comment ? '<div class="rating-card-text">'+r.comment+'</div>' : ''}<div class="rating-card-date">${r.created_at ? new Date(r.created_at).toLocaleDateString('uz-UZ') : ''}</div></div></div>`;
+ });
+ html += '</div>';
+ } else {
+ html += '<div class="empty-state"><span class="empty-state-icon"></span><div class="empty-state-text">Hali sharhlar yo\'q</div></div>';
+ }
+ return html;
+}
+
+// ── Load shop data ──
+async function loadShop() {
+ if (!shopId || isNaN(shopId)) {
+ document.getElementById('skeletonLoader').style.display = 'none';
+ document.getElementById('shopError').style.display = '';
+ document.getElementById('errorMessage').textContent = 'Noto\'g\'ri do\'kon ID';
+ return;
+ }
+
+ document.getElementById('breadcrumbShop').textContent = `Do'kon #${shopId}`;
+
+ try {
+ const data = await API.get(`/api/deals/shops/${shopId}`);
+ const shop = data.shop;
+ if (!shop) throw new Error('Do\'kon topilmadi');
+
+ document.getElementById('skeletonLoader').style.display = 'none';
+ document.getElementById('shopContent').style.display = '';
+
+ document.getElementById('shopHeader').innerHTML = renderShopHeader(shop);
+ document.getElementById('statsGrid').innerHTML = renderStats(shop);
+ document.getElementById('tabLots').innerHTML = renderLots(shop.lots);
+ document.getElementById('tabDeals').innerHTML = renderDeals(shop.deals);
+ document.getElementById('tabRatings').innerHTML = renderRatings(shop);
+
+ // Update page title
+ document.title = `${shop.name} -- DeLiKet Do'kon`;
+
+ } catch (e) {
+ document.getElementById('skeletonLoader').style.display = 'none';
+ document.getElementById('shopError').style.display = '';
+ document.getElementById('errorMessage').textContent = e.message || 'Xatolik yuz berdi';
+ }
+}
+
+// ── Theme ──
+function initTheme(){const s=localStorage.getItem('deliket-theme');const p=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'));}
+function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('deliket-theme',n);}
+document.getElementById('themeToggle').addEventListener('click',toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click',toggleTheme);
+document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('mobileToggle').classList.toggle('active');document.getElementById('headerNav').classList.toggle('open');});
+window.addEventListener('scroll',()=>{document.getElementById('header').classList.toggle('scrolled',window.scrollY>50);},{passive:true});
+
+initTheme();
+loadShop();
+</script>
+</body>
+</html>

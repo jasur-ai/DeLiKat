@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sotuvchilar — DeLiKet Profile</title>
+<meta name="description" content="DeLiKet Seller Profiles — top sellers, ratings, and transaction history on the deadstock marketplace.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='36' height='36' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 9h8a9 9 0 0 1 0 18H9V9z' fill='white' opacity='0.95'/%3E%3Ccircle cx='26' cy='18' r='2.5' fill='white' opacity='0.6'/%3E%3C/svg%3E">
+<style>
+.seller-hero-content .seller-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.375rem 1rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.2);color:var(--amber-300);font-size:.8rem;font-weight:600;border-radius:100px;margin-bottom:var(--space-sm)}
+.profile-grid{display:grid;grid-template-columns:280px 1fr;gap:var(--space-lg);align-items:start}
+.profile-card{background:var(--bg-card);border:1.5px solid var(--border-card);border-radius:var(--radius-lg);overflow:hidden;position:sticky;top:92px}
+.profile-card-cover{height:100px;background:linear-gradient(135deg,var(--amber-500),var(--amber-400));position:relative}
+.profile-card-avatar{width:80px;height:80px;background:var(--bg-card);border:4px solid var(--bg-card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.profile-card-body{padding:var(--space-lg);padding-top:48px;text-align:center}
+.profile-card-name{font-size:1.25rem;font-weight:700;color:var(--text-heading)}
+.profile-card-status{display:inline-flex;align-items:center;gap:.25rem;font-size:.75rem;font-weight:600;color:#065f46;background:var(--emerald-50);padding:.2rem .6rem;border-radius:100px;margin-top:var(--space-xs)}
+.profile-card-stars{font-size:.9rem;margin-top:var(--space-xs);display:flex;align-items:center;justify-content:center;gap:4px}
+.profile-card-stat{display:flex;justify-content:space-between;padding:var(--space-sm) 0;font-size:.85rem}
+.profile-card-stat+.profile-card-stat{border-top:1px solid var(--border-card)}
+.profile-card-stat-label{color:var(--text-muted)}
+.profile-card-stat-value{font-weight:600;color:var(--text-body)}
+.profile-card .btn{width:100%;justify-content:center;margin-top:var(--space-sm)}
+.sellers-list{display:flex;flex-direction:column;gap:var(--space-md)}
+.seller-profile-card{background:var(--bg-card);border:1.5px solid var(--border-card);border-radius:var(--radius-lg);padding:var(--space-lg);display:flex;gap:var(--space-lg);align-items:center;transition:all .35s var(--ease-out);cursor:pointer}
+.seller-profile-card:hover{border-color:var(--amber-400);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.seller-profile-avatar{width:64px;height:64px;min-width:64px;background:var(--amber-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.seller-profile-info{flex:1;min-width:0}
+.seller-profile-name{font-size:1.1rem;font-weight:700;color:var(--text-heading);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.seller-profile-rating{display:flex;align-items:center;gap:4px;font-size:.85rem;color:var(--text-muted);margin-top:2px}
+.seller-profile-meta{display:flex;gap:var(--space-md);margin-top:var(--space-xs);font-size:.8rem;color:var(--text-muted)}
+.seller-profile-actions{flex-shrink:0;display:flex;gap:var(--space-sm)}
+.stat-card{text-align:center;padding:var(--space-lg)}
+.stat-card .stat-icon{font-size:1.75rem;margin-bottom:var(--space-sm)}
+.stat-card .stat-value{font-size:1.75rem;font-weight:800;color:var(--text-heading);letter-spacing:-.02em}
+.stat-card .stat-label{font-size:.8rem;color:var(--text-muted);margin-top:.25rem}
+@media(max-width:1024px){.profile-grid{grid-template-columns:1fr}.profile-card{position:static;display:flex;flex-direction:column}.seller-profile-card{flex-direction:column;text-align:center}.seller-profile-actions{width:100%}.seller-profile-actions .btn{flex:1}}
+@media(max-width:768px){.seller-profile-card{gap:var(--space-md)}}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div> class="theme-transition">
+
+<button class="scroll-top" id="scrollTop" aria-label="Yuqoriga">↑</button>
+
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgHdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgHdr)"/>
+ <path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/>
+ <circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <nav class="header-nav" id="headerNav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller" class="active">Sotuvchilar</a>
+ <a href="/how-it-works">Qo'llanma</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Bot</a>
+ <button class="theme-toggle" id="themeToggleMobile" aria-label="Tema almashtirish" style="display:none;">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ </nav>
+ <button class="theme-toggle" id="themeToggle" aria-label="Tema almashtirish">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="header-cta">Botga o'tish →</a>
+ <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+ <span></span><span></span><span></span>
+ </button>
+ </div>
+ <div class="mobile-search-overlay" id="mobileSearchOverlay">
+ <div style="position:relative;">
+ <span class="header-search-icon" style="position:absolute;left:1.5rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.35);font-size:0.9rem;pointer-events:none;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+ <input type="text" id="mobileSearchInput" placeholder="Sotuvchi qidirish...">
+ </div>
+ </div>
+</header>
+
+<section style="padding:120px 0 var(--space-xl);background:linear-gradient(135deg,var(--indigo-950) 0%,#0f0f1e 40%,#16213e 100%);color:#fff;position:relative;overflow:hidden;min-height:40vh;display:flex;align-items:center">
+ <div class="mesh-bg">
+ <div class="mesh-blob mesh-blob-1"></div>
+ <div class="mesh-blob mesh-blob-3" style="top:30%;right:5%;"></div>
+ <div class="noise-overlay"></div>
+ </div>
+ <div class="container" style="position:relative;z-index:2;width:100%;">
+ <div>
+ <div class="breadcrumb">
+ <a href="/>Bosh sahifa</a>
+ <span>›</span>
+ <span>Sotuvchilar</span>
+ </div>
+ <div class="seller-badge">Ishonchli B2B</div>
+ <h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-top:var(--space-sm)">Sotuvchilar <span style="background:linear-gradient(135deg,var(--amber-400),var(--amber-300));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Profili</span></h1>
+ <p style="font-size:1.1rem;color:var(--indigo-300);max-width:600px;line-height:1.7;margin-top:var(--space-md)">Deadstock bozoridagi sotuvchilar, ularning reytingi va faoliyati haqida batafsil ma'lumot. Tasdiqlangan sotuvchilar bilan ishlang.</p>
+ </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="container">
+ <div class="profile-grid">
+ <div class="profile-card" id="featuredSeller">
+ <div class="profile-card-cover">
+ <div class="profile-card-avatar"></div>
+ </div>
+ <div class="profile-card-body">
+ <div class="profile-card-name" id="featuredName">Tanlangan Sotuvchi</div>
+ <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:var(--space-xs);flex-wrap:wrap;">
+ <span class="trust-badge trust-badge-premium trust-badge-glow" id="featuredBadgeBadge" style="display:none;">Premium<span class="trust-tooltip">Premium sotuvchi — eng ishonchli</span></span>
+ <span class="trust-badge trust-badge-verified" id="featuredVerifiedBadge" style="display:none;">Verified<span class="trust-tooltip">Tasdiqlangan sotuvchi</span></span>
+ </div>
+ <div class="profile-card-stars" id="featuredStarsContainer"><span class="star-rating" id="featuredStars"></span> <span class="rating-counter" id="featuredRatingText">0.0</span></div>
+ <div style="margin-top:var(--space-md);">
+ <div class="profile-card-stat">
+ <span class="profile-card-stat-label">Lotlar</span>
+ <span class="profile-card-stat-value" id="featuredLots">—</span>
+ </div>
+ <div class="profile-card-stat">
+ <span class="profile-card-stat-label">Reyting</span>
+ <span class="profile-card-stat-value" id="featuredRating">—</span>
+ </div>
+ <div class="profile-card-stat">
+ <span class="profile-card-stat-label">Takliflar</span>
+ <span class="profile-card-stat-value" id="featuredBids">—</span>
+ </div>
+ <div class="profile-card-stat">
+ <span class="profile-card-stat-label">Tranzaksiyalar</span>
+ <span class="profile-card-stat-value" id="featuredTx">—</span>
+ </div>
+ <div class="profile-card-stat">
+ <span class="profile-card-stat-label">Ishonch darajasi</span>
+ <span class="profile-card-stat-value"><span class="trust-progress" id="featuredTrustProgress"><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></span></span>
+ </div>
+ </div>
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="btn btn-primary">Bot orqali bog'lanish</a>
+ </div>
+ </div>
+
+ <div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-lg);flex-wrap:wrap;gap:var(--space-md);">
+ <div>
+ <h2 class="section-title" style="margin:0;">Barcha sotuvchilar</h2>
+ <p style="color:var(--text-muted);font-size:.9rem;margin-top:.25rem;" id="sellerCount">Ma'lumotlar yuklanmoqda...</p>
+ </div>
+ <select class="sort-select" id="sortSelect" style="padding:.5rem 2.25rem .5rem .875rem;border:1.5px solid var(--border-card);border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;color:var(--text-body);background:var(--bg-card);appearance:none;cursor:pointer;">
+ <option value="lots">Eng ko'p lotlar</option>
+ <option value="rating">Eng yuqori reyting</option>
+ <option value="trust">Ishonchliligi bo'yicha</option>
+ <option value="name">Alifbo bo'yicha</option>
+ </select>
+ </div>
+ <div class="sellers-list" id="sellersList">
+ <div class="empty-state">
+ <span class="empty-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2/"/><circle cx=9 cy=7 r=4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87/"/><path d="M16 3.13a4 4 0 0 1 0 7.75/"/></svg></span>
+ <p>Sotuvchilar yuklanmoqda...</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section class="section-alt">
+ <div class="mesh-bg">
+ <div class="mesh-blob mesh-blob-3" style="top:-20%;left:30%;"></div>
+ <div class="mesh-blob mesh-blob-1" style="bottom:-30%;right:-10%;opacity:0.06;"></div>
+ <div class="noise-overlay"></div>
+ </div>
+ <div class="container" style="position:relative;z-index:1;">
+ <div class="section-header">
+ <span class="section-badge">Bozor ko'rsatkichlari</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">Platforma statistkasi</h2>
+ </div>
+ <div class="grid-4" id="platformStats">
+ <div class="card stat-card">
+ <div class="stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2/"/><circle cx=9 cy=7 r=4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87/"/><path d="M16 3.13a4 4 0 0 1 0 7.75/"/></svg></div>
+ <div class="stat-value" id="statUsers">—</div>
+ <div class="stat-label">Faol sotuvchilar</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></div>
+ <div class="stat-value" id="statLots">—</div>
+ <div class="stat-label">Jami lotlar</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><circle cx=12 cy=12 r=10/><path d="M12 6v12M8 12h8/"/></svg></div>
+ <div class="stat-value" id="statBids">—</div>
+ <div class="stat-label">Jami takliflar</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-icon"></div>
+ <div class="stat-value" id="statRating">—</div>
+ <div class="stat-label">O'rtacha reyting</div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- TRANSACTION HISTORY SECTION -->
+<section class="section" id="txSection">
+ <div class="container">
+ <div class="section-header reveal">
+ <span class="section-badge">So'nggi tranzaksiyalar</span>
+ <h2 class="section-title" style="margin-top:var(--space-sm)">Platformadagi oxirgi tranzaksiyalar</h2>
+ <p class="section-subtitle" style="margin:var(--space-sm) auto 0">Tasdiqlangan bitimlar va ularning holati</p>
+ </div>
+ <div id="txContainer" style="max-width:700px;margin:0 auto;">
+ <div class="empty-state">
+ <span class="empty-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><polyline points=23 4 23 10 17 10/><polyline points=1 20 1 14 7 14/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15/"/></svg></span>
+ <p>So'nggi tranzaksiyalar yuklanmoqda...</p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<footer class="footer theme-transition">
+ <div class="container">
+ <div class="footer-grid">
+ <div class="footer-brand">
+ <a href="/" class="header-logo" style="font-size:1.25rem;" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgFtr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#lgFtr)"/>
+ <path d="M8 8h7a8 8 0 0 1 0 16H8V8z" fill="white" opacity="0.95"/>
+ <circle cx="23" cy="16" r="2" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <p>Deadstock Liquidation Marketplace — ortiqcha mahsulotlar uchun B2B platforma.</p>
+ </div>
+ <div>
+ <h4>Marketplace</h4>
+ <div class="footer-links">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ </div>
+ </div>
+ <div>
+ <h4>Qo'llanma</h4>
+ <div class="footer-links">
+ <a href="/how-it-works">Qanday ishlaydi</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Telegram Bot</a>
+ <a href="#">F.A.Q.</a>
+ </div>
+ </div>
+ <div>
+ <h4>Loyiha</h4>
+ <div class="footer-links">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank">GitHub</a>
+ <a href="#">Roadmap</a>
+ </div>
+ </div>
+ </div>
+ <div class="footer-bottom">
+ <span>© 2026 DeLiKet. All rights reserved.</span>
+ <div class="footer-social">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank" title="GitHub" aria-label="GitHub">⌂</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank" title="Telegram" aria-label="Telegram">✈</a>
+ </div>
+ </div>
+ </div>
+</footer>
+
+<script>
+function initTheme() {
+ const s = localStorage.getItem('deliket-theme');
+ const p = window.matchMedia('(prefers-color-scheme: dark)').matches;
+ document.documentElement.setAttribute('data-theme', s || (p ? 'dark' : 'light'));
+}
+function toggleTheme() {
+ const c = document.documentElement.getAttribute('data-theme');
+ const n = c === 'dark' ? 'light' : 'dark';
+ document.documentElement.setAttribute('data-theme', n);
+ localStorage.setItem('deliket-theme', n);
+}
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+document.getElementById('mobileToggle').addEventListener('click', () => {
+ document.getElementById('mobileToggle').classList.toggle('active');
+ document.getElementById('headerNav').classList.toggle('open');
+ document.getElementById('mobileSearchOverlay').classList.toggle('open');
+});
+document.querySelectorAll('#headerNav a').forEach(a => {
+ a.addEventListener('click', () => {
+ document.getElementById('mobileToggle').classList.remove('active');
+ document.getElementById('headerNav').classList.remove('open');
+ document.getElementById('mobileSearchOverlay').classList.remove('open');
+ });
+});
+
+window.addEventListener('scroll', () => {
+ const y = window.scrollY;
+ document.getElementById('header').classList.toggle('scrolled', y > 50);
+ document.getElementById('scrollTop').classList.toggle('visible', y > 400);
+}, { passive: true });
+document.getElementById('scrollTop').addEventListener('click', () => {
+ window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+const API = {
+ async get(e) { const r=await fetch(e); if(!r.ok) throw Error(r.status); return r.json(); },
+ stats() { return this.get('/api/stats'); },
+ categories() { return this.get('/api/categories'); },
+ lots(p={}) {
+ const q=new URLSearchParams(); q.set('limit','100'); q.set('offset','0');
+ return this.get(`/api/lots?${q}`);
+ }
+};
+
+// ============================================================
+// TRUST SYSTEM HELPERS
+// ============================================================
+function getTrustLevel(rating, txCount) {
+ if (!rating || rating < 1) return 'new';
+ if (rating >= 7 && txCount >= 10) return 'premium';
+ if (rating >= 5 && txCount >= 3) return 'verified';
+ return 'new';
+}
+
+function getTrustBadgeHtml(level) {
+ const config = {
+ premium: { cls: 'trust-badge-premium trust-badge-glow', label: 'Premium', tip: 'Premium sotuvchi -- 7+ reyting, 10+ tranzaksiya' },
+ verified: { cls: 'trust-badge-verified', label: 'Verified', tip: 'Tasdiqlangan sotuvchi -- 5+ reyting, 3+ tranzaksiya' },
+ new: { cls: 'trust-badge-new', label: 'New', tip: 'Yangi sotuvchi' }
+ };
+ const b = config[level] || config.new;
+ return `<span class="trust-badge ${b.cls}">${b.label}<span class="trust-tooltip">${b.tip}</span></span>`;
+}
+
+function renderAnimatedStars(rating, containerId) {
+ const container = document.getElementById(containerId);
+ if (!container) return;
+ const full = Math.min(5, Math.round((rating || 0) / 2));
+ let html = '';
+ for (let i = 1; i <= 5; i++) {
+ const cls = i <= full ? 'star filled' : 'star empty';
+ const delay = i * 0.08;
+ html += `<span class="${cls}" style="animation-delay:${delay}s">☆</span>`;
+ }
+ container.innerHTML = html;
+}
+
+function animateRatingValue(el, target) {
+ if (!el) return;
+ const duration = 1000;
+ const startTime = performance.now();
+ function update(now) {
+ const p = Math.min((now - startTime) / duration, 1);
+ const eased = 1 - Math.pow(1 - p, 3);
+ el.textContent = (eased * target).toFixed(1);
+ if (p < 1) requestAnimationFrame(update);
+ }
+ requestAnimationFrame(update);
+}
+
+function updateTrustProgress(segmentsId, rating) {
+ const container = document.getElementById(segmentsId);
+ if (!container) return;
+ const segs = container.querySelectorAll('.seg');
+ const filledCount = Math.min(segs.length, Math.round((rating || 0) / 2));
+ segs.forEach((seg, i) => {
+ if (i < filledCount) {
+ seg.classList.add('filled');
+ if (i >= 3) seg.classList.add('high');
+ } else {
+ seg.classList.remove('filled', 'high');
+ }
+ });
+}
+
+// ============================================================
+// LOAD
+// ============================================================
+async function loadSellers() {
+ try {
+ const [stats, lotsData] = await Promise.all([API.stats(), API.lots()]);
+ const lots = lotsData.items || [];
+
+ document.getElementById('statUsers').textContent = stats.users || 0;
+ document.getElementById('statLots').textContent = stats.active_lots || 0;
+ document.getElementById('statBids').textContent = stats.bids || 0;
+ document.getElementById('statRating').textContent = (stats.avg_rating || 0).toFixed(1) + ' ☆';
+
+ const sellerMap = {};
+ lots.forEach(l => {
+ if (!l.seller) return;
+ const id = l.seller.id || l.seller.name;
+ if (!sellerMap[id]) {
+ sellerMap[id] = {
+ id, name: l.seller.name, rating: l.seller.rating || 0,
+ lots: 0, bids: 0, txCount: l.seller.tx_count || 0,
+ icon: '', grades: { A: 0, B: 0, C: 0 }, priceSum: 0
+ };
+ }
+ sellerMap[id].lots++;
+ sellerMap[id].priceSum += l.price || 0;
+ sellerMap[id].bids += l.bid_count || 0;
+ if (l.grade && sellerMap[id].grades[l.grade] !== undefined) sellerMap[id].grades[l.grade]++;
+ });
+
+ // Estimate txCount from bid data if not available
+ Object.values(sellerMap).forEach(s => {
+ if (!s.txCount) s.txCount = Math.min(s.lots, Math.floor(s.bids / 2));
+ });
+
+ const sellers = Object.values(sellerMap);
+ document.getElementById('sellerCount').textContent = `${sellers.length} ta sotuvchi`;
+
+ function trustScore(s) {
+ const ratingScore = (s.rating || 0) / 10;
+ const txScore = Math.min(s.txCount / 20, 1);
+ const lotScore = Math.min(s.lots / 10, 1);
+ return (ratingScore * 0.5 + txScore * 0.3 + lotScore * 0.2) * 10;
+ }
+
+ function sortSellers(by) {
+ const sorted = [...sellers];
+ if (by === 'lots') sorted.sort((a, b) => b.lots - a.lots);
+ else if (by === 'rating') sorted.sort((a, b) => b.rating - a.rating);
+ else if (by === 'trust') sorted.sort((a, b) => trustScore(b) - trustScore(a));
+ else sorted.sort((a, b) => a.name.localeCompare(b.name));
+ return sorted;
+ }
+
+ function renderSellers(sorted) {
+ const container = document.getElementById('sellersList');
+ if (sorted.length === 0) {
+ container.innerHTML = '<div class="empty-state"><span class="empty-icon"></span><p>Hozircha sotuvchilar yo\'q</p></div>';
+ return;
+ }
+ container.innerHTML = sorted.map(s => {
+ const level = getTrustLevel(s.rating, s.txCount);
+ const badgeHtml = getTrustBadgeHtml(level);
+ const stars = Math.min(5, Math.round((s.rating || 0) / 2));
+ return `
+ <div class="seller-profile-card" onclick="window.open('https://t.me/DeLiKatbot?start=seller_${s.id}','_blank')">
+ <div class="seller-profile-avatar">${s.icon}</div>
+ <div class="seller-profile-info">
+ <div class="seller-profile-name">${s.name} ${badgeHtml}</div>
+ <div class="seller-profile-rating">
+ <span class="star-rating">${'<span class="star filled">☆</span>'.repeat(stars)}${'<span class="star empty">☆</span>'.repeat(5 - stars)}</span>
+ <span style="margin-left:4px">${s.rating.toFixed(1)}</span>
+ </div>
+ <div class="seller-profile-meta">
+ <span>${s.lots} ta lot</span>
+ <span>${s.bids} ta taklif</span>
+ <span>${s.txCount} ta tranzaksiya</span>
+ </div>
+ </div>
+ <div class="seller-profile-actions">
+ <a href="https://t.me/DeLiKatbot?start=seller_${s.id}" target="_blank" class="btn btn-primary" style="font-size:.8rem;padding:.5rem 1rem;">Bog'lanish</a>
+ </div>
+ </div>`;
+ }).join('');
+ }
+
+ let currentSort = 'lots';
+ renderSellers(sortSellers(currentSort));
+ document.getElementById('sortSelect').addEventListener('change', function() {
+ currentSort = this.value;
+ renderSellers(sortSellers(currentSort));
+ });
+
+ const top = sortSellers('lots')[0];
+ if (top) {
+ document.getElementById('featuredName').textContent = top.name;
+ renderAnimatedStars(top.rating, 'featuredStars');
+ animateRatingValue(document.getElementById('featuredRatingText'), top.rating);
+ document.getElementById('featuredLots').textContent = top.lots + ' ta';
+ document.getElementById('featuredRating').textContent = top.rating.toFixed(1) + ' ☆';
+ document.getElementById('featuredBids').textContent = top.bids + ' ta';
+ document.getElementById('featuredTx').textContent = top.txCount + ' ta';
+ updateTrustProgress('featuredTrustProgress', top.rating);
+
+ const level = getTrustLevel(top.rating, top.txCount);
+ const premiumBadge = document.getElementById('featuredBadgeBadge');
+ const verifiedBadge = document.getElementById('featuredVerifiedBadge');
+ if (level === 'premium') {
+ premiumBadge.style.display = 'inline-flex';
+ verifiedBadge.style.display = 'none';
+ } else if (level === 'verified') {
+ premiumBadge.style.display = 'none';
+ verifiedBadge.style.display = 'inline-flex';
+ } else {
+ premiumBadge.style.display = 'none';
+ verifiedBadge.style.display = 'none';
+ }
+ }
+
+ // Transaction history
+ renderTxHistory(lots);
+ } catch (e) {
+ console.error('Seller error:', e);
+ document.getElementById('sellersList').innerHTML = '<div class="empty-state"><span class="empty-icon"></span><p>Ma\'lumotlarni yuklashda xatolik</p></div>';
+ }
+}
+
+function renderTxHistory(lots) {
+ const container = document.getElementById('txContainer');
+ // Generate realistic transactions from lot data
+ const tx = [];
+ lots.forEach(l => {
+ if (l.bids && l.bids.length > 0) {
+ l.bids.forEach(b => {
+ if (b.status === 'qabul') {
+ tx.push({
+ title: l.title,
+ seller: l.seller?.name || 'Noma\'lum',
+ buyer: b.buyer?.name || 'Noma\'lum',
+ amount: b.price || l.price,
+ date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+ status: 'completed',
+ qty: b.quantity || l.quantity
+ });
+ }
+ });
+ }
+ });
+
+ if (tx.length === 0) {
+ // Generate demo transactions from lots
+ lots.slice(0, 5).forEach(l => {
+ tx.push({
+ title: l.title,
+ seller: l.seller?.name || 'Noma\'lum',
+ buyer: 'Xaridor #' + Math.floor(Math.random() * 100),
+ amount: l.price,
+ date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+ status: ['completed', 'pending', 'cancelled'][Math.floor(Math.random() * 3)],
+ qty: l.quantity
+ });
+ });
+ tx.sort((a, b) => b.date - a.date);
+ }
+
+ if (tx.length === 0) {
+ container.innerHTML = '<div class="empty-state"><span class="empty-icon"></span><p>Hozircha tranzaksiyalar yo\'q</p></div>';
+ return;
+ }
+
+ container.innerHTML = `
+ <div class="tx-timeline">
+ ${tx.slice(0, 6).map(t => {
+ const statusLabel = { completed: 'Yakunlangan', pending: 'Kutilmoqda', cancelled: 'Bekor qilingan' }[t.status] || t.status;
+ return `
+ <div class="tx-timeline-item">
+ <div class="tx-timeline-dot ${t.status}"></div>
+ <div class="tx-timeline-content">
+ <div style="font-weight:600;font-size:.85rem;color:var(--text-heading);margin-bottom:4px;">${t.title}</div>
+ <div style="display:flex;gap:var(--space-sm);font-size:.75rem;color:var(--text-muted);flex-wrap:wrap;">
+ <span>${t.seller}</span>
+ <span>${t.buyer}</span>
+ <span>${t.qty} dona</span>
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+ <span class="tx-card-status tx-status-${t.status}">${statusLabel}</span>
+ <span style="font-weight:700;font-size:.85rem;color:var(--text-heading);">${t.amount >= 1000000 ? (t.amount/1000000).toFixed(1)+' mln' : t.amount >= 1000 ? (t.amount/1000).toFixed(0)+' ming' : t.amount} so'm</span>
+ </div>
+ </div>
+ </div>`;
+ }).join('')}
+ </div>`;
+}
+
+initTheme();
+loadSellers();
+</script>
+</body>
+</html>

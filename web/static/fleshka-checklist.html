@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleshka Bozor Tashrifi — DeLiKet Checklist</title>
+<meta name="description" content="Fleshka bozoriga tashrif uchun to'liq checklist: vizitkalar, QR kodlar, pitch skript, KPI monitoring. DeLiKet — 0% komissiya bilan deadstock likvidatsiya.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+ font-family:'Inter',-apple-system,sans-serif;
+ background:#fafafa;color:#111;line-height:1.5;
+ -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+::selection{background:#dbeafe;color:#111}
+
+/* ── Variables ── */
+:root{
+ --blue:#2563eb;--blue-dark:#1d4ed8;--blue-light:#dbeafe;
+ --green:#059669;--green-light:#d1fae5;
+ --amber:#d97706;--amber-light:#fef3c7;
+ --red:#dc2626;--red-light:#fef2f2;
+ --violet:#7c3aed;--violet-light:#ede9fe;
+ --gray-50:#f8f9fa;--gray-100:#f0f0f3;--gray-200:#e5e5ea;
+ --gray-300:#aeaeb2;--gray-400:#8e8e93;--gray-500:#636366;
+ --radius:12px;--radius-sm:8px;--radius-lg:16px;
+}
+
+/* ── Header ── */
+.page-header{
+ background:#111;color:#fff;
+ padding:3rem 1rem 2rem;text-align:center;
+}
+.page-header h1{
+ font-size:clamp(1.5rem,5vw,2.25rem);
+ font-weight:800;letter-spacing:-0.03em;
+ line-height:1.1;margin-bottom:0.5rem;
+}
+.page-header h1 span{color:#60a5fa}
+.page-header p{font-size:0.875rem;color:#9ca3af;max-width:480px;margin:0 auto}
+.page-header .badge{
+ display:inline-flex;align-items:center;gap:6px;
+ padding:0.3125rem 0.75rem;margin-bottom:0.75rem;
+ background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+ border-radius:100px;font-size:0.75rem;font-weight:600;color:#9ca3af;
+}
+.page-header .badge-dot{width:6px;height:6px;background:#10b981;border-radius:50%;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.page-header .meta{display:flex;gap:1rem;justify-content:center;font-size:0.75rem;color:#6b7280;margin-top:0.75rem}
+.page-header .meta span{display:flex;align-items:center;gap:4px}
+
+/* ── Container ── */
+.container{max-width:720px;margin:0 auto;padding:0 1rem}
+
+/* ── Section ── */
+.section{padding:2rem 0}
+.section-title{
+ display:flex;align-items:center;gap:8px;
+ font-size:1.125rem;font-weight:700;margin-bottom:0.25rem;
+ letter-spacing:-0.02em;
+}
+.section-sub{font-size:0.8125rem;color:var(--gray-500);margin-bottom:1.25rem;line-height:1.5}
+.section-header{margin-bottom:1rem}
+
+/* ── Card ── */
+.card{
+ background:#fff;border:1px solid var(--gray-200);
+ border-radius:var(--radius);overflow:hidden;
+ transition:border-color 0.15s;
+}
+.card:hover{border-color:var(--gray-300)}
+.card-pad{padding:1.25rem}
+.card-pad-sm{padding:0.875rem}
+.card-header{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0.875rem 1.25rem;border-bottom:1px solid var(--gray-200);
+ font-weight:600;font-size:0.9375rem;
+}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.card-group{margin-bottom:1.5rem}
+.card-group:last-child{margin-bottom:0}
+
+/* ── Checklist Item ── */
+.checklist{list-style:none;padding:0}
+.checklist li{
+ display:flex;align-items:flex-start;gap:0.75rem;
+ padding:0.75rem 1.25rem;border-bottom:1px solid var(--gray-100);
+ font-size:0.875rem;line-height:1.5;
+ transition:background 0.1s;
+}
+.checklist li:last-child{border-bottom:none}
+.checklist li:hover{background:var(--gray-50)}
+.checklist .cb{
+ min-width:20px;width:20px;height:20px;
+ border:2px solid var(--gray-300);border-radius:4px;
+ display:flex;align-items:center;justify-content:center;
+ flex-shrink:0;margin-top:1px;
+ transition:all 0.15s;cursor:pointer;font-size:0.625rem;
+ user-select:none;
+}
+.checklist .cb.checked{background:var(--blue);border-color:var(--blue);color:#fff}
+.checklist .cb-label{flex:1;padding-top:1px}
+.checklist .cb-tag{
+ font-size:0.6875rem;padding:0.125rem 0.5rem;
+ border-radius:100px;font-weight:600;white-space:nowrap;flex-shrink:0;
+}
+.cb-tag-green{background:var(--green-light);color:var(--green)}
+.cb-tag-blue{background:var(--blue-light);color:var(--blue)}
+.cb-tag-amber{background:var(--amber-light);color:var(--amber)}
+.cb-tag-red{background:var(--red-light);color:var(--red)}
+.cb-tag-violet{background:var(--violet-light);color:var(--violet)}
+
+/* ── Pitch Script ── */
+.pitch-card{
+ background:var(--gray-50);border:1px solid var(--gray-200);
+ border-radius:var(--radius);padding:1rem;margin-bottom:0.75rem;
+}
+.pitch-card:last-child{margin-bottom:0}
+.pitch-label{
+ display:inline-flex;align-items:center;gap:4px;
+ font-size:0.6875rem;font-weight:600;padding:0.1875rem 0.5rem;
+ border-radius:100px;margin-bottom:0.5rem;
+}
+.pitch-label-green{background:var(--green-light);color:var(--green)}
+.pitch-label-blue{background:var(--blue-light);color:var(--blue)}
+.pitch-label-amber{background:var(--amber-light);color:var(--amber)}
+.pitch-label-violet{background:var(--violet-light);color:var(--violet)}
+.pitch-title{font-weight:600;font-size:0.875rem;margin-bottom:0.375rem}
+.pitch-body{
+ font-size:0.8125rem;color:var(--gray-500);line-height:1.7;
+ white-space:pre-wrap;
+}
+.pitch-body em{color:var(--gray-400);font-style:normal;font-size:0.75rem}
+
+/* ── KPI Dashboard ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1rem}
+.kpi-card{
+ background:#fff;border:1px solid var(--gray-200);
+ border-radius:var(--radius-sm);padding:0.75rem;text-align:center;
+}
+.kpi-value{font-size:1.5rem;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-0.03em;line-height:1}
+.kpi-label{font-size:0.625rem;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.03em;margin-top:0.25rem;font-weight:600}
+.kpi-blue .kpi-value{color:var(--blue)}
+.kpi-green .kpi-value{color:var(--green)}
+.kpi-amber .kpi-value{color:var(--amber)}
+.kpi-red .kpi-value{color:var(--red)}
+
+.kpi-progress{height:4px;background:var(--gray-100);border-radius:4px;overflow:hidden;margin-top:0.5rem}
+.kpi-progress-fill{height:100%;border-radius:4px;transition:width 0.3s}
+.kpi-progress-blue{background:var(--blue)}
+.kpi-progress-green{background:var(--green)}
+
+/* ── KPI Log ── */
+.kpi-log{list-style:none;padding:0}
+.kpi-log li{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0.5rem 1.25rem;border-bottom:1px solid var(--gray-100);
+ font-size:0.8125rem;gap:0.5rem;flex-wrap:wrap;
+}
+.kpi-log li:last-child{border-bottom:none}
+.kpi-log .kl-left{display:flex;align-items:center;gap:0.5rem}
+.kpi-log .kl-num{font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--gray-400);min-width:20px}
+.kpi-log .kl-text{color:var(--gray-500)}
+.kpi-log .kl-status{
+ font-size:0.6875rem;font-weight:600;padding:0.125rem 0.5rem;
+ border-radius:100px;
+}
+.kl-done{background:var(--green-light);color:var(--green)}
+.kl-pending{background:var(--amber-light);color:var(--amber)}
+
+/* ── QR Section ── */
+.qr-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.qr-item{text-align:center;padding:1rem;background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius)}
+.qr-item img{width:140px;height:140px;margin:0 auto 0.5rem;border-radius:0.5rem}
+.qr-item p{font-size:0.75rem;color:var(--gray-500);font-weight:500}
+
+/* ── Timeline ── */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{
+ content:'';position:absolute;left:7px;top:4px;bottom:4px;
+ width:2px;background:var(--gray-200);
+}
+.tl-item{position:relative;margin-bottom:1.5rem}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{
+ position:absolute;left:-1.625rem;top:4px;
+ width:16px;height:16px;border-radius:50%;
+ background:#fff;border:2px solid var(--blue);
+ display:flex;align-items:center;justify-content:center;
+}
+.tl-dot-inner{width:6px;height:6px;border-radius:50%;background:var(--blue)}
+.tl-time{font-size:0.6875rem;color:var(--gray-400);font-weight:600;margin-bottom:0.25rem}
+.tl-title{font-weight:600;font-size:0.875rem;margin-bottom:0.25rem}
+.tl-desc{font-size:0.8125rem;color:var(--gray-500);line-height:1.5}
+
+/* ── Tips ── */
+.tip{display:flex;gap:0.75rem;padding:0.875rem;background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--radius-sm);margin-bottom:0.5rem;font-size:0.8125rem;line-height:1.5}
+.tip:last-child{margin-bottom:0}
+.tip-icon{font-size:1.125rem;flex-shrink:0}
+
+/* ── Print Button ── */
+.print-btn{
+ display:inline-flex;align-items:center;gap:6px;
+ padding:0.5rem 1rem;font-size:0.8125rem;font-weight:600;
+ background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-sm);
+ transition:all 0.15s;color:var(--gray-500);
+}
+.print-btn:hover{background:var(--gray-50);border-color:var(--gray-300);color:#111}
+
+/* ── Header Stats ── */
+.header-stats{display:flex;gap:1.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.header-stat{text-align:center}
+.header-stat-val{font-size:1.25rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.header-stat-lbl{font-size:0.625rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.03em;margin-top:2px}
+
+/* ── Print Styles ── */
+@media print{
+ body{background:#fff;font-size:11px}
+ .page-header{background:#fff!important;color:#111!important;padding:0.5rem 0!important;border-bottom:2px solid #000}
+ .page-header h1{font-size:1.25rem}
+ .page-header p,.page-header .meta,.badge,.print-btn,.kpi-progress,.section-sub,.qr-note{display:none!important}
+ .header-stats{display:flex!important;gap:1rem;margin-top:0.5rem}
+ .header-stat-val{font-size:1rem}
+ .card{border:1px solid #ccc;break-inside:avoid;page-break-inside:avoid;margin-bottom:0.5rem}
+ .container{max-width:100%;padding:0}
+ .section{padding:0.5rem 0}
+ .kpi-grid{grid-template-columns:repeat(4,1fr)}
+ .qr-row{grid-template-columns:1fr 1fr}
+ .checklist li{padding:0.375rem 0.75rem;font-size:0.75rem}
+ .cb{cursor:default}
+ .pitch-card{break-inside:avoid}
+ .float-nav{display:none!important}
+ .kpi-log .kl-status{display:none}
+ @page{margin:0.75cm}
+}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+ .kpi-grid{grid-template-columns:repeat(2,1fr)}
+ .qr-row{grid-template-columns:1fr}
+ .card-grid{grid-template-columns:1fr}
+ .page-header{padding:2rem 1rem 1.5rem}
+}
+
+/* ── Float Nav ── */
+.float-nav{
+ position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);
+ z-index:100;
+ display:flex;gap:0.25rem;
+ background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);
+ -webkit-backdrop-filter:blur(12px);
+ border:1px solid var(--gray-200);border-radius:100px;
+ padding:0.375rem;box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+.float-nav a{
+ padding:0.375rem 0.75rem;font-size:0.75rem;font-weight:600;
+ border-radius:100px;transition:all 0.15s;white-space:nowrap;
+ color:var(--gray-400);
+}
+.float-nav a:hover{background:var(--gray-50);color:#111}
+.float-nav a.active{background:#111;color:#fff}
+@media(max-width:480px){
+ .float-nav{right:1rem;left:1rem;transform:none;border-radius:var(--radius-sm);overflow-x:auto;justify-content:flex-start}
+}
+
+/* ── Mobile Navigation (universal) ── */
+.mobile-toggle-btn{display:none;flex-direction:column;gap:5px;padding:8px;border-radius:var(--radius-xs,8px);cursor:pointer;background:none;border:none}
+.mobile-toggle-btn:hover{opacity:0.8}
+.mobile-toggle-btn span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all 0.25s ease;transform-origin:center}
+.mobile-toggle-btn.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.mobile-toggle-btn.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+.mobile-toggle-btn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-nav-overlay{position:fixed;inset:0;z-index:200;background:var(--bg,#0b0d10);transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow-y:auto}
+.mobile-nav-overlay.open{transform:translateX(0)}
+.mobile-nav-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border,#262b36)}
+.mobile-nav-brand{font-size:1.125rem;font-weight:700;color:var(--text,#e8edf5);text-decoration:none}
+.mobile-nav-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--text-2,#8896a8);cursor:pointer;background:none;border:none;border-radius:var(--radius-xs,8px);transition:all 0.15s}
+.mobile-nav-close:hover{background:var(--surface-2,#1c2028);color:var(--text,#e8edf5)}
+.mobile-nav-links{display:flex;flex-direction:column;padding:8px}
+.mobile-nav-links a{padding:12px 16px;font-size:0.9375rem;font-weight:500;color:var(--text-2,#8896a8);text-decoration:none;border-radius:var(--radius-xs,8px);transition:all 0.15s}
+.mobile-nav-links a:hover{background:var(--surface-2,#1c2028);color:var(--text,#e8edf5)}
+@media(max-width:768px){.mobile-toggle-btn{display:flex}}
+
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="page-header">
+ <div class="badge"><span class="badge-dot"></span>Fleshka Bozor Tashrifi — 1-kun</div>
+ <h1>Tashrif <span>Checklist</span> va <span>KPI</span></h1>
+ <p>Vizitkalar, QR kodlar, pitch skriptlar va natijalarni kuzatish — barchasi bir joyda</p>
+ <div class="meta">
+ <span><span id="todayDate"></span></span>
+ <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z/"/><circle cx=12 cy=10 r=3"/></svg> Fleshka (Malika) Bozori</span>
+ <span>30+ do'kon</span>
+ </div>
+ <div class="header-stats" id="headerStats">
+ <div class="header-stat"><div class="header-stat-val" id="hStatVisited">0</div><div class="header-stat-lbl">Tashrif</div></div>
+ <div class="header-stat"><div class="header-stat-val" id="hStatSigned">0</div><div class="header-stat-lbl">Ro'yxat</div></div>
+ <div class="header-stat"><div class="header-stat-val" id="hStatLots">0</div><div class="header-stat-lbl">Yangi lot</div></div>
+ <div class="header-stat"><div class="header-stat-val" id="hStatDeals">0</div><div class="header-stat-lbl">Bitim</div></div>
+ </div>
+</header>
+
+<!-- ═══ FLOAT NAV ═══ -->
+<nav class="float-nav" id="floatNav">
+ <a href="#checklist">Checklist</a>
+ <a href="#pitch">Pitch</a>
+ <a href="#kpi">KPI</a>
+ <a href="#qrcode"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z/"/><circle cx=12 cy=13 r=4"/></svg> QR</a>
+ <a href="#schedule"> Jadval</a>
+</nav>
+
+<div class="container">
+
+<!-- ═══ CHECKLIST ═══ -->
+<section class="section" id="checklist">
+ <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem">
+ <div>
+ <h2 class="section-title">Tashrif Checklist</h2>
+ <p class="section-sub">Fleshka bozoriga borishdan oldin barcha kerakli narsalarni tayyorlang</p>
+ </div>
+ <button aria-label="️ Print" class="print-btn" onclick="window.print()">️ Print</button>
+ </div>
+
+ <div class="card">
+ <div class="card-header">
+ <span> Tayyorgarlik (uyda/ofisda)</span>
+ <span style="font-size:0.75rem;color:var(--gray-400);font-weight:400" id="prepCount"> 0/10</span>
+ </div>
+ <ul class="checklist" id="prepList">
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Vizitkalar tayyorlash — <b>50 dona</b> (DeLiKet nomi, QR, telefon)</span><span class="cb-tag cb-tag-green">Asosiy</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">QR kod stikerlar — <b>30 dona</b> (@DeLiKatbot ga o'tadi)</span><span class="cb-tag cb-tag-green">Asosiy</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Telefon batareyasi to'liq zaryad + powerbank</span><span class="cb-tag cb-tag-blue">Muhim</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">1 daqiqalik pitch skriptni yod oling (qarang: Pitch)</span><span class="cb-tag cb-tag-blue">Muhim</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Telegram botni tekshirish — /dokon va /start ishlayapti</span><span class="cb-tag cb-tag-amber">Tekshirish</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">dokonlar.html va dokonlar sahifasi ochilishini tekshirish</span><span class="cb-tag cb-tag-amber">Tekshirish</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Namuna lot tayyorlash — demo ko'rsatish uchun</span><span class="cb-tag cb-tag-violet">Demo</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Yengil kiyinish (bozor ichi issiq) + qulay poyabzal</span><span class="cb-tag cb-tag-amber">Qulaylik</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Bloknot va ruchka — do'kon nomlarini yozish uchun</span><span class="cb-tag cb-tag-blue">Muhim</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">DeLiKet brending: futbolka yoki brend nomi ko'rinadigan kiyim</span><span class="cb-tag cb-tag-green">Asosiy</span></li>
+ </ul>
+ </div>
+
+ <div style="height:1rem"></div>
+
+ <div class="card">
+ <div class="card-header">
+ <span>Bozorda (har bir do'kon uchun)</span>
+ <span style="font-size:0.75rem;color:var(--gray-400);font-weight:400">Harakatlar: <span id="shopCount"> 0/10</span></span>
+ </div>
+ <ul class="checklist" id="shopList">
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Do'konga kirib, sotuvchiga salom berish + tabassum</span><span class="cb-tag cb-tag-green">Har bir</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">1 daqiqalik pitch aytish (pastdagi skriptlardan)</span><span class="cb-tag cb-tag-green">Har bir</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Vizitka va QR stiker berish</span><span class="cb-tag cb-tag-blue">Xar bir</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Do'kon nomi, telefon raqamini yozib olish</span><span class="cb-tag cb-tag-amber">Ma'lumot</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Qanday mahsulotlar bor? (notebook, smartfon, aksesuar?)</span><span class="cb-tag cb-tag-amber">Ma'lumot</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Omborda qolgan (deadstock) mahsulot bormi? — so'rash</span><span class="cb-tag cb-tag-violet">Asosiy savol</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Uzum'dan foydalanasizmi? qancha komissiya to'laysiz? — so'rash</span><span class="cb-tag cb-tag-violet">Asosiy savol</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Bot orqali tezda ro'yxatdan o'tishni taklif qilish</span><span class="cb-tag cb-tag-blue">Har bir</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Agar rozi bo'lsa — joyida /dokon orqali ro'yxatdan o'tkazish</span><span class="cb-tag cb-tag-green">Konversiya</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Telegram kontaktiga qo'shimcha ma'lumot yuborish</span><span class="cb-tag cb-tag-amber">Follow-up</span></li>
+ </ul>
+ </div>
+
+ <div style="height:1rem"></div>
+
+ <div class="card">
+ <div class="card-header">
+ <span>Tashrifdan keyin (kechqurun)</span>
+ <span style="font-size:0.75rem;color:var(--gray-400);font-weight:400" id="afterCount"> 0/6</span>
+ </div>
+ <ul class="checklist" id="afterList">
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">KPI dashboard'ni yangilash (qancha do'kon, qancha ro'yxat?)</span><span class="cb-tag cb-tag-blue">Muhim</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Ro'yxatdan o'tgan do'konlarga Telegram'dan follow-up xabar</span><span class="cb-tag cb-tag-blue">Muhim</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Rozy bo'lmagan do'konlarni qayta ishlash (2-kun uchun ro'yxat)</span><span class="cb-tag cb-tag-amber">Keyingi kun</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Lot yaratgan do'konlarni tekshirish + yordam berish</span><span class="cb-tag cb-tag-green">Asosiy</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">Ijtimoiy tarmoqlarda tashrif haqida post (Telegram kanal)</span><span class="cb-tag cb-tag-violet">Marketing</span></li>
+ <li><span class="cb" onclick="toggleCB(this)"></span><span class="cb-label">2-kun rejasini tuzish (qaysi do'konlarni takroran borish)</span><span class="cb-tag cb-tag-amber">Reja</span></li>
+ </ul>
+ </div>
+</section>
+
+<!-- ═══ PITCH SCRIPTS ═══ -->
+<section class="section" id="pitch">
+ <div class="section-header">
+ <h2 class="section-title">Pitch Skriptlar</h2>
+ <p class="section-sub">1 daqiqada do'kon egasiga DeLiKet'ni tushuntirish. Har bir vaziyat uchun alohida skript.</p>
+ </div>
+
+ <div class="card">
+ <div class="card-header">Cold Approach — Birinchi marta ko'rgan do'kon</div>
+ <div class="card-pad">
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-green"> 1-qadam: Salom</span>
+ <div class="pitch-body">Assalomu alaykum! Men DeLiKet platformasidan keldim. 2 daqiqa va'ratingiz bormi? Sizga ortiqcha mahsulotlarni sotishda yordam beraman.</div>
+ </div>
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-blue"> 2-qadam: Muammo</span>
+ <div class="pitch-body">Omboringizda qolib ketgan eski model notebook yoki smartfonlar bormi? Uzum'da sotsangiz, 15-25% komissiya to'laysiz. Ko'p pul ketadi.</div>
+ </div>
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-green">3-qadam: Yechim</span>
+ <div class="pitch-body">DeLiKet'da <b>0% komissiya</b>. Ortiqcha mahsulotlarni partiyalab, 100% daromad bilan sotasiz. ESCROW himoya — xaridor to'laydi, siz jo'natasiz, hamma xavfsiz.</div>
+ </div>
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-amber">4-qadam: Harakat</span>
+ <div class="pitch-body">2 daqiqada ro'yxatdan o'ting va lot yarating. Mana QR kod — skanerlang yoki @DeLiKatbot ni oching. Bugun boshlang!</div>
+ </div>
+ </div>
+ </div>
+
+ <div style="height:0.75rem"></div>
+
+ <div class="card">
+ <div class="card-header">Warm Follow-up — Oldin gaplashgan do'konga qayta</div>
+ <div class="card-pad">
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-amber">Qayta aloqa</span>
+ <div class="pitch-body">Assalomu alaykum, o'tgan safar DeLiKet haqida gaplashgan edik. O'ylab ko'rdingizmi? Sizga lot yaratishda yordam beraman — hozir 2 daqiqa vaqtingiz bormi?</div>
+ </div>
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-violet"> Qarshilikni yengish</span>
+ <div class="pitch-body"><em>"Vaqt yo'q" desa:</em> 1 daqiqa. Faqat ismingiz va telefon raqamingiz kerak. Qolganini men qilaman.<br><br><em>"Ishonmayman" desa:</em> Tushunaman. ESCROW tizimi — xaridor to'laydi, siz jo'natasiz, u qabul qilmaguncha pul menga qaytmaydi. Xavfsiz.<br><br><em>"Uzum yetarli" desa:</em> Uzum'da 15-25% komissiya. 10 millionlik mahsulotdan 2.5 million ketadi. DeLiKet'da 10 million — hammasi sizniki.</div>
+ </div>
+ </div>
+ </div>
+
+ <div style="height:0.75rem"></div>
+
+ <div class="card">
+ <div class="card-header">Telefon / Telegram DM skript</div>
+ <div class="card-pad">
+ <div class="pitch-card">
+ <span class="pitch-label pitch-label-blue">✉️ DM xabar</span>
+ <div class="pitch-body">Assalomu alaykum! [Ism] DeLiKet platformasidan.
+
+Sizning do'koningizda omborda qolib ketgan mahsulotlar bormi? Eski model notebook, smartfon, aksesuar — 0% komissiya bilan partiyaviy soting.
+
+0% komissiya (Uzum 15-25%)
+ESCROW himoya
+AI Trust Score
+1 daqiqada ro'yxat
+
+Qiziqsangiz, @DeLiKatbot ga o'ting. Yoki web: delikat.vercel.app/dokonlar</div>
+ </div>
+ </div>
+ </div>
+
+ <div style="height:0.75rem"></div>
+
+ <div class="tip">
+ <span class="tip-icon"></span>
+ <div><b>Pro-tip:</b> Pitch ni do'kon mahsulotiga moslang. Notebook do'konida — "eski model notebooklarni 0% bilan soting". Smartfon do'konida — "Displayi singan, lekin ehtiyot qism uchun yaroqli telefonlarni soting". Muammoni ularning tilida gapiring.</div>
+ </div>
+</section>
+
+<!-- ═══ KPI DASHBOARD ═══ -->
+<section class="section" id="kpi">
+ <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem">
+ <div>
+ <h2 class="section-title">KPI Monitoring</h2>
+ <p class="section-sub">Tashrif natijalarini kuzatish — real vaqtda yang<button aria-label="onclick="resetKPI()"" style="padding:0.5rem 1rem;font-size:0.8125rem;font-weight:600;background:#111;color:#fff;border-radius:var(--radius-sm);transition:opacity 0.15s" onclick="resetKPI()">onclick="resetKPI()">Reset</button>
+ </div>
+
+ <div class="kpi-grid">
+ <div class="kpi-card kpi-blue">
+ <div class="kpi-value" id="kpiVisited">0</div>
+ <div class="kpi-label">Do'konlar</div>
+ <div class="kpi-progress"><div class="kpi-progress-fill kpi-progress-blue" id="kpiVisitedBar" style="width:0%"></div></div>
+ </div>
+ <div class="kpi-card kpi-green">
+ <div class="kpi-value" id="kpiSigned">0</div>
+ <div class="kpi-label">Ro'yxatdan o'tgan</div>
+ <div class="kpi-progress"><div class="kpi-progress-fill kpi-progress-green" id="kpiSignedBar" style="width:0%"></div></div>
+ </div>
+ <div class="kpi-card kpi-amber">
+ <div class="kpi-value" id="kpiLots">0</div>
+ <div class="kpi-label">Yangi lotlar</div>
+ <div class="kpi-progress"><div class="kpi-progress-fill kpi-progress-blue" id="kpiLotsBar" style="width:0%"></div></div>
+ </div>
+ <div class="kpi-card kpi-red">
+ <div class="kpi-value" id="kpiDeals">0</div>
+ <div class="kpi-label">Bitimlar</div>
+ <div class="kpi-progress"><div class="kpi-progress-fill kpi-progress-green" id="kpiDealsBar" style="width:0%"></div></div>
+ </div>
+ </div>
+
+ <div class="card">
+ <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+ <span>Tashrif jurnali</span>
+ <div style="display:flex;gap:0.375rem">
+ <input type="text" id="logShopName" placeholder="Do'kon nomi" style="padding:0.3125rem 0.5rem;font-size:0.75rem;border:1px solid var(--gray-200);border-radius:6px;width:120px;outline:none;font-family:inherit">
+ <select id="logAction" style="padding:0.3125rem 0.5rem;font-size:0.75rem;border:1px solid var(--gray-200);border-radius:6px;outline:none;font-family:inherit;background:#fff">
+ <option value="visited">Tashrif</option>
+ <option value="signed">Ro'yxat</option>
+ <option value="lot">Lot yaratdi</option>
+ <option value="deal">Bitim</option><button aria-label="radius:6px;white-spa" style="padding:0.3125rem 0.625rem;font-size:0.75rem;font-weight:600;background:var(--blue);color:#fff;border-radius:6px;white-space:nowrap" onclick="addLogEntry()">radius:6px;white-space:nowrap" onclick="addLogEntry()">+ Qo'shish</button>
+ </div>
+ </div>
+ <ul class="kpi-log" id="kpiLog">
+ <li style="justify-content:center;color:var(--gray-400);font-size:0.75rem;padding:1.5rem">Hali hech qanday ma'lumot kiritilmagan. Tashrif qilgan do'konlarni qo'shing.</li>
+ </ul>
+ </div>
+</section>
+
+<!-- ═══ QR CODES ═══ -->
+<section class="section" id="qrcode">
+ <div class="section-header">
+ <h2 class="section-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z/"/><circle cx=12 cy=13 r=4"/></svg> QR Kodlar</h2>
+ <p class="section-sub">Vizitkaga joylashtirish va stiker uchun tayyor QR kodlar</p>
+ </div>
+
+ <div class="qr-row">
+ <div class="qr-item">
+ <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://t.me/DeLiKatbot"
+ alt="QR - @DeLiKatbot" loading="lazy" width="140" height="140">
+ <p><b>@DeLiKatbot</b><br><span style="font-size:0.6875rem;color:var(--gray-400)">Telegram bot (asosiy)</span></p>
+ </div>
+ <div class="qr-item">
+ <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://delikat.vercel.app/dokonlar"
+ alt="QR - Do'konlar sahifasi" loading="lazy" width="140" height="140">
+ <p> <b>Do'konlar sahifasi</b><br><span style="font-size:0.6875rem;color:var(--gray-400)">Web landing page</span></p>
+ </div>
+ </div>
+
+ <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap">
+ <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://t.me/DeLiKatbot" target="_blank" class="print-btn">️ Bot QR (katta)</a>
+ <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://delikat.vercel.app/dokonlar" target="_blank" class="print-btn">️ Web QR (katta)</a>
+ </div>
+</section>
+
+<!-- ═══ SCHEDULE ═══ -->
+<section class="section" id="schedule">
+ <div class="section-header">
+ <h2 class="section-title"> Tashrif Jadvali</h2>
+ <p class="section-sub">1 kunlik Fleshka bozori tashrifining vaqt jadvali</p>
+ </div>
+
+ <div class="card">
+ <div class="card-pad">
+ <div class="timeline">
+ <div class="tl-item">
+ <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+ <div class="tl-time">10:00 — 10:30</div>
+ <div class="tl-title"> Bozorga yetib kelish + tayyorgarlik</div>
+ <div class="tl-desc">Vizitka, QR stiker, telefon tayyor. Bozor sxemasini o'rganish.</div>
+ </div>
+ <div class="tl-item">
+ <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+ <div class="tl-time">10:30 — 13:00</div>
+ <div class="tl-title">1-sessiya: 15-20 do'kon</div>
+ <div class="tl-desc">Bir qavatni to'liq aylanib chiqish. Har bir do'konga 5-7 daqiqa. Tanaffuslar bilan.</div>
+ </div>
+ <div class="tl-item">
+ <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+ <div class="tl-time">13:00 — 14:00</div>
+ <div class="tl-title">️ Tushlik + KPI tekshirish</div>
+ <div class="tl-desc">1-sessiya natijalarini KPI dashboard'ga kiritish. Qancha do'kon, qancha ro'yxat?</div>
+ </div>
+ <div class="tl-item">
+ <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+ <div class="tl-time">14:00 — 16:30</div>
+ <div class="tl-title">2-sessiya: 15-20 do'kon</div>
+ <div class="tl-desc">Ikkinchi qavatni aylanib chiqish. Qayta tashrif (rad etganlarni qayta ishlash).</div>
+ </div>
+ <div class="tl-item">
+ <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+ <div class="tl-time">16:30 — 17:00</div>
+ <div class="tl-title">Yakuniy KPI + Follow-up reja</div>
+ <div class="tl-desc">Barcha ma'lumotlarni KPI ga kiritish. Ertangi kun rejasi. Telegram follow-up lar.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div style="height:1rem"></div>
+
+ <div class="tip">
+ <span class="tip-icon"></span>
+ <div><b>Maqsad (1-kun):</b> 30+ do'konga tashrif, 10+ ro'yxatdan o'tgan, 5+ lot yaratilgan, 2+ bitim boshlangan. <b>Konversiya: 30%+</b></div>
+ </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer style="text-align:center;padding:2rem 0 5rem;border-top:1px solid var(--gray-200);font-size:0.75rem;color:var(--gray-400)">
+ <p>© 2026 DeLiKet — Deadstock Liquidation Marketplace</p>
+ <p style="margin-top:0.25rem">
+ <a href="/" style="color:var(--blue)">Bosh sahifa</a>
+ <span style="margin:0 0.375rem">·</span>
+ <a href="/dokonlar" style="color:var(--blue)">Do'konlar</a>
+ <span style="margin:0 0.375rem">·</span>
+ <a href="/seller-onboarding" style="color:var(--blue)">Sotuvchi qo'llanma</a>
+ </p>
+</footer>
+
+</div>
+
+<script>
+// ── Today's date ──
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('uz-UZ', {
+ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+// ── Checklist persistence key ──
+const CL_KEY = 'deliket_fleshka_cl';
+
+function saveChecklists() {
+ const data = {};
+ ['prepList','shopList','afterList'].forEach(id => {
+ data[id] = [];
+ document.querySelectorAll(`#${id} .cb`).forEach(cb => {
+ data[id].push(cb.classList.contains('checked'));
+ });
+ });
+ localStorage.setItem(CL_KEY, JSON.stringify(data));
+}
+
+function loadChecklists() {
+ try {
+ const data = JSON.parse(localStorage.getItem(CL_KEY));
+ if (!data) return;
+ ['prepList','shopList','afterList'].forEach(id => {
+ const items = document.querySelectorAll(`#${id} .cb`);
+ const saved = data[id] || [];
+ items.forEach((cb, i) => {
+ if (saved[i]) {
+ cb.classList.add('checked');
+ cb.textContent = '✓';
+ }
+ });
+ });
+ } catch(e) {}
+}
+
+function toggleCB(el) {
+ el.classList.toggle('checked');
+ el.textContent = el.classList.contains('checked') ? '✓' : '';
+ saveChecklists();
+ updateCounts();
+}
+
+function updateCounts() {
+ ['prepList','shopList','afterList'].forEach(id => {
+ const items = document.querySelectorAll(`#${id} .cb`);
+ const checked = document.querySelectorAll(`#${id} .cb.checked`);
+ const elId = id === 'prepList' ? 'prepCount' : id === 'shopList' ? 'shopCount' : 'afterCount';
+ const el = document.getElementById(elId);
+ if (el) el.textContent = `${checked.length}/${items.length}`;
+ });
+}
+
+// ── KPI Dashboard ──
+const STORAGE_KEY = 'deliket_fleshka_kpi';
+
+function loadKPI() {
+ try {
+ const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+ if (data) {
+ document.getElementById('kpiVisited').textContent = data.visited || 0;
+ document.getElementById('kpiSigned').textContent = data.signed || 0;
+ document.getElementById('kpiLots').textContent = data.lots || 0;
+ document.getElementById('kpiDeals').textContent = data.deals || 0;
+ updateHeaderStats(data);
+ updateKPIProgress(data);
+ renderLog(data.log || []);
+ return data;
+ }
+ } catch(e) {}
+ return { visited: 0, signed: 0, lots: 0, deals: 0, log: [] };
+}
+
+function saveKPI(data) {
+ localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function updateKPIProgress(data) {
+ const target = { visited: 30, signed: 10, lots: 5, deals: 2 };
+ ['Visited','Signed','Lots','Deals'].forEach(k => {
+ const bar = document.getElementById(`kpi${k}Bar`);
+ const pct = Math.min(100, Math.round(((data[k.toLowerCase()] || 0) / target[k]) * 100));
+ bar.style.width = pct + '%';
+ });
+}
+
+function updateHeaderStats(data) {
+ document.getElementById('hStatVisited').textContent = data.visited || 0;
+ document.getElementById('hStatSigned').textContent = data.signed || 0;
+ document.getElementById('hStatLots').textContent = data.lots || 0;
+ document.getElementById('hStatDeals').textContent = data.deals || 0;
+}
+
+function addLogEntry() {
+ const name = document.getElementById('logShopName').value.trim();
+ const action = document.getElementById('logAction').value;
+ if (!name) { alert('Do\'kon nomini kiriting!'); return; }
+
+ const data = loadKPI();
+ if (!data.log) data.log = [];
+
+ const actionLabels = {
+ visited: 'Tashrif',
+ signed: 'Ro\'yxatdan o\'tdi',
+ lot: 'Lot yaratdi',
+ deal: 'Bitim',
+ reject: 'Rad etdi'
+ };
+
+ data.log.unshift({
+ name: name,
+ action: action,
+ actionLabel: actionLabels[action] || action,
+ time: new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }),
+ date: new Date().toLocaleDateString('uz-UZ')
+ });
+
+ // Update KPI counters based on action
+ // All visits (including reject) increment visited
+ data.visited = (data.visited || 0) + 1;
+ if (action === 'signed' || action === 'lot' || action === 'deal') {
+ data.signed = (data.signed || 0) + 1;
+ }
+ if (action === 'lot' || action === 'deal') {
+ data.lots = (data.lots || 0) + 1;
+ }
+ if (action === 'deal') {
+ data.deals = (data.deals || 0) + 1;
+ }
+
+ saveKPI(data);
+ document.getElementById('kpiVisited').textContent = data.visited;
+ document.getElementById('kpiSigned').textContent = data.signed;
+ document.getElementById('kpiLots').textContent = data.lots;
+ document.getElementById('kpiDeals').textContent = data.deals;
+ updateHeaderStats(data);
+ updateKPIProgress(data);
+ renderLog(data.log);
+ document.getElementById('logShopName').value = '';
+}
+
+function renderLog(log) {
+ const el = document.getElementById('kpiLog');
+ if (!log || log.length === 0) {
+ el.innerHTML = '<li style="justify-content:center;color:var(--gray-400);font-size:0.75rem;padding:1.5rem">Hali hech qanday ma\'lumot kiritilmagan. Tashrif qilgan do\'konlarni qo\'shing.</li>';
+ return;
+ }
+ el.innerHTML = log.map(e => `
+ <li>
+ <span class="kl-left">
+ <span class="kl-num">${e.actionLabel.split(' ')[0]}</span>
+ <span class="kl-text"><b>${e.name}</b></span>
+ </span>
+ <span style="display:flex;align-items:center;gap:0.5rem">
+ <span style="font-size:0.6875rem;color:var(--gray-400)">${e.time} · ${e.date}</span>
+ <span class="kl-status ${e.action === 'reject' ? 'kl-pending' : 'kl-done'}">${e.actionLabel}</span>
+ </span>
+ </li>
+ `).join('');
+}
+
+function resetKPI() {
+ if (!confirm('Barcha KPI ma\'lumotlarini o\'chirishni xohlaysizmi?')) return;
+ const empty = { visited: 0, signed: 0, lots: 0, deals: 0, log: [] };
+ saveKPI(empty);
+ document.getElementById('kpiVisited').textContent = '0';
+ document.getElementById('kpiSigned').textContent = '0';
+ document.getElementById('kpiLots').textContent = '0';
+ document.getElementById('kpiDeals').textContent = '0';
+ updateHeaderStats(empty);
+ updateKPIProgress(empty);
+ renderLog([]);
+}
+
+// ── Float Nav active state ──
+document.querySelectorAll('.float-nav a').forEach(a => {
+ a.addEventListener('click', function(e) {
+ document.querySelectorAll('.float-nav a').forEach(el => el.classList.remove('active'));
+ this.classList.add('active');
+ });
+});
+
+// ── Intersection Observer for active nav ──
+const sections = ['checklist','pitch','kpi','qrcode','schedule'].map(id => document.getElementById(id));
+const navLinks = document.querySelectorAll('.float-nav a');
+const observer = new IntersectionObserver((entries) => {
+ entries.forEach(entry => {
+ if (entry.isIntersecting) {
+ navLinks.forEach(link => {
+ link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+ });
+ }
+ });
+}, { threshold: 0.3 });
+sections.forEach(s => { if (s) observer.observe(s); });
+
+// ── Init ──
+loadKPI();
+loadChecklists();
+updateCounts();
+
+
+// Theme
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('deliket-theme',t)}
+function initTheme(){var s=localStorage.getItem('deliket-theme'),p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'))}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');setTheme(c==='dark'?'light':'dark')}
+
+document.addEventListener('DOMContentLoaded',initTheme);
+</script>
+
+</body>
+</html>

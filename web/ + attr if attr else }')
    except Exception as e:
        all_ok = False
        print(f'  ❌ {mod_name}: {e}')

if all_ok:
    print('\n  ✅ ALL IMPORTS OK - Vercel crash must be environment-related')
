@@ -1,0 +1,4 @@
+  File "<string>", line 48
+    print(f'  ✅ {mod_name}{
+                          ^
+SyntaxError: '{' was never closed

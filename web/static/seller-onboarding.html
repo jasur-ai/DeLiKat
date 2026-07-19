@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B2B Sotuvchi Onboarding — DeLiKet Deadstock Marketplace</title>
+<meta name="description" content="DeLiKet B2B sotuvchi qo'llanmasi — ro'yxatdan o'tish, lot yaratish, ESCROW himoya va yetkazib berish bo'yicha bosqichma-bosqich ko'rsatma.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+/* ── Page Hero ── */
+.onboarding-hero {
+ padding: 140px 0 var(--space-12);
+ background: var(--bg-primary);
+ position: relative;
+ overflow: hidden;
+}
+.onboarding-hero::before {
+ content: '';
+ position: absolute;
+ inset: 0;
+ background: var(--hero-gradient);
+ pointer-events: none;
+}
+.onboarding-hero-content {
+ position: relative;
+ z-index: 1;
+ max-width: 720px;
+}
+.onboarding-hero h1 {
+ font-size: clamp(2rem, 4vw, 3rem);
+ margin-bottom: var(--space-4);
+}
+.onboarding-hero h1 span {
+ background: var(--accent-gradient);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ background-clip: text;
+}
+.onboarding-hero p {
+ font-size: 1.05rem;
+ color: var(--text-tertiary);
+ max-width: 560px;
+ line-height: 1.7;
+ margin-bottom: var(--space-6);
+}
+.onboarding-hero-stats {
+ display: flex;
+ gap: var(--space-8);
+ margin-top: var(--space-8);
+ padding-top: var(--space-6);
+ border-top: 1px solid var(--border-primary);
+}
+.onboarding-hero-stat-value {
+ font-size: 1.5rem;
+ font-weight: 700;
+ font-family: var(--font-display);
+ letter-spacing: -0.02em;
+ color: var(--accent);
+}
+.onboarding-hero-stat-label {
+ font-size: 0.8125rem;
+ color: var(--text-tertiary);
+ margin-top: var(--space-1);
+}
+
+/* ── Step Timeline ── */
+.timeline-section {
+ padding: var(--space-16) 0;
+}
+.timeline-container {
+ max-width: 800px;
+ margin: 0 auto;
+ position: relative;
+}
+.timeline-container::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ bottom: 0;
+ left: 28px;
+ width: 2px;
+ background: linear-gradient(to bottom, var(--accent-200), var(--border-primary));
+}
+[data-theme="dark"] .timeline-container::before {
+ background: linear-gradient(to bottom, rgba(37, 99, 235, 0.25), var(--border-primary));
+}
+.timeline-step {
+ display: flex;
+ gap: var(--space-5);
+ margin-bottom: var(--space-8);
+ position: relative;
+}
+.timeline-step:last-child {
+ margin-bottom: 0;
+}
+.timeline-number {
+ width: 58px;
+ height: 58px;
+ min-width: 58px;
+ background: var(--accent-gradient);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 1.125rem;
+ font-weight: 700;
+ color: #fff;
+ position: relative;
+ z-index: 1;
+ box-shadow: 0 0 0 4px var(--bg-primary), 0 4px 12px rgba(37, 99, 235, 0.2);
+ transition: all 0.3s var(--ease-spring);
+}
+.timeline-step:hover .timeline-number {
+ transform: scale(1.08);
+}
+.timeline-content {
+ flex: 1;
+ background: var(--bg-primary);
+ border: 1px solid var(--border-primary);
+ border-radius: var(--radius-xl);
+ padding: var(--space-6);
+ box-shadow: var(--shadow-card);
+ transition: all 0.25s var(--ease-out);
+}
+.timeline-content:hover {
+ box-shadow: var(--shadow-card-hover);
+ border-color: var(--text-tertiary);
+}
+.timeline-step-icon {
+ font-size: 2rem;
+ margin-bottom: var(--space-3);
+}
+.timeline-content h3 {
+ font-size: 1.125rem;
+ font-weight: 700;
+ margin-bottom: var(--space-2);
+}
+.timeline-content p {
+ font-size: 0.875rem;
+ color: var(--text-secondary);
+ line-height: 1.7;
+ margin-bottom: var(--space-3);
+}
+.timeline-content p:last-child {
+ margin-bottom: 0;
+}
+.timeline-tag {
+ display: inline-flex;
+ align-items: center;
+ gap: 0.25rem;
+ padding: 0.1875rem 0.625rem;
+ border-radius: 100px;
+ font-size: 0.6875rem;
+ font-weight: 600;
+ margin-bottom: var(--space-3);
+ border: 1px solid;
+}
+.tag-green {
+ border-color: rgba(16, 185, 129, 0.2);
+ color: var(--emerald-dark);
+ background: var(--emerald-50);
+}
+.tag-blue {
+ border-color: rgba(37, 99, 235, 0.2);
+ color: var(--accent);
+ background: var(--accent-50);
+}
+.tag-amber {
+ border-color: rgba(245, 158, 11, 0.2);
+ color: var(--amber-dark);
+ background: var(--amber-50);
+}
+.tag-violet {
+ border-color: rgba(139, 92, 246, 0.2);
+ color: var(--violet-dark);
+ background: var(--violet-50);
+}
+[data-theme="dark"] .tag-green { background: rgba(16, 185, 129, 0.12); color: #34d399; }
+[data-theme="dark"] .tag-blue { background: rgba(37, 99, 235, 0.12); color: #93c5fd; }
+[data-theme="dark"] .tag-amber { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+[data-theme="dark"] .tag-violet { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
+
+.timeline-features {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: var(--space-2);
+ margin-top: var(--space-3);
+}
+.timeline-feature-item {
+ display: flex;
+ align-items: center;
+ gap: 0.5rem;
+ padding: var(--space-2) var(--space-3);
+ background: var(--bg-secondary);
+ border-radius: var(--radius-md);
+ font-size: 0.8125rem;
+ color: var(--text-secondary);
+}
+
+/* ── ESCROW Section ── */
+.escrow-section {
+ padding: var(--space-16) 0;
+ background: var(--bg-secondary);
+}
+.escrow-card {
+ max-width: 800px;
+ margin: 0 auto;
+ background: var(--bg-primary);
+ border: 1px solid var(--border-primary);
+ border-radius: var(--radius-2xl);
+ overflow: hidden;
+ box-shadow: var(--shadow-card);
+}
+.escrow-card-header {
+ padding: var(--space-6);
+ background: linear-gradient(135deg, var(--accent-50), var(--accent-100));
+ border-bottom: 1px solid var(--accent-200);
+}
+[data-theme="dark"] .escrow-card-header {
+ background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.15));
+ border-bottom-color: rgba(37, 99, 235, 0.2);
+}
+.escrow-card-header h2 {
+ font-size: 1.25rem;
+ font-weight: 700;
+ margin-bottom: var(--space-1);
+}
+.escrow-card-header p {
+ font-size: 0.875rem;
+ color: var(--text-tertiary);
+}
+.escrow-card-body {
+ padding: var(--space-6);
+}
+.escrow-flow {
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: var(--space-4);
+ margin-bottom: var(--space-6);
+}
+.escrow-step {
+ text-align: center;
+ padding: var(--space-4) var(--space-3);
+ background: var(--bg-secondary);
+ border: 1px solid var(--border-primary);
+ border-radius: var(--radius-lg);
+ position: relative;
+ transition: all 0.2s ease;
+}
+.escrow-step:hover {
+ border-color: var(--accent);
+ background: var(--accent-50);
+}
+[data-theme="dark"] .escrow-step:hover {
+ background: rgba(37, 99, 235, 0.08);
+}
+.escrow-step:not(:last-child)::after {
+ content: '→';
+ position: absolute;
+ right: -0.75rem;
+ top: 50%;
+ transform: translateY(-50%);
+ font-size: 1.125rem;
+ color: var(--text-quaternary);
+ font-weight: 700;
+}
+.escrow-step-icon {
+ font-size: 1.5rem;
+ margin-bottom: var(--space-2);
+ display: block;
+}
+.escrow-step-label {
+ font-size: 0.75rem;
+ font-weight: 600;
+ color: var(--text-secondary);
+}
+
+/* ── Benefits Grid ── */
+.benefits-section {
+ padding: var(--space-16) 0;
+}
+.benefits-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: var(--space-4);
+}
+.benefit-card {
+ padding: var(--space-5);
+ border: 1px solid var(--border-primary);
+ border-radius: var(--radius-xl);
+ background: var(--bg-primary);
+ transition: all 0.25s var(--ease-out);
+ box-shadow: var(--shadow-card);
+}
+.benefit-card:hover {
+ border-color: var(--accent);
+ box-shadow: var(--shadow-card-hover);
+ transform: translateY(-3px);
+}
+.benefit-icon {
+ font-size: 1.75rem;
+ margin-bottom: var(--space-3);
+}
+.benefit-card h3 {
+ font-size: 1rem;
+ font-weight: 600;
+ margin-bottom: var(--space-1);
+}
+.benefit-card p {
+ font-size: 0.8125rem;
+ color: var(--text-tertiary);
+ line-height: 1.6;
+}
+
+/* ── CTA Banner ── */
+.cta-banner {
+ padding: var(--space-16) 0;
+ background: var(--bg-secondary);
+ text-align: center;
+}
+.cta-banner h2 {
+ font-size: clamp(1.5rem, 3vw, 2.25rem);
+ margin-bottom: var(--space-3);
+}
+.cta-banner p {
+ color: var(--text-tertiary);
+ max-width: 560px;
+ margin: 0 auto var(--space-6);
+}
+.cta-banner .cta-actions {
+ justify-content: center;
+}
+
+/* ── Responsive ── */
+@media(max-width: 768px) {
+ .timeline-features {
+ grid-template-columns: 1fr;
+ }
+ .escrow-flow {
+ grid-template-columns: repeat(2, 1fr);
+ }
+ .escrow-step:nth-child(2)::after,
+ .escrow-step:nth-child(4)::after {
+ display: none;
+ }
+ .benefits-grid {
+ grid-template-columns: 1fr;
+ }
+ .onboarding-hero-stats {
+ gap: var(--space-4);
+ flex-wrap: wrap;
+ }
+}
+@media(max-width: 480px) {
+ .escrow-flow {
+ grid-template-columns: 1fr;
+ }
+ .escrow-step::after {
+ display: none !important;
+ }
+}
+</style>
+</head>
+<body
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div> class="theme-transition">
+
+<!-- HEADER -->
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgHdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="36" height="36" rx="9" fill="url(#lgHdr)"/>
+ <path d="M9 9h8a9 9 0 0 1 0 18H9V9z" fill="white" opacity="0.95"/>
+ <circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <nav class="header-nav" id="headerNav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="/how-it-works">Qo'llanma</a>
+ <a href="/seller-onboarding" class="active" style="color:var(--accent);font-weight:600;">Sotuvchi</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Bot</a>
+ <span class="header-nav-auth" id="headerNavAuth">
+ <a href="/login" class="auth-link-login">Kirish</a>
+ <a href="/register" class="auth-link-register btn btn-primary btn-sm" style="margin-left:0.25rem">Ro'yxat</a>
+ </span>
+ <button class="theme-toggle" id="themeToggleMobile" aria-label="Tema almashtirish" style="display:none;">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ </nav>
+ <button class="theme-toggle" id="themeToggle" aria-label="Tema almashtirish">
+ <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+ </button>
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="header-cta">Botga o'tish →</a>
+ <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+ <span></span><span></span><span></span>
+ </button>
+ </div>
+</header>
+
+<!-- ============================================================
+HERO
+============================================================ -->
+<section class="onboarding-hero">
+ <div class="container">
+ <div class="onboarding-hero-content">
+ <div class="breadcrumb">
+ <a href="/>Bosh sahifa</a>
+ <span>›</span>
+ <span>B2B Sotuvchi Onboarding</span>
+ </div>
+ <div class="hero-badge" style="margin-bottom:var(--space-4)">
+ <span class="hero-badge-dot"></span>
+ B2B Sotuvchilar uchun maxsus
+ </div>
+ <h1>Deadstock ni <span>0% komissiya</span> bilan likvidatsiya qiling</h1>
+ <p>
+ Distribyutor, retailer, importer yoki kichik ishlab chiqaruvchi bo'ling — omboringizdagi 
+ ortiqcha stokni <strong>partiyaviy</strong>, <strong>xavfsiz</strong> va <strong>0% komissiya</strong> bilan soting.
+ DeLiKet'da sotuvchi bo'lish — 5 daqiqa.
+ </p>
+ <div class="hero-actions">
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="btn btn-primary btn-lg">Botda boshlash</a>
+ <a href="#steps" class="btn btn-secondary btn-lg"> Qo'llanmani o'qish</a>
+ </div>
+ <div class="onboarding-hero-stats">
+ <div>
+ <div class="onboarding-hero-stat-value" id="statUsersFooter">0%</div>
+ <div class="onboarding-hero-stat-label">Komissiya</div>
+ </div>
+ <div>
+ <div class="onboarding-hero-stat-value">1</div>
+ <div class="onboarding-hero-stat-label">Daqiqada ro'yxat</div>
+ </div>
+ <div>
+ <div class="onboarding-hero-stat-value"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><rect x=3 y=11 width=18 height=11 rx=2 ry=2/><path d="M7 11V7a5 5 0 0 1 10 0v4/"/><circle cx=12 cy=16 r=1"/></svg></div>
+ <div class="onboarding-hero-stat-label">ESCROW himoya</div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+BENEFITS — Why sell on DeLiKet?
+============================================================ -->
+<section class="benefits-section" id="benefits">
+ <div class="container">
+ <div class="reveal" style="text-align:center;margin-bottom:var(--space-8)">
+ <span class="section-badge">Nega aynan DeLiKet?</span>
+ <h2 class="section-title" style="margin-top:var(--space-3)">Sotuvchi uchun 4 ta asosiy sabab</h2>
+ </div>
+ <div class="benefits-grid reveal-stagger">
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><circle cx=12 cy=12 r=10/><path d="M12 6v12M8 12h8/"/></svg></div>
+ <h3>0% komissiya</h3>
+ <p>Uzum'da 15-25% to'laysiz. DeLiKet'da nol. Barcha daromad sizniki. Bu deadstock likvidatsiyasida eng katta farq.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></div>
+ <h3>Partiyaviy savdo</h3>
+ <p>Birma-bir emas, partiyalab soting. 10 dona yoki 1000 dona — farqi yo'q. B2B xaridorlar katta hajmlarga qiziqadi.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z/"/></svg>️</div>
+ <h3>ESCROW himoya</h3>
+ <p>To'lov xavfsiz saqlanadi, mahsulot yetib borgach yechiladi. Sotuvchi ham, xaridor ham ishonchda bo'ladi.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><rect x=2 y=2 width=20 height=20 rx=4/><path d="M9 9h.01/"/><path d="M15 9h.01/"/><path d="M9 15a3 3 0 0 0 6 0/"/></svg></div>
+ <h3>Telegram 1 daqiqa</h3>
+ <p>Telegram bot orqali 1 daqiqada ro'yxatdan o'ting va lot yarating. Boshqa platformalarda 10+ daqiqa ketadi.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"></div>
+ <h3>AI Trust Score</h3>
+ <p>Sun'iy intellekt asosidagi ishonch reytingi. Yaxshi savdo qilsangiz, Trust Score oshadi — ko'proq xaridor topasiz.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"></div>
+ <h3>Cross-Border</h3>
+ <p>O'zbekistondan tashqari Qozog'iston, Qirg'iziston, Tojikiston va Rossiya bozorlariga chiqing. Yetkazish bilan.</p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+STEP-BY-STEP TIMELINE
+============================================================ -->
+<section class="timeline-section" id="steps">
+ <div class="container">
+ <div class="reveal" style="text-align:center;margin-bottom:var(--space-8)">
+ <span class="section-badge">4 bosqich</span>
+ <h2 class="section-title" style="margin-top:var(--space-3)">Sotuvchi bo'lish — 5 daqiqa</h2>
+ <p class="section-subtitle" style="margin:var(--space-2) auto 0">Quyidagi 4 bosqichni bajaring va 24 soat ichida birinchi xaridorni toping</p>
+ </div>
+
+ <div class="timeline-container">
+ <!-- Step 1: Registration -->
+ <div class="timeline-step reveal">
+ <div class="timeline-number">1</div>
+ <div class="timeline-content">
+ <span class="timeline-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7/"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z/"/></svg></span>
+ <span class="timeline-tag tag-green">1 daqiqa</span>
+ <h3>Ro'yxatdan o'tish</h3>
+ <p>
+ <strong>Telegram bot orqali:</strong> @DeLiKatbot ga o'ting va <strong>/start</strong> buyrug'ini yuboring. 
+ Bot sizni avtomatik ro'yxatdan o'tkazadi — Telegram profilingizdagi ism va username bilan. 
+ Hech qanday qo'shimcha hujjat talab qilinmaydi.
+ </p>
+ <p>
+ <strong>Web orqali:</strong> <a href="/register" style="color:var(--accent);font-weight:600;">Ro'yxatdan o'tish</a> 
+ sahifasiga o'ting va "Sotuvchi" rolini tanlang. Ism, email va parol kiriting — tayyor.
+ </p>
+ <div class="timeline-features">
+ <div class="timeline-feature-item">1 daqiqada ro'yxat</div>
+ <div class="timeline-feature-item">Telegram ID bog'lash</div>
+ <div class="timeline-feature-item">Rol tanlash (sotuvchi)</div>
+ <div class="timeline-feature-item">0 so'm boshlang'ich</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Step 2: Lot creation -->
+ <div class="timeline-step reveal">
+ <div class="timeline-number">2</div>
+ <div class="timeline-content">
+ <span class="timeline-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></span>
+ <span class="timeline-tag tag-blue">1-2 daqiqa</span>
+ <h3>Lot yaratish</h3>
+ <p>
+ Telegram botda <strong>/create</strong> buyrug'ini yuboring yoki "Lot yaratish" tugmasini bosing. 
+ Bot sizdan quyidagi ma'lumotlarni so'raydi:
+ </p>
+ <ul style="padding-left:1.25rem;font-size:0.875rem;color:var(--text-secondary);line-height:1.8;margin-bottom:var(--space-3);">
+ <li><strong>Kategoriya:</strong> Smartfon, Notebook, TV, Audio, Aksesuar, Kiyim</li>
+ <li><strong>Nomi:</strong> Mahsulot nomi (masalan, "iPhone 13 Pro 128GB — 20 dona")</li>
+ <li><strong>Tavsif:</strong> Mahsulot haqida qisqacha ma'lumot, holati, nuqsonlari</li>
+ <li><strong>Grade:</strong> A (Yangi), B (Yaxshi), C (Qoniqarli)</li>
+ <li><strong>Miqdor:</strong> 1 dan 10,000 donagacha</li>
+ <li><strong>Narx:</strong> Bir dona uchun narx (so'mda)</li>
+ </ul>
+ <p>
+ <strong>Maslahat:</strong> Deadstock tez sotilishi uchun bozor narxidan 20-40% arzonroq narx qo'ying. 
+ A grade mahsulotlar eng tez sotiladi. Mahsulot haqida batafsil tavsif yozing — bu ishonchni oshiradi.
+ </p>
+ </div>
+ </div>
+
+ <!-- Step 3: ESCROW & Payment -->
+ <div class="timeline-step reveal">
+ <div class="timeline-number">3</div>
+ <div class="timeline-content">
+ <span class="timeline-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><rect x=3 y=11 width=18 height=11 rx=2 ry=2/><path d="M7 11V7a5 5 0 0 1 10 0v4/"/><circle cx=12 cy=16 r=1"/></svg></span>
+ <span class="timeline-tag tag-amber">Xavfsiz to'lov</span>
+ <h3>ESCROW himoyasida bitim</h3>
+ <p>
+ Xaridor taklif yuborganida, pul <strong>ESCROW</strong> hisobiga tushadi — ya'ni xavfsiz saqlanadi. 
+ Siz mahsulotni jo'natasiz, xaridor qabul qilgach, pul sizga o'tkaziladi. Bu ikkala tomonni ham himoya qiladi:
+ </p>
+ <ul style="padding-left:1.25rem;font-size:0.875rem;color:var(--text-secondary);line-height:1.8;margin-bottom:var(--space-3);">
+ <li><strong>Sotuvchi uchun:</strong> Xaridor to'lov qobiliyatiga ega ekanligi kafolatlanadi</li>
+ <li><strong>Xaridor uchun:</strong> Mahsulot kelguncha pul xavfsiz saqlanadi</li>
+ <li><strong>Bitim yakuni:</strong> Ikkala tomon tasdiqlagach, pul tushadi</li>
+ </ul>
+ <p>
+ Katta summalar uchun <strong>USDT/USDC (crypto)</strong> to'lov ham mavjud — minimal komissiya.
+ </p>
+ </div>
+ </div>
+
+ <!-- Step 4: Delivery & Shipping -->
+ <div class="timeline-step reveal">
+ <div class="timeline-number">4</div>
+ <div class="timeline-content">
+ <span class="timeline-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M22 17h-3.5a1.5 1.5 0 0 1-1.5-1.5V10m0 0H7.5a1.5 1.5 0 0 0-1.5 1.5V17m4 0h6m-6 0a2 2 0 1 0-2 2 2 2 0 0 0 2-2zm8 0a2 2 0 1 0-2 2 2 2 0 0 0 2-2zM5 17v-3a4 4 0 0 1 4-4h9v-4H8.5a4 4 0 0 0-4 4v7/"/></svg></span>
+ <span class="timeline-tag tag-violet">Yetkazib berish</span>
+ <h3>Yetkazib berish va bitimni yakunlash</h3>
+ <p>
+ Bitim kelishilgandan so'ng, mahsulotni xaridorga yetkazib berishingiz kerak. 
+ Yetkazib berish usullari:
+ </p>
+ <ul style="padding-left:1.25rem;font-size:0.875rem;color:var(--text-secondary);line-height:1.8;margin-bottom:var(--space-3);">
+ <li><strong>O'z olib ketish:</strong> Toshkentda joylashgan bo'lsangiz, xaridor kelib oladi</li>
+ <li><strong>Kuryer orqali:</strong> Toshkent ichida kuryer xizmati bilan yetkazish</li>
+ <li><strong>Pochta/logistika:</strong> Viloyatlar va cross-border yetkazish</li>
+ </ul>
+ <p>
+ Mahsulot yetib borgach, xaridor sifatni tekshiradi va <strong>bitimni tasdiqlaydi</strong>. 
+ Shu bilan pul ESCROW'dan sizning hisobingizga o'tadi. Ikkala tomon bir-biriga reyting qo'yadi.
+ </p>
+ <div class="timeline-features">
+ <div class="timeline-feature-item">Xaridor tekshirgach to'lov</div>
+ <div class="timeline-feature-item">Auto reyting tizimi</div>
+ <div class="timeline-feature-item">Dispute center (nizolar)</div>
+ <div class="timeline-feature-item">Trust Score oshadi</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+ESCROW DEEP DIVE
+============================================================ -->
+<section class="escrow-section" id="escrow">
+ <div class="container">
+ <div class="reveal" style="text-align:center;margin-bottom:var(--space-6)">
+ <span class="section-badge">ESCROW Tizimi</span>
+ <h2 class="section-title" style="margin-top:var(--space-3)">To'lov himoyasi qanday ishlaydi?</h2>
+ </div>
+ <div class="escrow-card reveal">
+ <div class="escrow-card-header">
+ <h2>ESCROW — Xaridor va sotuvchi himoyasi</h2>
+ <p>To'lov xavfsiz saqlanadi, mahsulot yetib borgach yechiladi. OLX'da bu yo'q — shuning uchun scamming yuqori.</p>
+ </div>
+ <div class="escrow-card-body">
+ <div class="escrow-flow">
+ <div class="escrow-step">
+ <span class="escrow-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7/"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z/"/></svg></span>
+ <div class="escrow-step-label">1. Bitim tuziladi</div>
+ </div>
+ <div class="escrow-step">
+ <span class="escrow-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><circle cx=12 cy=12 r=10/><path d="M12 6v12M8 12h8/"/></svg></span>
+ <div class="escrow-step-label">2. Xaridor to'laydi</div>
+ </div>
+ <div class="escrow-step">
+ <span class="escrow-step-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/></svg></span>
+ <div class="escrow-step-label">3. Sotuvchi jo'natadi</div>
+ </div>
+ <div class="escrow-step">
+ <span class="escrow-step-icon"></span>
+ <div class="escrow-step-label">4. Xaridor qabul qiladi</div>
+ </div>
+ </div>
+ <div style="display:flex;align-items:center;gap:var(--space-4);padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-lg);flex-wrap:wrap;">
+ <div style="flex:1;min-width:200px;">
+ <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);margin-bottom:var(--space-1);">To'lov ESCROW'da saqlanadi</div>
+ <div style="font-size:0.8125rem;color:var(--text-tertiary);">Xaridor to'lagan pul DeLiKet'ning xavfsiz hisobida turadi. Siz mahsulotni jo'natasiz, xaridor tekshirib, qabul qilgach pul sizga tushadi.</div>
+ </div>
+ <div style="display:flex;gap:var(--space-3);">
+ <div style="text-align:center;">
+ <div style="font-size:1.25rem;font-weight:700;color:var(--emerald-dark);">0%</div>
+ <div style="font-size:0.6875rem;color:var(--text-tertiary);">ESCROW komissiya</div>
+ </div>
+ <div style="text-align:center;">
+ <div style="font-size:1.25rem;font-weight:700;color:var(--accent);">24h</div>
+ <div style="font-size:0.6875rem;color:var(--text-tertiary);">Dispute hal qilish</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+SELLER TIPS
+============================================================ -->
+<section class="benefits-section" style="background:var(--bg-primary);padding:var(--space-12) 0;" id="tips">
+ <div class="container">
+ <div class="reveal" style="text-align:center;margin-bottom:var(--space-6)">
+ <span class="section-badge">Sotuvchi maslahatlari</span>
+ <h2 class="section-title" style="margin-top:var(--space-3)">Tez sotish uchun 5 ta maslahat</h2>
+ </div>
+ <div class="benefits-grid" style="grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));">
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+ <h3>Bozor narxidan 20-40% arzon</h3>
+ <p>Deadstock tez likvidatsiya bo'lishi uchun bozor narxidan sezilarli arzonroq qo'ying. Bu tezroq xaridor topishning eng ishonchli usuli.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z/"/><circle cx=12 cy=13 r=4"/><path d="M15 9l-2 5-2-3-2 5/"/></svg></div>
+ <h3>Batafsil tavsif yozing</h3>
+ <p>Mahsulot haqida batafsil ma'lumot bering: holati, nuqsonlari, original yoki yo'q, qaysi yilgi model. Bu ishonchni oshiradi.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon">🅰️</div>
+ <h3>A grade bilan boshlang</h3>
+ <p>Eng yaxshi mahsulotlaringizni A grade bilan joylang. Ular tez sotiladi va Trust Score'ingizni oshiradi.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"></div>
+ <h3>Tez javob bering</h3>
+ <p>Xaridorlarning savollariga tez javob bering. Javob vaqti Trust Score'ga ta'sir qiladi va tezroq bitim tuzishga yordam beradi.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><polyline points=23 4 23 10 17 10/><polyline points=1 20 1 14 7 14/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15/"/></svg></div>
+ <h3>Takliflarni kuzatib boring</h3>
+ <p>Yangi takliflar haqida Telegram bildirishnomasini yoqing. Tez javob — tez bitim. Muzokara qilishdan qo'rqmang.</p>
+ </div>
+ <div class="benefit-card">
+ <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 8 9 8 9/"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 16 9 16 9/"/><path d="M12 12v9/"/><path d="M8 21h8/"/><path d="M12 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z/"/></svg></div>
+ <h3>Premium a'zo bo'ling</h3>
+ <p>Cheksiz lotlar, AI Price Optimizer, Cross-Bordr, premium badge va ustuvor qo'llab-quvvatlash. <a href="/subscription" style="color:var(--accent);font-weight:600;">Batafsil →</a></p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ============================================================
+CTA
+============================================================ -->
+<section class="cta-banner">
+ <div class="container">
+ <div class="reveal">
+ <h2>Sotuvchi bo'lish — <span class="text-gradient">5 daqiqa</span></h2>
+ <p>Telegram bot orqali 1 daqiqada ro'yxatdan o'ting, lot yarating va 0% komissiya bilan soting. Omboringizdagi pulni bo'shating.</p>
+ <div class="cta-actions">
+ <a href="https://t.me/DeLiKatbot" target="_blank" class="btn btn-primary btn-lg">Botda boshlash — 1 daqiqa</a>
+ <a href="/register" class="btn btn-secondary btn-lg">Web'da ro'yxatdan o'tish</a>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer theme-transition">
+ <div class="container">
+ <div class="footer-grid">
+ <div class="footer-brand">
+ <a href="/" class="header-logo" style="font-size:1.25rem;" aria-label="DeLiKet bosh sahifa">
+ <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;" role="img" aria-label="DeLiKet">
+ <defs><linearGradient id="lgFtr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
+ <rect x="0" y="0" width="32" height="32" rx="8" fill="url(#lgFtr)"/>
+ <path d="M8 8h7a8 8 0 0 1 0 16H8V8z" fill="white" opacity="0.95"/>
+ <circle cx="23" cy="16" r="2" fill="white" opacity="0.6"/>
+ </svg>
+ DeLi<span>Ket</span>
+ </a>
+ <p>Deadstock Liquidation Marketplace — ortiqcha mahsulotlar uchun B2B platforma. 0% komissiya, AI Trust Score, ESCROW himoya.</p>
+ </div>
+ <div>
+ <h4>Marketplace</h4>
+ <div class="footer-links">
+ <a href="/>Bosh sahifa</a>
+ <a href="/analytics">Analytics</a>
+ <a href="/seller">Sotuvchilar</a>
+ <a href="/seller-onboarding">Sotuvchi Onboarding</a>
+ </div>
+ </div>
+ <div>
+ <h4>Qo'llanma</h4>
+ <div class="footer-links">
+ <a href="/how-it-works">Qanday ishlaydi</a>
+ <a href="/seller-onboarding">B2B sotuvchi qo'llanma</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank">Telegram Bot</a>
+ </div>
+ </div>
+ <div>
+ <h4>Loyiha</h4>
+ <div class="footer-links">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank">GitHub</a>
+ <a href="#">Roadmap</a>
+ </div>
+ </div>
+ </div>
+ <div class="footer-bottom">
+ <span>© 2026 DeLiKet. All rights reserved.</span>
+ <div class="footer-social">
+ <a href="https://github.com/jasur-ai/DeLiKat" target="_blank" title="GitHub" aria-label="GitHub">⌂</a>
+ <a href="https://t.me/DeLiKatbot" target="_blank" title="Telegram" aria-label="Telegram">✈</a>
+ </div>
+ </div>
+ </div>
+</section>
+
+<script>
+// ============================================================
+// THEME
+// ============================================================
+function initTheme() {
+ const saved = localStorage.getItem('deliket-theme');
+ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+ const theme = saved || (prefersDark ? 'dark' : 'light');
+ document.documentElement.setAttribute('data-theme', theme);
+}
+function toggleTheme() {
+ const c = document.documentElement.getAttribute('data-theme');
+ const n = c === 'dark' ? 'light' : 'dark';
+ document.documentElement.setAttribute('data-theme', n);
+ localStorage.setItem('deliket-theme', n);
+}
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+// ============================================================
+// MOBILE
+// ============================================================
+document.getElementById('mobileToggle').addEventListener('click', () => {
+ document.getElementById('mobileToggle').classList.toggle('active');
+ document.getElementById('headerNav').classList.toggle('open');
+});
+document.querySelectorAll('#headerNav a').forEach(a => {
+ a.addEventListener('click', () => {
+ document.getElementById('mobileToggle').classList.remove('active');
+ document.getElementById('headerNav').classList.remove('open');
+ });
+});
+
+// ============================================================
+// SCROLL EVENTS
+// ============================================================
+window.addEventListener('scroll', () => {
+ const y = window.scrollY;
+ document.getElementById('header').classList.toggle('scrolled', y > 50);
+}, { passive: true });
+
+// ============================================================
+// REVEAL ANIMATIONS
+// ============================================================
+const observer = new IntersectionObserver((entries) => {
+ entries.forEach(entry => {
+ if (entry.isIntersecting) {
+ entry.target.classList.add('visible');
+ observer.unobserve(entry.target);
+ }
+ });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+
+// ============================================================
+// INIT
+// ============================================================
+initTheme();
+</script>
+</body>
+</html>

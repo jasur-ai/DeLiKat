@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeLiKet — AI Visual Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+/* ── Visual Search Page ── */
+.vs-page{padding:120px 0 var(--space-2xl);min-height:100vh}
+.vs-container{max-width:960px;margin:0 auto}
+.vs-header{text-align:center;margin-bottom:var(--space-xl)}
+.vs-header h1{font-size:clamp(1.5rem,3vw,2.25rem);margin-bottom:var(--space-xs)}
+.vs-header p{color:var(--text-tertiary);max-width:500px;margin:0 auto;font-size:0.9375rem;line-height:1.6}
+
+/* ── Upload Area ── */
+.vs-upload-area{max-width:600px;margin:0 auto var(--space-lg)}
+.vs-dropzone{position:relative;border:2px dashed var(--border-primary);border-radius:var(--radius-xl);padding:var(--space-2xl) var(--space-lg);text-align:center;cursor:pointer;transition:all 0.2s var(--ease-out);background:var(--bg-secondary)}
+.vs-dropzone:hover,.vs-dropzone.drag-over{border-color:var(--accent);background:var(--accent-50)}
+[data-theme="dark"] .vs-dropzone:hover,[data-theme="dark"] .vs-dropzone.drag-over{background:rgba(37,99,235,0.06)}
+.vs-dropzone-icon{font-size:2.5rem;margin-bottom:var(--space-sm);display:block;transition:transform 0.2s}
+.vs-dropzone:hover .vs-dropzone-icon{transform:scale(1.1)}
+.vs-dropzone-title{font-size:1rem;font-weight:600;margin-bottom:0.25rem}
+.vs-dropzone-hint{font-size:0.8125rem;color:var(--text-tertiary)}
+.vs-dropzone-input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.vs-dropzone-badges{display:flex;gap:var(--space-xs);justify-content:center;margin-top:var(--space-md);flex-wrap:wrap}
+.vs-dropzone-badges span{padding:0.1875rem 0.5rem;font-size:0.6875rem;border-radius:100px;background:var(--bg-primary);border:1px solid var(--border-primary);color:var(--text-tertiary)}
+
+/* ── Preview ── */
+.vs-preview{display:none;margin-top:var(--space-md)}
+.vs-preview-card{display:flex;align-items:center;gap:var(--space-md);padding:var(--space-md);background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg)}
+.vs-preview-img{width:80px;height:80px;border-radius:var(--radius-md);object-fit:cover;background:var(--bg-secondary);flex-shrink:0}
+.vs-preview-info{flex:1;min-width:0}
+.vs-preview-name{font-size:0.875rem;font-weight:600;margin-bottom:0.125rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vs-preview-size{font-size:0.75rem;color:var(--text-tertiary)}
+.vs-preview-remove{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);color:var(--text-tertiary);transition:color 0.15s,background 0.15s;flex-shrink:0}
+.vs-preview-remove:hover{color:var(--red);background:var(--red-50)}
+
+/* ── Text Input ── */
+.vs-text-area{margin:0 auto var(--space-lg);max-width:600px}
+.vs-text-input{width:100%;padding:0.75rem 1rem;border:1px solid var(--border-primary);border-radius:var(--radius-lg);font-size:0.9375rem;color:var(--text-primary);background:var(--bg-primary);outline:none;transition:border-color 0.15s;resize:none}
+.vs-text-input:focus{border-color:var(--accent)}
+.vs-text-input::placeholder{color:var(--text-quaternary)}
+
+/* ── Search Button ── */
+.vs-search-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;max-width:600px;margin:0 auto var(--space-lg);padding:0.75rem;font-size:1rem;font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-lg);cursor:pointer;transition:all 0.15s var(--ease-out)}
+.vs-search-btn:hover{background:var(--accent-dark);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.vs-search-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.vs-search-btn .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite}
+.vs-search-btn.loading .spinner{display:block}
+.vs-search-btn.loading .btn-text{opacity:0.7}
+
+/* ── Search Mode Badge ── */
+.vs-mode-info{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:var(--space-lg);font-size:0.8125rem;color:var(--text-tertiary)}
+.vs-mode-badge{display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.625rem;border-radius:100px;font-size:0.6875rem;font-weight:600}
+.vs-mode-image{background:var(--violet-50);color:var(--violet-dark)}
+.vs-mode-text{background:var(--accent-50);color:var(--accent)}
+.vs-mode-multimodal{background:var(--emerald-50);color:var(--emerald-dark)}
+[data-theme="dark"] .vs-mode-image{background:rgba(139,92,246,0.12);color:#a78bfa}
+[data-theme="dark"] .vs-mode-text{background:rgba(37,99,235,0.12);color:#93c5fd}
+[data-theme="dark"] .vs-mode-multimodal{background:rgba(16,185,129,0.12);color:#34d399}
+
+/* ── Results ── */
+.vs-results{display:none;margin-top:var(--space-lg)}
+.vs-results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-lg);flex-wrap:wrap;gap:var(--space-sm)}
+.vs-results-title{font-size:1.125rem;font-weight:600}
+.vs-results-count{font-size:0.8125rem;color:var(--text-tertiary)}
+.vs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-md)}
+.vs-card{background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s}
+.vs-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
+.vs-card-img{height:160px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative}
+.vs-card-badge{position:absolute;top:var(--space-sm);right:var(--space-sm);padding:0.1875rem 0.5rem;border-radius:100px;font-size:0.6875rem;font-weight:600;background:var(--accent);color:#fff}
+.vs-card-body{padding:var(--space-md)}
+.vs-card-category{font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin-bottom:0.25rem}
+.vs-card-title{font-size:0.9375rem;font-weight:600;color:var(--text-primary);line-height:1.3;margin-bottom:var(--space-sm);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vs-card-meta{display:flex;gap:var(--space-sm);align-items:center;margin-bottom:var(--space-sm);flex-wrap:wrap}
+.vs-card-price{font-size:1.125rem;font-weight:700;font-family:var(--font-display);letter-spacing:-0.02em}
+.vs-card-grade{font-size:0.75rem;color:var(--text-tertiary)}
+.vs-card-similarity{font-size:0.75rem;font-weight:600;color:var(--emerald-dark);background:var(--emerald-50);padding:0.125rem 0.5rem;border-radius:100px}
+[data-theme="dark"] .vs-card-similarity{background:rgba(16,185,129,0.12);color:#34d399}
+.vs-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:var(--space-sm);border-top:1px solid var(--border-primary)}
+.vs-card-seller{font-size:0.75rem;color:var(--text-tertiary)}
+.vs-card-btn{padding:0.375rem 0.75rem;font-size:0.75rem;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:var(--radius-md);transition:all 0.15s}
+.vs-card-btn:hover{background:var(--accent);color:#fff}
+
+/* ── Similarity Bar ── */
+.vs-sim-bar{height:3px;background:var(--border-primary);border-radius:2px;margin-top:var(--space-sm);overflow:hidden}
+.vs-sim-fill{height:100%;background:linear-gradient(90deg,var(--emerald),var(--accent));border-radius:2px;transition:width 0.6s var(--ease-out)}
+
+/* ── Empty / Error ── */
+.vs-empty{text-align:center;padding:var(--space-2xl)}
+.vs-empty-icon{font-size:3rem;margin-bottom:var(--space-md);display:block}
+.vs-empty-title{font-size:1rem;font-weight:600;margin-bottom:0.25rem}
+.vs-empty-text{font-size:0.875rem;color:var(--text-tertiary);max-width:400px;margin:0 auto}
+.vs-empty-suggestions{display:flex;flex-direction:column;gap:0.5rem;margin-top:var(--space-md);align-items:center}
+.vs-empty-suggestions button{padding:0.5rem 1rem;border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:0.8125rem;color:var(--text-secondary);background:var(--bg-primary);transition:all 0.15s;cursor:pointer}
+.vs-empty-suggestions button:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-50)}
+
+/* ── Loading Skeleton ── */
+.vs-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-md);display:none}
+.vs-skeleton.active{display:grid}
+.vs-skel-card{background:var(--bg-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden}
+.vs-skel-img{height:160px;background:var(--bg-secondary);animation:pulse 1.5s ease-in-out infinite}
+.vs-skel-body{padding:var(--space-md)}
+.vs-skel-line{height:12px;background:var(--bg-secondary);border-radius:6px;margin-bottom:0.5rem;animation:pulse 1.5s ease-in-out infinite}
+.vs-skel-line.short{width:60%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ── Camera ── */
+.vs-camera-btn{position:absolute;bottom:var(--space-md);right:var(--space-md);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--bg-primary);border:1px solid var(--border-primary);color:var(--text-secondary);font-size:1rem;cursor:pointer;transition:all 0.15s}
+.vs-camera-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── Progress ── */
+.vs-progress{display:none;max-width:600px;margin:var(--space-md) auto}
+.vs-progress.active{display:block}
+.vs-progress-bar{height:4px;background:var(--border-primary);border-radius:2px;overflow:hidden}
+.vs-progress-fill{height:100%;width:0%;background:var(--accent-gradient);border-radius:2px;transition:width 0.3s var(--ease-out)}
+.vs-progress-text{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-tertiary);margin-top:0.375rem}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+ .vs-upload-area{padding:0}
+ .vs-dropzone{padding:var(--space-xl) var(--space-md)}
+ .vs-grid{grid-template-columns:1fr}
+ .vs-preview-card{padding:var(--space-sm)}
+ .vs-preview-img{width:60px;height:60px}
+}
+</style>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+<div class="loader-ring"></div>
+<span class="loader-text">DeLiKet yuklanmoqda...</span>
+</div>
+
+<header class="header" id="header">
+ <div class="header-inner">
+ <a href="/" class="header-logo">
+ <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" fill="var(--accent)"/><path d="M8 10h12M8 14h12M8 18h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+ DeLiKet
+ </a>
+ <nav class="header-nav">
+ <a href="/>Bosh sahifa</a>
+ <a href="/how-it-works">Qanday ishlaydi</a>
+ <a href="/visualsearch" class="active">AI Search</a>
+ </nav>
+ <a href="https://t.me/DeLiKatbot" class="header-cta" target="_blank">Telegram'da ochish</a>
+ </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Temani almashtirish">
+<svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+<svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menyu">
+<span></span><span></span><span></span>
+</button>
+</header>
+
+<div class="vs-page">
+ <div class="vs-container">
+
+ <!-- Header -->
+ <div class="vs-header">
+ <span class="section-badge">CLIP AI</span>
+ <h1>AI Visual Search</h1>
+ <p>Rasm yuboring yoki matn yozing — CLIP AI eng mos mahsulotlarni topib beradi!</p>
+ </div>
+
+ <!-- Upload Area -->
+ <div class="vs-upload-area">
+ <div class="vs-dropzone" id="dropzone">
+ <input type="file" class="vs-dropzone-input" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" capture="environment">
+ <span class="vs-dropzone-icon" id="dropzoneIcon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z/"/><circle cx=12 cy=13 r=4"/><path d="M15 9l-2 5-2-3-2 5/"/></svg></span>
+ <div class="vs-dropzone-title">Rasm yuklang yoki kamerani oching</div>
+ <div class="vs-dropzone-hint">JPEG, PNG, WebP — maks. 10MB</div>
+ <div class="vs-dropzone-badges">
+ <span>Smartfon</span>
+ <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/><line x1="9" y1="3" x2="9" y2="20"/><line x1="14" y1="3" x2="14" y2="20"/></svg> Notebook</span>
+ <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M3 18v-6a9 9 0 0 1 18 0v6/"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z/"/></svg> Audio</span>
+ <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/><line x1="9" y1="3" x2="9" y2="20"/><line x1="15" y1="3" x2="15" y2="20"/></svg> TV</span>
+ </div>
+ <button class="vs-camera-btn" id="cameraBtn" title="Kamerani ochish" onclick="document.getElementById('fileInput').click()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z/"/><circle cx=12 cy=13 r=4"/></svg></button>
+ </div>
+
+ <!-- Preview -->
+ <div class="vs-preview" id="preview">
+ <div class="vs-preview-card">
+ <img class="vs-preview-img" id="previewImg" src="" alt="Yuklangan rasm">
+ <div class="vs-preview-info">
+ <div class="vs-preview-name" id="previewName">rasm.jpg</div>
+ <div class="vs-preview-size" id="previewSize"></div>
+ </div>
+ <button aria-label="✕" class="vs-preview-remove" onclick="clearImage()" title="O'chirish">✕</button>
+ </div>
+ </div>
+ </div>
+
+ <!-- Text Input -->
+ <div class="vs-text-area">
+ <input type="text" class="vs-text-input" id="textInput" placeholder="Mahsulot tavsifini yozing (ixtiyoriy). Masalan: iPhone 13 Pro 128GB yoki menga notebook kerak 500$ gacha" autocomplete="off">
+ </div>
+
+ <!-- Sear<button class="vs-search-btn" id="searchBtn" onclick="doSearch()">
+ <span class="spinner"></span>
+ <span class="btn-text">AI bilan qidirish</span>
+ </button>
+
+ <!-- Search Mode -->
+ <div class="vs-mode-info" id="modeInfo">
+ <span>CLIP AI ikkala rasm va matnni bir xil vektor fazoda tahlil qiladi</span>
+ </div>
+
+ <!-- Progress -->
+ <div class="vs-progress" id="progress">
+ <div class="vs-progress-bar">
+ <div class="vs-progress-fill" id="progressFill"></div>
+ </div>
+ <div class="vs-progress-text">
+ <span id="progressLabel">CLIP model yuklanmoqda...</span>
+ <span id="progressPct">0%</span>
+ </div>
+ </div>
+
+ <!-- Skeleton -->
+ <div class="vs-skeleton" id="skeleton">
+ <div class="vs-skel-card"><div class="vs-skel-img"></div><div class="vs-skel-body"><div class="vs-skel-line"></div><div class="vs-skel-line short"></div></div></div>
+ <div class="vs-skel-card"><div class="vs-skel-img"></div><div class="vs-skel-body"><div class="vs-skel-line"></div><div class="vs-skel-line short"></div></div></div>
+ <div class="vs-skel-card"><div class="vs-skel-img"></div><div class="vs-skel-body"><div class="vs-skel-line"></div><div class="vs-skel-line short"></div></div></div>
+ <div class="vs-skel-card"><div class="vs-skel-img"></div><div class="vs-skel-body"><div class="vs-skel-line"></div><div class="vs-skel-line short"></div></div></div>
+ </div>
+
+ <!-- Results -->
+ <div class="vs-results" id="results">
+ <div class="vs-results-header">
+ <div>
+ <div class="vs-results-title" id="resultsTitle">Natijalar</div>
+ <div class="vs-results-count" id="resultsCount"></div>
+ </div>
+ <div id="modeBadge"></div>
+ </div>
+ <div class="vs-grid" id="resultsGrid"></div>
+ </div>
+
+ </div>
+</div>
+
+<script>
+let currentFile = null;
+let searchState = 'idle'; // idle, loading, done
+
+// ── File Input ──
+document.getElementById('fileInput').addEventListener('change', (e) => {
+ const file = e.target.files[0];
+ if (file) handleFile(file);
+});
+
+// ── Drag & Drop ──
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop', (e) => {
+ e.preventDefault();
+ dropzone.classList.remove('drag-over');
+ const file = e.dataTransfer.files[0];
+ if (file && file.type.startsWith('image/')) handleFile(file);
+});
+
+function handleFile(file) {
+ if (file.size > 10 * 1024 * 1024) {
+ showToast('Rasm hajmi 10MB dan oshmasligi kerak');
+ return;
+ }
+ currentFile = file;
+ const reader = new FileReader();
+ reader.onload = (e) => {
+ document.getElementById('previewImg').src = e.target.result;
+ document.getElementById('previewName').textContent = file.name;
+ document.getElementById('previewSize').textContent = formatSize(file.size);
+ document.getElementById('preview').style.display = 'block';
+ document.getElementById('dropzoneIcon').textContent = '✓';
+ updateMode();
+ };
+ reader.readAsDataURL(file);
+}
+
+function clearImage() {
+ currentFile = null;
+ document.getElementById('fileInput').value = '';
+ document.getElementById('preview').style.display = 'none';
+ document.getElementById('dropzoneIcon').textContent = '';
+ updateMode();
+}
+
+// ── Text Input ──
+document.getElementById('textInput').addEventListener('input', updateMode);
+document.getElementById('textInput').addEventListener('keydown', (e) => {
+ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSearch(); }
+});
+
+// ── Update Mode ──
+function updateMode() {
+ const hasImage = currentFile !== null;
+ const hasText = document.getElementById('textInput').value.trim().length > 0;
+ const btn = document.getElementById('searchBtn');
+
+ if (hasImage && hasText) {
+ btn.querySelector('.btn-text').textContent = 'AI Multimodal qidirish (rasm + matn)';
+ } else if (hasImage) {
+ btn.querySelector('.btn-text').textContent = 'AI Visual qidirish (rasm bo\'yicha)';
+ } else if (hasText) {
+ btn.querySelector('.btn-text').textContent = 'AI Semantic qidirish (matn bo\'yicha)';
+ } else {
+ btn.querySelector('.btn-text').textContent = 'AI bilan qidirish';
+ }
+}
+
+// ── Search ──
+async function doSearch() {
+ const text = document.getElementById('textInput').value.trim();
+ if (!currentFile && !text) {
+ showToast('Rasm yuklang yoki matn yozing');
+ return;
+ }
+
+ const btn = document.getElementById('searchBtn');
+ const skeleton = document.getElementById('skeleton');
+ const results = document.getElementById('results');
+ const progress = document.getElementById('progress');
+ const progressFill = document.getElementById('progressFill');
+
+ btn.classList.add('loading');
+ btn.disabled = true;
+ searchState = 'loading';
+ results.style.display = 'none';
+ skeleton.classList.add('active');
+ progress.classList.add('active');
+
+ // Animate progress
+ let pct = 0;
+ const progressInterval = setInterval(() => {
+ pct = Math.min(pct + Math.random() * 15, 85);
+ progressFill.style.width = pct + '%';
+ document.getElementById('progressPct').textContent = Math.round(pct) + '%';
+ if (pct < 40) document.getElementById('progressLabel').textContent = 'CLIP model yuklanmoqda...';
+ else if (pct < 70) document.getElementById('progressLabel').textContent = 'Embedding generatsiya qilinmoqda...';
+ else document.getElementById('progressLabel').textContent = 'O\'xshash lotlar qidirilmoqda...';
+ }, 300);
+
+ try {
+ const formData = new FormData();
+ if (currentFile) formData.append('image', currentFile);
+ if (text) formData.append('text', text);
+ formData.append('limit', '12');
+ formData.append('min_similarity', '0.25');
+
+ const res = await fetch('/api/visual-search', { method: 'POST', body: formData });
+ const data = await res.json();
+
+ clearInterval(progressInterval);
+ progressFill.style.width = '100%';
+ document.getElementById('progressPct').textContent = '100%';
+ await new Promise(r => setTimeout(r, 300));
+
+ progress.classList.remove('active');
+ skeleton.classList.remove('active');
+ btn.classList.remove('loading');
+ btn.disabled = false;
+
+ if (!res.ok) {
+ showToast('' + (data.detail || 'Xatolik yuz berdi'));
+ return;
+ }
+
+ renderResults(data);
+ } catch (e) {
+ clearInterval(progressInterval);
+ progress.classList.remove('active');
+ skeleton.classList.remove('active');
+ btn.classList.remove('loading');
+ btn.disabled = false;
+ showToast('Server bilan bog\'lanib bo\'lmadi');
+ }
+}
+
+// ── Render Results ──
+function renderResults(data) {
+ const results = document.getElementById('results');
+ const grid = document.getElementById('resultsGrid');
+ const resultsCount = document.getElementById('resultsCount');
+ const modeBadge = document.getElementById('modeBadge');
+
+ results.style.display = 'block';
+
+ // Mode badge
+ const modeLabels = {
+ 'image': 'Rasm bo\'yicha',
+ 'text': 'Matn bo\'yicha',
+ 'multimodal': 'Rasm + Matn',
+ };
+ modeBadge.innerHTML = `<span class="vs-mode-badge vs-mode-${data.search_type}">${modeLabels[data.search_type] || 'Qidiruv'}</span>`;
+
+ if (data.count === 0) {
+ grid.innerHTML = `
+ <div style="grid-column:1/-1">
+ <div class="vs-empty">
+ <span class="vs-empty-icon"></span>
+ <div class="vs-empty-title">Hech narsa topilmadi</div>
+ <div class="vs-empty-text">Boshqa rasm yoki matn bilan urinib ko'ring. CLIP AI ma'noni tushunadi, shuning uchun aniqroq tavsif bering.</div>
+    <div class="vs-empty-suggestions">
+    <button onclick="document.getElementById('textInput').value='smartfon iPhone Samsung'; doSearch()">📱 smartfon iPhone Samsung</button>
+    <button onclick="document.getElementById('textInput').value='notebook laptop 500 dollar'; doSearch()">💻 notebook laptop 500$</button>
+ <button onclick="document.getElementById('textInput').value='quloqchin airpods audio'; doSearch()"> quloqchin airpods audio</button>
+ </div>
+ </div>
+ </div>`;
+ return;
+ }
+
+ resultsCount.textContent = `${data.count} ta natija topildi`;
+
+ let html = '';
+ data.results.forEach(lot => {
+ const pct = Math.round(lot.similarity * 100);
+ const gradeLabel = {'A': 'A+', 'B': ' B', 'C': ' C'}[lot.grade] || '';
+ html += `
+ <div class="vs-card">
+ <div class="vs-card-img">
+ <span></span>
+ <span class="vs-card-badge">${pct}%</span>
+ </div>
+ <div class="vs-card-body">
+ <div class="vs-card-category">${lot.category}</div>
+ <div class="vs-card-title">${lot.title}</div>
+ <div class="vs-card-meta">
+ <span class="vs-card-price">${lot.price_formatted}</span>
+ <span class="vs-card-grade">${gradeLabel}</span>
+ </div>
+ <div class="vs-sim-bar"><div class="vs-sim-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="vs-card-footer">
+    <span class="vs-card-seller">🔹 #${lot.id}</span>
+    <button class="vs-card-btn" onclick="showToast('Taklif: /bid ${lot.id}')">Taklif</button>
+ </div>
+ </div>
+ </div>`;
+ });
+
+ grid.innerHTML = html;
+ searchState = 'done';
+}
+
+// ── Helpers ──
+function formatSize(bytes) {
+ if (bytes < 1024) return bytes + ' B';
+ if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+ return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function showToast(msg) {
+ const existing = document.querySelector('.toast');
+ if (existing) existing.remove();
+ const toast = document.createElement('div');
+ toast.className = 'toast';
+ toast.textContent = msg;
+ let container = document.querySelector('.toast-container');
+ if (!container) {
+ container = document.createElement('div');
+ container.className = 'toast-container';
+ document.body.appendChild(container);
+ }
+ container.appendChild(toast);
+ setTimeout(() => toast.remove(), 3000);
+}
+
+// ── Initial focus ──
+document.getElementById('textInput').focus();
+
+
+// Theme
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('deliket-theme',t)}
+function initTheme(){var s=localStorage.getItem('deliket-theme'),p=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(p?'dark':'light'))}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');setTheme(c==='dark'?'light':'dark')}
+
+document.addEventListener('DOMContentLoaded',initTheme);
+
+
+document.addEventListener('DOMContentLoaded',function(){
+var mt=document.getElementById('mobileToggle'),hn=document.getElementById('headerNav');
+if(mt&&hn){mt.addEventListener('click',function(){mt.classList.toggle('active');hn.classList.toggle('open')})}
+});</script>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobil navigatsiya">
+<div class="mobile-bottom-nav-items">
+<a href="/" class="active"><span class="nav-icon"></span><span class="nav-label">Bosh</span></a>
+<a href="/analytics"><span class="nav-icon"></span><span class="nav-label">Analytics</span></a>
+<a href="/seller"><span class="nav-icon"></span><span class="nav-label">Sotuvchilar</span></a>
+<a href="/deals"><span class="nav-icon"></span><span class="nav-label">Bitimlar</span></a>
+<a href="/academy"><span class="nav-icon"></span><span class="nav-label">Academy</span></a>
+</div>
+</nav>
+</body>
+</html>
