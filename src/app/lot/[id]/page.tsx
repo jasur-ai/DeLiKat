@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
 interface LotDetail {
   id: number; title: string; category: string; description?: string;
@@ -19,7 +20,9 @@ function fmtPrice(v: number): string {
   return `${v.toLocaleString()} so'm`;
 }
 
-export default function LotDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function LotDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
   const [lot, setLot] = useState<LotDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -33,12 +36,10 @@ export default function LotDetailPage({ params }: { params: Promise<{ id: string
     setDarkMode(isDark);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-    params.then(({ id }) => {
-      fetch(`/api/lots/${id}`).then(r => r.json()).then(d => {
-        if (d.ok !== false) setLot(d);
-      }).catch(console.error).finally(() => setLoading(false));
-    });
-  }, [params]);
+    fetch(`/api/lots/${id}`).then(r => r.json()).then(d => {
+      if (d.ok !== false) setLot(d);
+    }).catch(console.error).finally(() => setLoading(false));
+  }, [id]);
 
   const toggleTheme = () => {
     const next = !darkMode;

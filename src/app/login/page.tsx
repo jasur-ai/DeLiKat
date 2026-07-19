@@ -196,8 +196,8 @@ export default function LoginPage() {
 
       {/* Mobile menu */}
       <button onClick={() => setMobileMenu(!mobileMenu)}
-        className="fixed top-3 right-3 flex-col gap-1.5 p-2 rounded-md z-50 md:hidden bg-none border-none cursor-pointer"
-        style={{ display: window.innerWidth < 768 ? 'flex' : 'none', background: 'var(--surface)' }}>
+        className="md:hidden fixed top-3 right-3 flex-col gap-1.5 p-2 rounded-md z-50 bg-none border-none cursor-pointer"
+        style={{ background: 'var(--surface)' }}>
         <span className={`block w-5 h-0.5 transition ${mobileMenu ? 'rotate-45 translate-y-1.5' : ''}`} style={{ background: 'var(--text-primary)' }} />
         <span className={`block w-5 h-0.5 transition ${mobileMenu ? 'opacity-0' : ''}`} style={{ background: 'var(--text-primary)' }} />
         <span className={`block w-5 h-0.5 transition ${mobileMenu ? '-rotate-45 -translate-y-1.5' : ''}`} style={{ background: 'var(--text-primary)' }} />
