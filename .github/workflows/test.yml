@@ -20,22 +20,22 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: cd web && pip install -r requirements.txt
       - name: Check Python syntax
         run: |
-          python3 -m py_compile bot/main.py
-          python3 -m py_compile bot/handlers/start.py
-          python3 -m py_compile bot/handlers/lot.py
-          python3 -m py_compile bot/handlers/search.py
-          python3 -m py_compile bot/handlers/help.py
-          python3 -m py_compile bot/handlers/profile.py
-          python3 -m py_compile bot/keyboards/menu.py
-          python3 -m py_compile bot/utils/session.py
-          python3 -m py_compile bot/utils/decorators.py
-          python3 -m py_compile api/main.py
-          python3 -m py_compile api/routes/lots.py
-          python3 -m py_compile api/database/__init__.py
-          python3 -m py_compile api/database/models.py
+          python3 -m py_compile web/bot/main.py
+          python3 -m py_compile web/bot/handlers/start.py
+          python3 -m py_compile web/bot/handlers/lot.py
+          python3 -m py_compile web/bot/handlers/search.py
+          python3 -m py_compile web/bot/handlers/help.py
+          python3 -m py_compile web/bot/handlers/profile.py
+          python3 -m py_compile web/bot/keyboards/menu.py
+          python3 -m py_compile web/bot/utils/session.py
+          python3 -m py_compile web/bot/utils/decorators.py
+          python3 -m py_compile web/api/main.py
+          python3 -m py_compile web/api/routes/lots.py
+          python3 -m py_compile web/web/api/database/__init__.py
+          python3 -m py_compile web/web/api/database/models.py
       - name: Run tests
         run: pytest -v || echo "No tests yet"
 
@@ -51,7 +51,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -r requirements.txt python-telegram-bot==20.7
+        run: cd web && pip install -r requirements.txt python-telegram-bot==20.7
       - name: Set webhook
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
