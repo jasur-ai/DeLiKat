@@ -98,3 +98,8 @@ next-env.d.ts
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+
+# Legacy Python artifacts
+*.db
+*.sqlite
+.python-version

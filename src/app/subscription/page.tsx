@@ -115,22 +115,31 @@ export default function SubscriptionPage() {
                     </div>
                   ))}
                 </div>
-                <button onClick={isCurrent ? undefined : () => window.open('https://t.me/DeLiKatbot', '_blank')}
-                  className={`w-full py-2.5 text-sm font-semibold rounded-lg border transition cursor-pointer ${
-                    isCurrent ? '' : tier.popular ? 'text-white' : ''
-                  }`}
-                  style={isCurrent ? {
-                    background: 'rgba(16,185,129,0.1)', color: '#10b981',
-                    borderColor: 'rgba(16,185,129,0.2)', cursor: 'default',
-                  } : tier.popular ? {
-                    background: 'var(--accent)', color: 'white',
-                    borderColor: 'var(--accent)',
-                  } : {
-                    background: 'var(--surface)', color: 'var(--text-primary)',
-                    borderColor: 'var(--border-primary)',
-                  }}>
-                  {isCurrent ? 'Joriy reja' : tier.price === 0 ? 'Bepul boshlash' : 'Ulanish'}
-                </button>
+                <div className="space-y-2">
+                  <button onClick={isCurrent ? undefined : () => window.open('https://t.me/DeLiKatbot', '_blank')}
+                    className={`w-full py-2.5 text-sm font-semibold rounded-lg border transition cursor-pointer ${
+                      isCurrent ? '' : tier.popular ? 'text-white' : ''
+                    }`}
+                    style={isCurrent ? {
+                      background: 'rgba(16,185,129,0.1)', color: '#10b981',
+                      borderColor: 'rgba(16,185,129,0.2)', cursor: 'default',
+                    } : tier.popular ? {
+                      background: 'var(--accent)', color: 'white',
+                      borderColor: 'var(--accent)',
+                    } : {
+                      background: 'var(--surface)', color: 'var(--text-primary)',
+                      borderColor: 'var(--border-primary)',
+                    }}>
+                    {isCurrent ? 'Joriy reja' : tier.price === 0 ? 'Bepul boshlash' : 'Ulanish'}
+                  </button>
+                  {tier.price > 0 && !isCurrent && (
+                    <a href={`/nasiya?amount=${tier.price * 12}&months=12&type=subscription`}
+                      className="block w-full py-2 text-xs font-semibold rounded-lg border text-center no-underline transition hover:bg-opacity-80"
+                      style={{ borderColor: 'var(--border-primary)', color: 'var(--accent)' }}>
+                      💰 Bo'lib to'lash (oyiga {Math.round((tier.price * 12) / 12 * 1.08).toLocaleString()} so'm)
+                    </a>
+                  )}
+                </div>
               </div>
             );
           })}

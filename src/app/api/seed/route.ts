@@ -115,7 +115,38 @@ export async function POST() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`);
 
+    // ─── CHAT ──
+    results.push('messages');
+    await execute(`CREATE TABLE IF NOT EXISTS messages (
+      id SERIAL PRIMARY KEY,
+      sender_id INTEGER REFERENCES users(id),
+      receiver_id INTEGER REFERENCES users(id),
+      lot_id INTEGER REFERENCES lots(id),
+      text TEXT NOT NULL,
+      is_read BOOLEAN DEFAULT false,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await execute(`CREATE INDEX IF NOT EXISTS idx_messages_participants ON messages(sender_id, receiver_id)`);
+    await execute(`CREATE INDEX IF NOT EXISTS idx_messages_created ON messages(created_at DESC)`);
+
+    // ─── NOTIFICATIONS ──
+    results.push('notifications');
+    await execute(`CREATE TABLE IF NOT EXISTS notifications (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id),
+      type VARCHAR(30) NOT NULL,
+      title VARCHAR(200) NOT NULL,
+      message TEXT NOT NULL,
+      icon VARCHAR(10) DEFAULT '🔔',
+      lot_id INTEGER REFERENCES lots(id),
+      is_read BOOLEAN DEFAULT false,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await execute(`CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read)`);
+
     // 2. Clear existing data
+    await execute('DELETE FROM notifications');
+    await execute('DELETE FROM messages');
     await execute('DELETE FROM trusted_reviews');
     await execute('DELETE FROM transactions');
     await execute('DELETE FROM bids');
@@ -132,6 +163,8 @@ export async function POST() {
     await execute("ALTER SEQUENCE transactions_id_seq RESTART WITH 1");
     await execute("ALTER SEQUENCE trusted_reviews_id_seq RESTART WITH 1");
     await execute("ALTER SEQUENCE achievements_id_seq RESTART WITH 1");
+    await execute("ALTER SEQUENCE messages_id_seq RESTART WITH 1");
+    await execute("ALTER SEQUENCE notifications_id_seq RESTART WITH 1");
 
     // 3. Insert users
     for (const u of MOCK_USERS) {
@@ -192,6 +225,54 @@ export async function POST() {
       );
     }
     inserted.achievements = MOCK_ACHIEVEMENTS.length;
+
+    // ─── CHAT: Seed messages ──
+    inserted.messages = 0;
+    try {
+      const messages = [
+        { s: 1, r: 4, l: 1, t: "Assalomu alaykum! iPhone 14 Pro Max hali bormi?", c: "2026-06-14T10:00:00Z" },
+        { s: 4, r: 1, l: 1, t: "Va alaykum assalom! Ha, 1 dona qolgan. 12.5 mln so'm", c: "2026-06-14T10:05:00Z" },
+        { s: 1, r: 4, l: 1, t: "Narxni tushirish mumkinmi? 11.5 mln bo'lsa olaman", c: "2026-06-14T10:10:00Z" },
+        { s: 4, r: 1, l: 1, t: "12 mln bo'lishi mumkin. Bugun olsangiz yetkazib beraman", c: "2026-06-14T10:15:00Z" },
+        { s: 10, r: 1, l: 14, t: "HP Spectre notebook hali bormi?", c: "2026-06-13T09:00:00Z" },
+        { s: 1, r: 10, l: 14, t: "Ha, 3 dona mavjud. 9.5 mln/dona", c: "2026-06-13T09:30:00Z" },
+        { s: 10, r: 1, l: 14, t: "3 tasini ham olsak chegirma bormi?", c: "2026-06-13T10:00:00Z" },
+        { s: 1, r: 10, l: 14, t: "26 mln qilaman 3 tasini. Eng zo'r narx!", c: "2026-06-13T11:00:00Z" },
+      ];
+      for (const m of messages) {
+        await query(
+          'INSERT INTO messages (sender_id, receiver_id, lot_id, text, created_at) VALUES ($1, $2, $3, $4, $5)',
+          [m.s, m.r, m.l, m.t, m.c]
+        );
+        inserted.messages++;
+      }
+    } catch (err) { console.error('Seed messages warning:', err); }
+
+    // ─── NOTIFICATIONS: Seed notifications ──
+    inserted.notifications = 0;
+    try {
+      const notifications = [
+        { u: 1, ty: 'new_bid', ti: 'Yangi taklif', msg: 'Lotingizga Dilnoza Abdullayeva dan yangi taklif: iPhone 14 Pro Max — 11.8 mln so\'m', ic: '💰', l: 1, r: false },
+        { u: 2, ty: 'new_bid', ti: 'Yangi taklif', msg: 'Lotingizga Jasur Karimov dan taklif: MacBook Air M2 — 10.5 mln so\'m', ic: '💰', l: 2, r: false },
+        { u: 1, ty: 'bid_accepted', ti: 'Taklif qabul qilindi', msg: 'iPhone 14 Pro Max lotiga taklifingiz qabul qilindi! Sotuvchi bilan bog\'laning.', ic: '✅', l: 1, r: false },
+        { u: 10, ty: 'bid_accepted', ti: 'Taklif qabul qilindi', msg: 'HP Spectre x360 lotiga taklifingiz qabul qilindi! Bitim tuzish uchun tasdiqlang.', ic: '✅', l: 14, r: true },
+        { u: 1, ty: 'new_deal', ti: 'Yangi bitim', msg: 'iPhone 14 Pro Max uchun bitim yaratildi! 12.0 mln so\'m — ESCROW himoyasida.', ic: '🤝', l: 1, r: true },
+        { u: 4, ty: 'new_deal', ti: 'Yangi bitim', msg: 'Jasur Karimov bilan iPhone 14 Pro Max sotuvi bo\'yicha bitim tuzildi.', ic: '🤝', l: 1, r: true },
+        { u: 10, ty: 'new_deal', ti: 'Yangi bitim', msg: 'HP Spectre x360 uchun bitim tuzildi! 26.0 mln so\'m (3 dona).', ic: '🤝', l: 14, r: true },
+        { u: 10, ty: 'escrow', ti: 'ESCROW to\'lov', msg: 'Mahsulot yetib bordi. ESCROW dan pul sotuvchiga o\'tkazildi. Tranzaksiya yakunlandi.', ic: '🛡️', l: 14, r: true },
+        { u: 1, ty: 'escrow', ti: 'ESCROW to\'lov', msg: 'Sotuv uchun to\'lov ESCROW da saqlanmoqda. Xaridor mahsulotni olgandan so\'ng pul o\'tkaziladi.', ic: '🛡️', l: 1, r: false },
+        { u: 10, ty: 'academy', ti: '🎓 Yangi dars', msg: '"Marketing va sotuv strategiyalari" darsi mavjud. +150 XP!', ic: '📚', l: null, r: false },
+        { u: 1, ty: 'academy', ti: '🎓 Yangi dars', msg: '"Ko\'p miqdordagi lotlarni boshqarish" darsi ochildi. +100 XP!', ic: '📚', l: null, r: true },
+        { u: 2, ty: 'academy', ti: '🎓 Yangi dars', msg: '"Xalqaro savdo asoslari" — yangi modul. +200 XP!', ic: '📚', l: null, r: false },
+      ];
+      for (const n of notifications) {
+        await query(
+          'INSERT INTO notifications (user_id, type, title, message, icon, lot_id, is_read, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+          [n.u, n.ty, n.ti, n.msg, n.ic, n.l, n.r, new Date(Date.now() - Math.floor(Math.random() * 72) * 3600000).toISOString()]
+        );
+        inserted.notifications++;
+      }
+    } catch (err) { console.error('Seed notifications warning:', err); }
 
     // 9. Update sequences to avoid ID conflicts on new inserts
     await query("SELECT setval('users_id_seq', (SELECT MAX(id) FROM users))");

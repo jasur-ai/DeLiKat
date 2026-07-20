@@ -18,6 +18,13 @@ interface Deal {
   created_at: string;
 }
 
+interface EscrowSummary {
+  deal_id: number;
+  status: string;
+  payment_method?: string;
+  log_count: number;
+}
+
 const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
   yakunlangan: { bg: 'rgba(16,185,129,0.1)', color: '#10b981' },
   kutilmoqda: { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b' },
@@ -27,6 +34,8 @@ const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
 export default function DealsPage() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [escrowSummaries, setEscrowSummaries] = useState<Record<number, EscrowSummary>>({});
+  const [showEscrowIds, setShowEscrowIds] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -40,9 +49,37 @@ export default function DealsPage() {
     Promise.all([
       fetch('/api/deals').then(r => r.json()),
       fetch('/api/deals/stats').then(r => r.json()),
-    ]).then(([d, s]) => {
+      fetch('/api/payments/escrow?stats=true').then(r => r.json()),
+    ]).then(([d, s, esc]) => {
       if (d.ok) setDeals(d.deals || []);
       if (s.ok) setStats(s.stats || s);
+      // Load escrow summaries for each deal
+      if (d.ok && d.deals) {
+        (d.deals as Deal[]).forEach((deal: Deal) => {
+          fetch(`/api/payments/escrow?deal_id=${deal.id}`)
+            .then(r => r.json())
+            .then(ed => {
+              if (ed.ok && ed.escrow) {
+                // Also get log count
+                fetch(`/api/payments/escrow?action=logs&escrow_id=${ed.escrow.id}`)
+                  .then(r => r.json())
+                  .then(ld => {
+                    setEscrowSummaries(prev => ({
+                      ...prev,
+                      [deal.id]: {
+                        deal_id: deal.id,
+                        status: ed.escrow.status,
+                        payment_method: ed.escrow.payment_method,
+                        log_count: ld.ok ? (ld.logs || []).length : 0,
+                      },
+                    }));
+                  })
+                  .catch(() => {});
+              }
+            })
+            .catch(() => {});
+        });
+      }
     }).catch(console.error).finally(() => setLoading(false));
   }, []);
 
@@ -112,16 +149,57 @@ export default function DealsPage() {
                     <a href={`/lot/${deal.lot_id}`} className="text-sm font-semibold no-underline hover:underline" style={{ color: 'var(--text-primary)' }}>
                       {deal.lot_title}
                     </a>
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: ss.bg, color: ss.color }}>
-                      {deal.status}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {/* ESCROW status badge */}
+                      {escrowSummaries[deal.id] && (
+                        <button onClick={(e) => {
+                          e.preventDefault();
+                          setShowEscrowIds(prev => {
+                            const next = new Set(prev);
+                            if (next.has(deal.id)) next.delete(deal.id);
+                            else next.add(deal.id);
+                            return next;
+                          });
+                        }}
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border-none cursor-pointer transition`}
+                          style={{
+                            background: escrowSummaries[deal.id].status === 'released' ? 'rgba(16,185,129,0.1)' :
+                              escrowSummaries[deal.id].status === 'held' ? 'rgba(99,102,241,0.1)' :
+                              escrowSummaries[deal.id].status === 'cancelled' ? 'rgba(239,68,68,0.1)' :
+                              'rgba(245,158,11,0.1)',
+                            color: escrowSummaries[deal.id].status === 'released' ? '#10b981' :
+                              escrowSummaries[deal.id].status === 'held' ? '#6366f1' :
+                              escrowSummaries[deal.id].status === 'cancelled' ? '#ef4444' :
+                              '#f59e0b',
+                          }}>
+                          🛡️ {escrowSummaries[deal.id].log_count > 0 ? `${escrowSummaries[deal.id].log_count} ta` : 'ESCROW'}
+                        </button>
+                      )}
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: ss.bg, color: ss.color }}>
+                        {deal.status}
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--text-tertiary)' }}>
                     <span>💰 {(deal.amount || 0).toLocaleString()} so'm</span>
                     <span>📦 {deal.lot_quantity || 0} dona</span>
                     <span>👤 Sotuvchi: {deal.seller_name || "Noma'lum"}</span>
                     <span>🏪 Xaridor: {deal.buyer_name || "Noma'lum"}</span>
+                    {escrowSummaries[deal.id]?.payment_method && (
+                      <span>💳 {escrowSummaries[deal.id].payment_method!.toUpperCase()}</span>
+                    )}
                   </div>
+
+                  {/* Expandable ESCROW Logs */}
+                  {showEscrowIds.has(deal.id) && (
+                    <div className="mt-4 pt-4 border-t text-xs" style={{ borderColor: 'var(--border-primary)' }}>
+                      <a href={`/deal/${deal.id}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold no-underline transition hover:gap-2"
+                        style={{ color: 'var(--accent)' }}>
+                        📋 Tranzaksiya tarixini ko'rish →
+                      </a>
+                    </div>
+                  )}
                 </div>
               );
             })}

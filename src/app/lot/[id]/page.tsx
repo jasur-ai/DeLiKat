@@ -30,6 +30,9 @@ export default function LotDetailPage() {
   const [bidPrice, setBidPrice] = useState('');
   const [bidQty, setBidQty] = useState('1');
   const [submitting, setSubmitting] = useState(false);
+  const [showNasiya, setShowNasiya] = useState(false);
+  const [nasiyaPlans, setNasiyaPlans] = useState<any[]>([]);
+  const [nasiyaMonths, setNasiyaMonths] = useState(6);
 
   useEffect(() => {
     const isDark = localStorage.getItem('theme') === 'dark' ||
@@ -47,6 +50,16 @@ export default function LotDetailPage() {
     setDarkMode(next);
     document.documentElement.setAttribute('data-theme', next ? 'dark' : 'light');
     localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
+
+  const loadNasiya = async () => {
+    if (!lot || showNasiya) return;
+    setShowNasiya(true);
+    try {
+      const res = await fetch('/api/installment?action=plans&amount=' + lot.price * lot.quantity);
+      const d = await res.json();
+      if (d.ok) setNasiyaPlans(d.plans);
+    } catch { /* ignore */ }
   };
 
   const handleBid = async () => {
@@ -166,6 +179,43 @@ export default function LotDetailPage() {
                       style={{ background: 'var(--accent)', color: 'white' }}>
                       {submitting ? 'Yuborilmoqda...' : 'Taklif yuborish'}
                     </button>
+                  </div>
+
+                  {/* Nasiya toggle */}
+                  <div className="mt-3">
+                    <button onClick={loadNasiya}
+                      className="w-full py-2.5 text-sm font-semibold rounded-lg border cursor-pointer transition hover:scale-[1.01] active:scale-[0.99]"
+                      style={{ borderColor: 'var(--border-primary)', color: 'var(--accent)', background: 'var(--surface)' }}>
+                      💰 Bo'lib to'lash (Nasiya)
+                    </button>
+
+                    {showNasiya && nasiyaPlans.length > 0 && (
+                      <div className="mt-3 p-3 rounded-xl" style={{ background: 'var(--surface-dim)' }}>
+                        <div className="text-xs font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Muddatni tanlang:</div>
+                        <div className="grid grid-cols-3 gap-2">
+                          {nasiyaPlans.map((plan: any) => (
+                            <button key={plan.id}
+                              onClick={() => setNasiyaMonths(plan.months)}
+                              className={`text-center p-2 rounded-lg text-xs border cursor-pointer transition ${
+                                nasiyaMonths === plan.months ? '' : ''
+                              }`}
+                              style={{
+                                borderColor: nasiyaMonths === plan.months ? 'var(--accent)' : 'var(--border-primary)',
+                                background: nasiyaMonths === plan.months ? 'var(--accent-50)' : 'var(--surface)',
+                                color: nasiyaMonths === plan.months ? 'var(--accent)' : 'var(--text-secondary)',
+                              }}>
+                              <div className="font-bold">{plan.label}</div>
+                              <div className="text-[10px] mt-0.5" style={{ color: plan.interest_amount > 0 ? 'var(--text-tertiary)' : '#10b981' }}>
+                                {plan.interest_amount > 0 ? `${plan.annual_rate}%` : '0% FOIZ'}
+                              </div>
+                              <div className="text-[10px] font-bold mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                                {fmtPrice(plan.monthly_payment)}/oy
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

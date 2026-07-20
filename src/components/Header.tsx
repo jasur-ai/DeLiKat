@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { id: 'home', label: '🏠 Bosh', href: '/' },
   { id: 'seller', label: '🏪 Sotuvchilar', href: '/seller' },
   { id: 'deals', label: '💰 Bitimlar', href: '/deals' },
+  { id: 'chat', label: '💬 Chat', href: '/chat' },
   { id: 'analytics', label: '📊 Analytics', href: '/analytics' },
   { id: 'leaderboard', label: '🏆 Reyting', href: '/leaderboard' },
   { id: 'reviews', label: '⭐ Sharhlar', href: '/reviews' },
@@ -22,6 +23,8 @@ export default function Header({ active = 'home' }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [notifCount, setNotifCount] = useState(0);
+  const [chatUnread, setChatUnread] = useState(0);
 
   useEffect(() => {
     const isDark = localStorage.getItem('theme') === 'dark' ||
@@ -33,7 +36,33 @@ export default function Header({ active = 'home' }: HeaderProps) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     setScrolled(window.scrollY > 20);
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    const fetchCounts = () => {
+      // Bildirishnomalar
+      fetch('/api/notifications?user_id=1')
+        .then(r => r.json())
+        .then(d => { if (d.ok) setNotifCount(d.unread_count || 0); })
+        .catch(() => {});
+
+      // Chat — conversation list dan unread count
+      fetch('/api/chat?user_id=1')
+        .then(r => r.json())
+        .then(d => {
+          if (d.ok && d.conversations) {
+            const total = d.conversations.reduce((sum: number, c: any) => sum + (c.unread_count || 0), 0);
+            setChatUnread(total);
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchCounts();
+    // Har 30 sekundda yangilash
+    const interval = setInterval(fetchCounts, 30000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearInterval(interval);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -66,7 +95,7 @@ export default function Header({ active = 'home' }: HeaderProps) {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-0.5 overflow-x-auto">
-          {NAV_ITEMS.slice(0, 6).map(item => (
+          {NAV_ITEMS.slice(0, 7).map(item => (
             <a
               key={item.id}
               href={item.href}
@@ -90,10 +119,49 @@ export default function Header({ active = 'home' }: HeaderProps) {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
+          {/* Chat */}
+          <a href="/chat"
+            className="relative w-8 h-8 flex items-center justify-center rounded-full no-underline transition-colors"
+            style={{ color: 'var(--text-secondary)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            title="Chat">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            {chatUnread > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center text-[10px] font-bold text-white rounded-full"
+                style={{ background: '#6366f1' }}>
+                {chatUnread > 9 ? '9+' : chatUnread}
+              </span>
+            )}
+          </a>
+
+          {/* Notification Bell */}
+          <a href="/notifications"
+            className="relative w-8 h-8 flex items-center justify-center rounded-full no-underline transition-colors"
+            style={{ color: 'var(--text-secondary)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            title="Bildirishnomalar">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            {notifCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center text-[10px] font-bold text-white rounded-full"
+                style={{ background: 'var(--accent)' }}>
+                {notifCount > 9 ? '9+' : notifCount}
+              </span>
+            )}
+          </a>
+
           <button onClick={toggleTheme}
             className="w-8 h-8 flex items-center justify-center rounded-full border-none cursor-pointer transition-colors"
-            style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)' }}
+            style={{ color: 'var(--text-secondary)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             aria-label="Toggle theme">
             {darkMode ? (
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -141,6 +209,16 @@ export default function Header({ active = 'home' }: HeaderProps) {
                 {item.label}
               </a>
             ))}
+            <a href="/chat" onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl no-underline transition-colors"
+              style={{ color: 'var(--text-primary)' }}>
+              💬 Xabarlar {chatUnread > 0 && <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#6366f1', color: 'white' }}>{chatUnread}</span>}
+            </a>
+            <a href="/notifications" onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl no-underline transition-colors"
+              style={{ color: 'var(--text-primary)' }}>
+              🔔 Bildirishnomalar {notifCount > 0 && <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'var(--accent)' }}>{notifCount}</span>}
+            </a>
             <div className="border-t my-3" style={{ borderColor: 'var(--border-primary)' }} />
             <a href="https://t.me/DeLiKatbot" target="_blank" onClick={() => setMenuOpen(false)}
               className="flex items-center justify-center gap-2 px-4 py-3 text-base font-semibold rounded-xl no-underline transition-all"
