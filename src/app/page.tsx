@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import ProductVerification from '@/components/ProductVerification';
+import RecentlyViewed from '@/components/RecentlyViewed';
+import { toggleCompare } from '@/lib/compare';
 
 interface Stats {
   users: number;
@@ -45,6 +48,26 @@ export default function Home() {
   const [lots, setLots] = useState<Lot[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCat, setSelectedCat] = useState('all');
+  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [compareIds, setCompareIds] = useState<number[]>([]);
+
+  // Load wishlist + compare on mount
+  useEffect(() => {
+    fetch('/api/wishlist?user_id=1').then(r => r.json()).then(d => { if (d.ok) setWishlist(d.wishlist || []); }).catch(() => {});
+    setCompareIds(JSON.parse(localStorage.getItem('deliket_compare') || '[]'));
+  }, []);
+
+  const toggleWishlistItem = async (lotId: number) => {
+    await fetch('/api/wishlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lot_id: lotId, user_id: 1 }) });
+    const res = await fetch('/api/wishlist?user_id=1').then(r => r.json());
+    if (res.ok) setWishlist(res.wishlist || []);
+  };
+
+  const toggleCompareItem = (lotId: number) => {
+    toggleCompare(lotId);
+    const ids = JSON.parse(localStorage.getItem('deliket_compare') || '[]');
+    setCompareIds(ids);
+  };
 
   useEffect(() => {
     async function load() {
@@ -179,6 +202,11 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Recently Viewed */}
+      <section className="py-8 max-w-7xl mx-auto px-5">
+        <RecentlyViewed />
+      </section>
+
       {/* Categories */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-5">
@@ -235,8 +263,8 @@ export default function Home() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {lots.map(lot => (
-                <a key={lot.id} href={`/lot/${lot.id}`}
-                  className="group rounded-xl overflow-hidden no-underline transition-all hover:-translate-y-1"
+                <div key={lot.id} onClick={(e) => { if (!(e.target as HTMLElement).closest('button')) window.location.href = `/lot/${lot.id}`; }}
+                  className="group rounded-xl overflow-hidden no-underline transition-all hover:-translate-y-1 cursor-pointer"
                   style={{
                     background: 'var(--surface)',
                     border: '1px solid var(--border-primary)',
@@ -254,6 +282,22 @@ export default function Home() {
                         {GRADE_EMOJI[lot.grade] || '⚪'} {lot.grade}
                       </span>
                     </span>
+                    <span className="absolute top-3 right-3">
+                      <ProductVerification lotId={lot.id} title={lot.title} compact={true} />
+                    </span>
+                    {/* Wishlist & Compare */}
+                    <div className="absolute bottom-3 left-3 flex gap-1.5">
+                      <button onClick={e => { e.stopPropagation(); toggleWishlistItem(lot.id); }}
+                        className="w-7 h-7 flex items-center justify-center text-xs rounded-full border-none cursor-pointer transition hover:scale-110"
+                        style={{ background: wishlist.includes(lot.id) ? 'rgba(239,68,68,0.2)' : 'rgba(0,0,0,0.3)', color: wishlist.includes(lot.id) ? '#ef4444' : 'white' }}>
+                        {wishlist.includes(lot.id) ? '❤️' : '🤍'}
+                      </button>
+                      <button onClick={e => { e.stopPropagation(); toggleCompareItem(lot.id); }}
+                        className="w-7 h-7 flex items-center justify-center text-xs rounded-full border-none cursor-pointer transition hover:scale-110"
+                        style={{ background: compareIds.includes(lot.id) ? 'rgba(99,102,241,0.2)' : 'rgba(0,0,0,0.3)', color: compareIds.includes(lot.id) ? '#6366f1' : 'white' }}>
+                        📊
+                      </button>
+                    </div>
                     {CATEGORIES.find(c => c.id === lot.category)?.icon || '📦'}
                   </div>
                   <div className="p-4">
@@ -268,7 +312,7 @@ export default function Home() {
                       <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{lot.quantity} dona</span>
                     </div>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           )}

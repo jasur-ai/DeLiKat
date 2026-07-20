@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import ProductVerification from '@/components/ProductVerification';
 
 interface Deal {
   id: number;
@@ -150,6 +151,8 @@ export default function DealsPage() {
                       {deal.lot_title}
                     </a>
                     <div className="flex items-center gap-2">
+                      {/* 🏷️ Product auth badge */}
+                      <ProductVerification lotId={deal.lot_id} title={deal.lot_title} compact={true} />
                       {/* ESCROW status badge */}
                       {escrowSummaries[deal.id] && (
                         <button onClick={(e) => {

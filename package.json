@@ -9,7 +9,10 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "test:payments": "node scripts/test-payments.mjs",
-    "diag": "curl -s http://localhost:3000/api/diagnostics | python3 -m json.tool"
+    "diag": "curl -s http://localhost:3000/api/diagnostics | python3 -m json.tool",
+    "test:webhook": "node scripts/test-payme-webhook.mjs",
+    "test:click": "node scripts/test-click-webhook.mjs",
+    "test:webhooks": "node scripts/test-webhooks.mjs"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",

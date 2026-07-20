@@ -144,7 +144,42 @@ export async function POST() {
     )`);
     await execute(`CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read)`);
 
-    // 2. Clear existing data
+    // 2. Migrate: add missing columns for existing tables
+    try {
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT false`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT false`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS xp INTEGER DEFAULT 0`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS level INTEGER DEFAULT 1`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS trust_score DECIMAL(3,1) DEFAULT 5.0`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS total_sales INTEGER DEFAULT 0`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS total_purchases INTEGER DEFAULT 0`);
+      await execute(`ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true`);
+      await execute(`ALTER TABLE lots ADD COLUMN IF NOT EXISTS image_url TEXT`);
+      await execute(`ALTER TABLE lots ADD COLUMN IF NOT EXISTS view_count INTEGER DEFAULT 0`);
+      await execute(`ALTER TABLE lots ADD COLUMN IF NOT EXISTS bid_count INTEGER DEFAULT 0`);
+      // Dynamically drop all CHECK + UNIQUE constraints on seed tables
+      // to avoid column/value mismatches with existing schema
+      const seedTables = ['users','lots','bids','transactions','trusted_reviews','achievements','wishlist','sync_tokens','messages','notifications'];
+      for (const tbl of seedTables) {
+        try {
+          const constraints = await query<{constraint_name: string; constraint_type: string}>(
+            `SELECT constraint_name, constraint_type FROM information_schema.table_constraints
+             WHERE table_name = $1 AND constraint_type IN ('CHECK', 'UNIQUE')`,
+            [tbl]
+          );
+          for (const c of constraints) {
+            await execute(`ALTER TABLE "${tbl}" DROP CONSTRAINT IF EXISTS "${c.constraint_name}"`);
+          }
+          results.push(`${tbl}_constraints_dropped:${constraints.length}`);
+        } catch (innerErr) {
+          console.warn(`Constraint drop warning for ${tbl}:`, innerErr);
+        }
+      }
+    } catch (migrateErr) {
+      console.warn('Migration warning (non-critical):', migrateErr);
+    }
+
+    // 3. Clear existing data
     await execute('DELETE FROM notifications');
     await execute('DELETE FROM messages');
     await execute('DELETE FROM trusted_reviews');

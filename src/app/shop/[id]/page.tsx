@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
+import TrustScore from '@/components/TrustScore';
 
 interface Lot {
   id: number; title: string; category: string; price: number; quantity: number;
@@ -33,6 +34,8 @@ export default function ShopDetailPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [sellerName, setSellerName] = useState('');
   const [sellerRating, setSellerRating] = useState(0);
+  const [trustScoreData, setTrustScoreData] = useState<any>(null);
+  const [kycStatus, setKycStatus] = useState<any>(null);
 
   useEffect(() => {
     const isDark = localStorage.getItem('theme') === 'dark' ||
@@ -52,6 +55,18 @@ export default function ShopDetailPage() {
         setSellerName(sellerLots[0]?.seller_name || 'Sotuvchi');
         setSellerRating(sellerLots[0]?.seller_rating || 0);
         setLots(sellerLots);
+
+        // Load Trust Score
+        fetch(`/api/trust-score?userId=${sellerId}`)
+          .then(r => r.json())
+          .then(ts => { if (ts.ok) setTrustScoreData(ts); })
+          .catch(() => {});
+
+        // Load KYC status
+        fetch(`/api/kyc?userId=${sellerId}`)
+          .then(r => r.json())
+          .then(k => { if (k.ok) setKycStatus(k); })
+          .catch(() => {});
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -92,11 +107,22 @@ export default function ShopDetailPage() {
                   <span>⭐ {sellerRating.toFixed(1)}</span>
                   <span>·</span>
                   <span>🏪 Sotuvchi</span>
+                  {kycStatus?.verified && (
+                    <><span>·</span>
+                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>✅ Tasdiqlangan sotuvchi</span></>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Trust Score Card */}
+        {trustScoreData && (
+          <div className="mb-8">
+            <TrustScore data={trustScoreData} compact={false} showBreakdown={true} />
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">

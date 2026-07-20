@@ -16,6 +16,10 @@ const NAV_ITEMS = [
   { id: 'leaderboard', label: '🏆 Reyting', href: '/leaderboard' },
   { id: 'reviews', label: '⭐ Sharhlar', href: '/reviews' },
   { id: 'how-it-works', label: '📖 Qo\'llanma', href: '/how-it-works' },
+  { id: 'verify', label: '🏷️ Auth', href: '/verify' },
+  { id: 'wishlist', label: '❤️ Sevimli', href: '/wishlist' },
+  { id: 'compare', label: '📊 Solishtirish', href: '/compare' },
+  { id: 'faq', label: '💬 FAQ', href: '/faq' },
   { id: 'subscription', label: '💎 Premium', href: '/subscription' },
 ];
 

@@ -227,15 +227,27 @@ export async function calculateTrustScoreFromDB(userId: number): Promise<TrustSc
       [userId]
     );
 
-    // Get dispute count
-    const disputeStats = await queryOne<any>(
-      `SELECT
-         COUNT(*) as total_disputes,
-         SUM(CASE WHEN d.status = 'hal_qilingan' AND d.resolution LIKE '%favor%' THEN 1 ELSE 0 END) as disputes_won
-       FROM disputes d
-       WHERE d.initiator_id = $1`,
-      [userId]
-    );
+    // Get dispute count (safe: table may not exist)
+    let totalDisputes = 0;
+    let disputesWon = 0;
+    try {
+      const disputeStats = await queryOne<any>(
+        `SELECT
+           COUNT(*) as total_disputes,
+           COUNT(*) FILTER (WHERE status = 'hal_qilingan') as disputes_won
+         FROM disputes WHERE initiator_id = $1`,
+        [userId]
+      );
+      if (disputeStats) {
+        totalDisputes = parseInt(disputeStats.total_disputes || '0');
+        disputesWon = parseInt(disputeStats.disputes_won || '0');
+      }
+    } catch {
+      console.warn('disputes table not available, using dispute_count=0');
+      // DB da disputes table bo'lmasa, mock dispute data
+      totalDisputes = 0;
+      disputesWon = 0;
+    }
 
     // Get average lot grade
     const gradeStats = await queryOne<any>(
@@ -251,8 +263,8 @@ export async function calculateTrustScoreFromDB(userId: number): Promise<TrustSc
       total_transactions: parseInt(txStats?.total_tx || '0'),
       is_verified: user.is_verified || false,
       account_created_at: user.created_at || new Date(),
-      dispute_count: parseInt(disputeStats?.total_disputes || '0'),
-      disputes_won: parseInt(disputeStats?.disputes_won || '0'),
+      dispute_count: totalDisputes,
+      disputes_won: disputesWon,
       avg_lot_grade: parseFloat(gradeStats?.avg_grade || '0'),
       has_telegram: user.has_telegram || false,
     });

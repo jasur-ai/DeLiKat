@@ -3,6 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
+import ProductVerification from '@/components/ProductVerification';
+import RecentlyViewed, { addRecentlyViewed } from '@/components/RecentlyViewed';
+import AIRecommendations from '@/components/AIRecommendations';
+import SocialShare from '@/components/SocialShare';
+import PriceDropBell from '@/components/PriceDropBell';
 
 interface LotDetail {
   id: number; title: string; category: string; description?: string;
@@ -41,7 +46,17 @@ export default function LotDetailPage() {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
     fetch(`/api/lots/${id}`).then(r => r.json()).then(d => {
-      if (d.ok !== false) setLot(d);
+      if (d.ok !== false) {
+        setLot(d);
+        // Track recently viewed
+        addRecentlyViewed({
+          id: d.id,
+          title: d.title,
+          category: d.category,
+          price: d.price,
+          grade: d.grade,
+        });
+      }
     }).catch(console.error).finally(() => setLoading(false));
   }, [id]);
 
@@ -219,6 +234,13 @@ export default function LotDetailPage() {
                   </div>
                 </div>
 
+                {/* 🏷️ Product Authentication */}
+                <ProductVerification
+                  lotId={lot.id}
+                  title={lot.title}
+                  compact={false}
+                />
+
                 {/* Seller Card */}
                 <div className="p-5 rounded-xl border" style={{ borderColor: 'var(--border-primary)' }}>
                   <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-tertiary)' }}>Sotuvchi</div>
@@ -232,6 +254,21 @@ export default function LotDetailPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Price Drop Alert */}
+                <PriceDropBell lotId={lot.id} currentPrice={lot.price} />
+
+                {/* Social Share */}
+                <SocialShare url={`/lot/${lot.id}`} title={lot.title} />
+
+                {/* AI Recommendations */}
+                {lot.category && (
+                  <AIRecommendations
+                    currentLotId={lot.id}
+                    category={lot.category}
+                    price={lot.price}
+                  />
+                )}
 
                 {/* Telegram CTA */}
                 <a href="https://t.me/DeLiKatbot" target="_blank"
