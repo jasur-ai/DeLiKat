@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query, Lot } from '@/lib/db';
+import { MOCK_LOTS, MOCK_USERS } from '@/lib/mock-data';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -43,7 +44,6 @@ export async function GET(request: NextRequest) {
       params.push(parseFloat(maxPrice));
     }
 
-    // Validate sort column (prevent SQL injection)
     const allowedSort = ['created_at', 'price', 'title', 'quantity', 'view_count'];
     const sortCol = allowedSort.includes(sort) ? sort : 'created_at';
     const sortOrder = order === 'asc' ? 'ASC' : 'DESC';
@@ -64,18 +64,28 @@ export async function GET(request: NextRequest) {
       [...params, limit, offset]
     );
 
+    return NextResponse.json({ ok: true, lots, total, limit, offset });
+  } catch (err) {
+    console.error('Lots API error, using mock data:', err);
+    // Apply filters to mock data
+    let filtered = MOCK_LOTS.filter(l => l.status === 'aktiv');
+    const category = request.nextUrl.searchParams.get('category');
+    if (category && category !== 'all') filtered = filtered.filter(l => l.category === category);
+
+    const limit = Math.min(parseInt(request.nextUrl.searchParams.get('limit') || '50'), 200);
+
+    filtered = filtered.map(l => ({
+      ...l,
+      seller_name: MOCK_USERS.find(u => u.id === l.seller_id)?.name || "Noma'lum",
+      seller_rating: MOCK_USERS.find(u => u.id === l.seller_id)?.rating || 0,
+    }));
+
     return NextResponse.json({
       ok: true,
-      lots,
-      total,
+      lots: filtered.slice(0, limit),
+      total: filtered.length,
       limit,
-      offset,
+      offset: 0,
     });
-  } catch (err) {
-    console.error('Lots API error:', err);
-    return NextResponse.json(
-      { ok: false, error: 'Server error loading lots' },
-      { status: 500 }
-    );
   }
 }

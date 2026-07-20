@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 
+
 declare global {
   interface Window { onTelegramAuth?: (user: any) => void; }
 }

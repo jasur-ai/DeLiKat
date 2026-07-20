@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
 
 interface Seller {
   id: number | string;
@@ -92,38 +93,7 @@ export default function SellerPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--surface)' }}>
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b" style={{ background: 'var(--surface)', borderColor: 'var(--border-primary)' }}>
-        <div className="max-w-5xl mx-auto px-5 h-full flex items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2 text-lg font-bold no-underline" style={{ color: 'var(--text-primary)' }}>
-            <svg viewBox="0 0 36 36" fill="none" style={{ width: 28, height: 28 }}>
-              <defs><linearGradient id="lgSl" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#f59e0b" /><stop offset="100%" stopColor="#d97706" /></linearGradient></defs>
-              <rect width="36" height="36" rx="9" fill="url(#lgSl)" /><path d="M9 9h8a9 9 0 010 18H9V9z" fill="white" opacity="0.95" /><circle cx="26" cy="18" r="2.5" fill="white" opacity="0.6" />
-            </svg>
-            DeLi<span style={{ color: 'var(--accent)' }}>Ket</span>
-          </a>
-          <nav className="hidden md:flex items-center gap-1">
-            <a href="/" className="px-3 py-2 text-sm rounded-lg no-underline transition hover:bg-surface-hover" style={{ color: 'var(--text-secondary)' }}>Bosh sahifa</a>
-            <a href="/seller" className="px-3 py-2 text-sm font-semibold rounded-lg no-underline" style={{ color: 'var(--accent)', background: 'var(--accent-50)' }}>Sotuvchilar</a>
-          </nav>
-          <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-full border-none cursor-pointer transition" style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)' }}>
-            {darkMode ? '☀️' : '🌙'}
-          </button>
-        </div>
-        <button onClick={() => setMobileMenu(!mobileMenu)} className="md:hidden fixed top-3 right-3 flex-col gap-1.5 p-2 rounded-md z-50 bg-none border-none cursor-pointer" style={{ background: 'var(--surface)' }}>
-          <span className={`block w-5 h-0.5 transition ${mobileMenu ? 'rotate-45 translate-y-1.5' : ''}`} style={{ background: 'var(--text-primary)' }} />
-          <span className={`block w-5 h-0.5 transition ${mobileMenu ? 'opacity-0' : ''}`} style={{ background: 'var(--text-primary)' }} />
-          <span className={`block w-5 h-0.5 transition ${mobileMenu ? '-rotate-45 -translate-y-1.5' : ''}`} style={{ background: 'var(--text-primary)' }} />
-        </button>
-      </header>
-
-      {mobileMenu && (
-        <nav className="fixed inset-0 z-40 flex flex-col justify-center items-center p-10" style={{ background: 'var(--surface)' }}>
-          <div className="flex flex-col gap-4 text-center">
-            <a href="/" className="px-5 py-3 text-lg rounded-lg no-underline" style={{ color: 'var(--text-secondary)' }}>🏠 Bosh</a>
-            <a href="/seller" className="px-5 py-3 text-lg rounded-lg no-underline" style={{ color: 'var(--accent)', background: 'var(--accent-50)' }}>🏪 Sotuvchilar</a>
-          </div>
-        </nav>
-      )}
+      <Header active="seller" />
 
       {/* Hero */}
       <section className="pt-32 pb-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#1a1a2e 0%,#0f0f1e 40%,#16213e 100%)' }}>
